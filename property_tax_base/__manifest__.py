@@ -4,10 +4,10 @@
 
     'summary': """
         Base Module to manage land and properties definitions
-        """
+        """,
 
     'description': """
-        Set of Odoo12 module to manage land property taxes and other charges 
+        Set of Odoo12 module to manage land property taxes and other charges
         like Water consumption, urban waste management, etc.
     """,
 
@@ -25,8 +25,8 @@
 
     # always loaded
     'data': [
-        # 'security/ir.model.access.csv',
-        # 'views/views.xml',
+        'security/ir.model.access.csv',
+        'views/land_views.xml',
         # 'views/templates.xml',
     ],
     # only loaded in demonstration mode
