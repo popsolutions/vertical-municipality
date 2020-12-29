@@ -14,6 +14,8 @@
           <group>
             <field name="lot_id"/>
             <field name="owner_id"/>
+            <field name="type">
+            <field name="usage">
             <field name="block_id"/>
             <field name="zone_id"/>
             <field name="address"/>
@@ -33,6 +35,8 @@
       <tree string="Property Tax Land tree">
             <field name="lot_id"/>
             <field name="owner_id"/>
+            <field name="type">
+            <field name="usage">
             <field name="block_id"/>
             <field name="zone_id"/>
             <field name="address"/>
