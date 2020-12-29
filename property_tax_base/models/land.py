@@ -6,7 +6,7 @@ class PropertyTaxLand(models.Model):
     _description = 'Property Land'
 
     lot_id = fields.Many2one('property_tax.land.lot', 'Lot')
-    owner_id = fields.Many2one('res.partner', 'Onwer')
+    owner_id = fields.Many2one('res.partner', 'Owner')
     block_id = fields.Many2one('property_tax.land.block', 'Block')
     zone_id = fields.Many2one('property_tax.land.zone', 'Zone')
     address = fields.Text()
@@ -22,6 +22,19 @@ class PropertyTaxLand(models.Model):
     #     pass
     # concat lot + block + zone
 
+class PropertyTaxLandType(models.Model):
+    _name = 'property_tax.land.type'
+    _descriptio = 'Property Land Type'
+
+    code = fields.Chart()
+    info = fields.Text()
+
+class PropertyTaxLandUse(models.Model):
+    _name = 'property_tax.land.use'
+    _description = 'Property Usage'
+
+    code = fields.Chart()
+    info = fields.Text()
 
 class PropertyTaxLandLot(models.Model):
     _name = 'property_tax.land.lot'
