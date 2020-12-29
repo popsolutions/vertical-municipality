@@ -6,6 +6,8 @@ class PropertyTaxLand(models.Model):
     _description = 'Property Land'
 
     lot_id = fields.Many2one('property_tax.land.lot', 'Lot')
+    type_id = fields.Many2one('PropertyTaxLandType', 'Type')
+    use_id = fields.Many2one('PropertyTaxLandUse', 'Use')
     owner_id = fields.Many2one('res.partner', 'Owner')
     block_id = fields.Many2one('property_tax.land.block', 'Block')
     zone_id = fields.Many2one('property_tax.land.zone', 'Zone')
