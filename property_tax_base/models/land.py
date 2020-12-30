@@ -28,14 +28,14 @@ class PropertyTaxLandType(models.Model):
     _name = 'property_tax.land.type'
     _descriptio = 'Property Land Type'
 
-    code = fields.Chart()
+    code = fields.Char()
     info = fields.Text()
 
 class PropertyTaxLandUse(models.Model):
     _name = 'property_tax.land.use'
     _description = 'Property Usage'
 
-    code = fields.Chart()
+    code = fields.Char()
     info = fields.Text()
 
 class PropertyTaxLandLot(models.Model):
