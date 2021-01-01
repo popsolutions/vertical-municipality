@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "Property Tax Base",
+    'name': "Property Base",
 
     'summary': """
         Base Module to manage land and properties definitions
@@ -11,8 +11,8 @@
         like Water consumption, urban waste management, etc.
     """,
 
-    'author': "POP Solutions",
-    'website': "http://www.popsolutions.co",
+    'author': "PopSolutions",
+    'website': "https://www.popsolutions.co",
 
     # Categories can be used to filter modules in modules listing
     # Check https://github.com/odoo/odoo/blob/12.0/odoo/addons/base/data/ir_module_category_data.xml
