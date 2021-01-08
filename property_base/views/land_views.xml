@@ -15,7 +15,7 @@
             <field name="lot_id"/>
             <field name="owner_id"/>
             <field name="type_id"/>
-            <field name="use_id"/>
+            <field name="usage_id"/>
             <field name="block_id"/>
             <field name="zone_id"/>
             <field name="address"/>
@@ -36,7 +36,7 @@
             <field name="lot_id"/>
             <field name="owner_id"/>
             <field name="type_id"/>
-            <field name="use_id"/>
+            <field name="usage_id"/>
             <field name="block_id"/>
             <field name="zone_id"/>
             <field name="address"/>

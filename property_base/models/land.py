@@ -6,8 +6,8 @@ class PropertyLand(models.Model):
     _description = 'Property Land'
 
     lot_id = fields.Many2one('property.land.lot', 'Lot')
-    type_id = fields.Many2one('PropertyLandType', 'Type')
-    use_id = fields.Many2one('PropertyLandUse', 'Use')
+    type_id = fields.Many2one('property.land.type', 'Type')
+    usage_id = fields.Many2one('property.land.usage', 'Usage')
     owner_id = fields.Many2one('res.partner', 'Owner')
     block_id = fields.Many2one('property.land.block', 'Block')
     zone_id = fields.Many2one('property.land.zone', 'Zone')
@@ -31,8 +31,8 @@ class PropertyLandType(models.Model):
     code = fields.Char()
     info = fields.Text()
 
-class PropertyLandUse(models.Model):
-    _name = 'property.land.use'
+class PropertyLandUsage(models.Model):
+    _name = 'property.land.usage'
     _description = 'Property Usage'
 
     code = fields.Char()
