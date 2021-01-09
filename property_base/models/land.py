@@ -21,9 +21,13 @@ class PropertyLand(models.Model):
         ('construction', 'Under Construction'),
         ('occupied', 'Occupied')])
 
-    # def name_get(self):
-    #     pass
-    # concat lot + block + zone
+    @api.multi
+    def name_get(self):
+        res = []
+        for rec in self:
+            custom_name = "{}-{}-{}".format(rec.module_id.code, rec.block_id.code, rec.lot_id.code)
+            res.append((rec.id, custom_name))
+        return res
 
 class PropertyLandType(models.Model):
     _name = 'property.land.type'
@@ -32,6 +36,14 @@ class PropertyLandType(models.Model):
     code = fields.Char()
     name = fields.Char()
     info = fields.Text()
+
+    @api.multi
+    def name_get(self):
+        res = []
+        for rec in self:
+            custom_name = "{} - {}".format(rec.code, rec.name)
+            res.append((rec.id, custom_name))
+        return res
 
 class PropertyLandUsage(models.Model):
     _name = 'property.land.usage'
@@ -50,7 +62,6 @@ class PropertyLandLot(models.Model):
     block_id = fields.Many2one('property.land.block', 'Block')
     info = fields.Text()
 
-
 class PropertyLandBlock(models.Model):
     _name = 'property.land.block'
     _description = 'Property Land Block'
@@ -68,6 +79,13 @@ class PropertyLandModule(models.Model):
     name = fields.Char()
     info = fields.Text()
 
+    @api.multi
+    def name_get(self):
+        res = []
+        for rec in self:
+            custom_name = "{} - {}".format(rec.code, rec.name)
+            res.append((rec.id, custom_name))
+        return res
 
 class PropertyLandZone(models.Model):
     _name = 'property.land.zone'
@@ -76,3 +94,11 @@ class PropertyLandZone(models.Model):
     code = fields.Char()
     name = fields.Char()
     info = fields.Text()
+
+    @api.multi
+    def name_get(self):
+        res = []
+        for rec in self:
+            custom_name = "{} - {}".format(rec.code, rec.name)
+            res.append((rec.id, custom_name))
+        return res
