@@ -1,7 +1,8 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_property_land_user,Property Tax Land User,model_property_land,,1,1,1,1
-access_property_land_lot_user,Property Tax Land Lot User,model_property_land_lot,,1,1,1,1
 access_property_land_type_user,Property Tax Land Type User,model_property_land_type,,1,1,1,1
 access_property_land_usage_user,Property Tax Land Usage User,model_property_land_usage,,1,1,1,1
+access_property_land_lot_user,Property Tax Land Lot User,model_property_land_lot,,1,1,1,1
 access_property_land_block_user,Property Tax Land Block User,model_property_land_block,,1,1,1,1
+access_property_land_module_user,Property Tax Land Module User,model_property_land_module,,1,1,1,1
 access_property_land_zone_user,Property Tax Land Zone User,model_property_land_zone,,1,1,1,1
