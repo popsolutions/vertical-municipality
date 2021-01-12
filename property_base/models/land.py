@@ -5,6 +5,7 @@ class PropertyLand(models.Model):
     _name = 'property.land'
     _description = 'Property Land'
 
+    name = fields.Char(compute="_compute_name", store=True)
     type_id = fields.Many2one('property.land.type', 'Type')
     usage_id = fields.Many2one('property.land.usage', 'Usage')
     owner_id = fields.Many2one('res.partner', 'Owner')
@@ -18,13 +19,13 @@ class PropertyLand(models.Model):
     # ToDo: attached_land_ids = m2m self
     stage_id = fields.Many2one('property.land.stage', 'Stage')
 
-    @api.multi
-    def name_get(self):
-        res = []
+    @api.depends('module_id', 'block_id', 'lot_id')
+    def _compute_name(self):
         for rec in self:
-            custom_name = "{}-{}-{}".format(rec.module_id.code, rec.block_id.code, rec.lot_id.code)
-            res.append((rec.id, custom_name))
-        return res
+            rec.name = "{}{}{}".format(rec.module_id.code,
+                                        rec.block_id.code,
+                                        rec.lot_id.code)
+
 
 class PropertyLandType(models.Model):
     _name = 'property.land.type'
