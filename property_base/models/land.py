@@ -16,10 +16,7 @@ class PropertyLand(models.Model):
     number = fields.Integer()
     zip = fields.Integer()
     # ToDo: attached_land_ids = m2m self
-    status = fields.Selection([
-        ('empty', 'Empty'),
-        ('construction', 'Under Construction'),
-        ('occupied', 'Occupied')])
+    stage_id = fields.Many2one('property.land.stage', 'Stage')
 
     @api.multi
     def name_get(self):
@@ -102,3 +99,11 @@ class PropertyLandZone(models.Model):
             custom_name = "{} - {}".format(rec.code, rec.name)
             res.append((rec.id, custom_name))
         return res
+
+class PropertyLandStage(models.Model):
+    _name = 'property.land.stage'
+    _description = 'Property Land Stage'
+
+    code = fields.Char()
+    name = fields.Char()
+    info = fields.Text()

@@ -6,3 +6,4 @@ access_property_land_lot_user,Property Tax Land Lot User,model_property_land_lot
 access_property_land_block_user,Property Tax Land Block User,model_property_land_block,,1,1,1,1
 access_property_land_module_user,Property Tax Land Module User,model_property_land_module,,1,1,1,1
 access_property_land_zone_user,Property Tax Land Zone User,model_property_land_zone,,1,1,1,1
+access_property_land_stage_user,Property Tax Land Stage User,model_property_land_stage,,1,1,1,1

@@ -8,17 +8,17 @@
     <field name="arch" type="xml">
       <form string="Property Land form">
         <header>
-            <field name="status" widget="statusbar"/>
         </header>
         <sheet>
           <group>
             <field name="owner_id"/>
-            <field name="type_id"/>
-            <field name="usage_id"/>
             <field name="module_id"/>
             <field name="block_id"/>
             <field name="lot_id"/>
             <field name="zone_id"/>
+            <field name="type_id"/>
+            <field name="usage_id"/>
+            <field name="stage_id"/>
             <field name="address"/>
             <field name="number"/>
             <field name="zip"/>
@@ -34,15 +34,17 @@
     <field name="priority" eval="16"/>
     <field name="arch" type="xml">
       <tree string="Property Land tree">
-            <field name="lot_id"/>
-            <field name="owner_id"/>
-            <field name="type_id"/>
-            <field name="usage_id"/>
-            <field name="block_id"/>
-            <field name="zone_id"/>
-            <field name="address"/>
-            <field name="number"/>
-            <field name="zip"/>
+        <field name="owner_id"/>
+          <field name="module_id"/>
+          <field name="block_id"/>
+          <field name="lot_id"/>
+          <field name="zone_id"/>
+          <field name="type_id"/>
+          <field name="usage_id"/>
+          <field name="stage_id"/>
+          <field name="address"/>
+          <field name="number"/>
+          <field name="zip"/>
       </tree>
     </field>
   </record>
