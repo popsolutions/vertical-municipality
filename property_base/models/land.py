@@ -75,6 +75,7 @@ class PropertyLandModule(models.Model):
 
     code = fields.Char()
     name = fields.Char()
+    zone_id = fields.Many2one('property.land.zone', 'Zone')
     info = fields.Text()
 
     @api.multi
