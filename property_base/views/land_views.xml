@@ -10,19 +10,31 @@
         <header>
         </header>
         <sheet>
-          <group>
-            <field name="name"/>
-            <field name="owner_id"/>
-            <field name="module_id"/>
-            <field name="block_id" domain="[('module_id', '=', module_id)]"/>
-            <field name="lot_id" domain="[('block_id', '=', block_id)]"/>
-            <field name="zone_id"/>
-            <field name="type_id"/>
-            <field name="usage_id"/>
-            <field name="stage_id"/>
-            <field name="address"/>
-            <field name="number"/>
-            <field name="zip"/>
+          <div class="oe_title">
+              <h1 class="ml-5">
+                  Property: <field name="name" readonly="1"/>
+              </h1>
+          </div>
+          <group col="4">
+            <group col="4" colspan="4">
+              <field name="owner_id" colspan="4"/>
+            </group>
+            <group string="Basic Information" col="2" colspan="2">
+              <field name="module_id"/>
+              <field name="block_id" domain="[('module_id', '=', module_id)]"/>
+              <field name="lot_id" domain="[('block_id', '=', block_id)]"/>
+              <field name="zone_id"/>
+            </group>
+            <group string="Classification"  col="2" colspan="2">
+              <field name="type_id"/>
+              <field name="usage_id"/>
+              <field name="stage_id"/>
+            </group>
+            <group string="Other"  col="4" colspan="2">
+              <field name="number"/>
+              <field name="zip"/>
+              <field name="address" colspan="4"/>
+            </group>
           </group>
         </sheet>
       </form>
