@@ -22,9 +22,9 @@ class PropertyLand(models.Model):
     @api.depends('module_id', 'block_id', 'lot_id')
     def _compute_name(self):
         for rec in self:
-            rec.name = "{}{}{}".format(rec.module_id.code,
-                                        rec.block_id.code,
-                                        rec.lot_id.code)
+            rec.name = "{}{}{}".format(rec.module_id.code or '-',
+                                        rec.block_id.code or '-',
+                                        rec.lot_id.code or '-')
 
     @api.onchange('module_id')
     def _onchange_module_id(self):
