@@ -34,47 +34,37 @@ class PropertyLand(models.Model):
     def _onchange_block_id(self):
         self.lot_id = None
 
-class PropertyLandType(models.Model):
-    _name = 'property.land.type'
-    _description = 'Property Land Type'
+class PropertyLandLot(models.Model):
+    _name = 'property.land.lot'
+    _description = 'Property Land Lot'
 
     code = fields.Char()
-    name = fields.Char()
+    block_id = fields.Many2one('property.land.block', 'Block')
     info = fields.Text()
 
     @api.multi
     def name_get(self):
         res = []
         for rec in self:
-            custom_name = "{} - {}".format(rec.code, rec.name)
+            custom_name = "{} (Block {})".format(rec.code, rec.block_id.code)
             res.append((rec.id, custom_name))
         return res
-
-class PropertyLandUsage(models.Model):
-    _name = 'property.land.usage'
-    _description = 'Property Usage'
-
-    code = fields.Char()
-    name = fields.Char()
-    info = fields.Text()
-
-class PropertyLandLot(models.Model):
-    _name = 'property.land.lot'
-    _description = 'Property Land Lot'
-    _rec_name = 'code'
-
-    code = fields.Char()
-    block_id = fields.Many2one('property.land.block', 'Block')
-    info = fields.Text()
 
 class PropertyLandBlock(models.Model):
     _name = 'property.land.block'
     _description = 'Property Land Block'
-    _rec_name = 'code'
 
     code = fields.Char()
     module_id = fields.Many2one('property.land.module', 'Module')
     info = fields.Text()
+
+    @api.multi
+    def name_get(self):
+        res = []
+        for rec in self:
+            custom_name = "{} (Module {})".format(rec.code, rec.module_id.code)
+            res.append((rec.id, custom_name))
+        return res
 
 class PropertyLandModule(models.Model):
     _name = 'property.land.module'
@@ -89,7 +79,7 @@ class PropertyLandModule(models.Model):
     def name_get(self):
         res = []
         for rec in self:
-            custom_name = "{} - {}".format(rec.code, rec.name)
+            custom_name = "{} ({})".format(rec.code, rec.name)
             res.append((rec.id, custom_name))
         return res
 
@@ -101,13 +91,21 @@ class PropertyLandZone(models.Model):
     name = fields.Char()
     info = fields.Text()
 
-    @api.multi
-    def name_get(self):
-        res = []
-        for rec in self:
-            custom_name = "{} - {}".format(rec.code, rec.name)
-            res.append((rec.id, custom_name))
-        return res
+class PropertyLandType(models.Model):
+    _name = 'property.land.type'
+    _description = 'Property Land Type'
+
+    code = fields.Char()
+    name = fields.Char()
+    info = fields.Text()
+
+class PropertyLandUsage(models.Model):
+    _name = 'property.land.usage'
+    _description = 'Property Usage'
+
+    code = fields.Char()
+    name = fields.Char()
+    info = fields.Text()
 
 class PropertyLandStage(models.Model):
     _name = 'property.land.stage'
