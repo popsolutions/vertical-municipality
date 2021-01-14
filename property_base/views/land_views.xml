@@ -14,8 +14,8 @@
             <field name="name"/>
             <field name="owner_id"/>
             <field name="module_id"/>
-            <field name="block_id"/>
-            <field name="lot_id"/>
+            <field name="block_id" domain="[('module_id', '=', module_id)]"/>
+            <field name="lot_id" domain="[('block_id', '=', block_id)]"/>
             <field name="zone_id"/>
             <field name="type_id"/>
             <field name="usage_id"/>
