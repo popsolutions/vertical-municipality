@@ -26,6 +26,13 @@ class PropertyLand(models.Model):
                                         rec.block_id.code,
                                         rec.lot_id.code)
 
+    @api.onchange('module_id')
+    def _onchange_module_id(self):
+        self.block_id = self.lot_id = None
+
+    @api.onchange('block_id')
+    def _onchange_block_id(self):
+        self.lot_id = None
 
 class PropertyLandType(models.Model):
     _name = 'property.land.type'
