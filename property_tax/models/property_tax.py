@@ -12,7 +12,7 @@ class PropertyTaxLines(models.Model):
 class PropertyTax(models.Model):
     _name = 'property.tax'
 
-    name = fields.Char(compute='_compute_name')
+    name = fields.Char(compute='_compute_name', store=True)
     date = fields.Datetime(default=fields.Datetime.now)
     land_id = fields.Many2one('property.land', 'Land') # Land represent the client account. o2m in land
     amount_total = fields.Float()

@@ -26,7 +26,9 @@
 
     # always loaded
     'data': [
-        'data/products.xml'
+        'views/property_tax_views.xml',
+        'security/ir.model.access.csv',
+        'data/products.xml',
     ],
     # only loaded in demonstration mode
     'demo': [
