@@ -12,7 +12,8 @@ class PropertyTaxLines(models.Model):
 class PropertyTax(models.Model):
     _name = 'property.tax'
 
-    date = fields.Datetime()
+    name = fields.Char(compute='_compute_name')
+    date = fields.Datetime(default=fields.Datetime.now)
     land_id = fields.Many2one('property.land', 'Land') # Land represent the client account. o2m in land
     amount_total = fields.Float()
     tax_line_ids = fields.One2many('property.tax.line', 'tax_id', 'Tax Details')
@@ -28,13 +29,17 @@ class PropertyTax(models.Model):
         +  CONTRIBUIÇÃO MÍNIMA.
     """
 
+    @api.depends('date', 'land_id')
+    def _compute_name(self):
+        for rec in self:
+            rec.name = "{}/{}".format(
+                rec.date.strftime('%m-%Y'),
+                rec.land_id.name)
+
     def _get_formula(self):
         # get it from ir.parameters
-        # return "(area_exclusiva_do_lote * coeficiente_da_zona_de_localizacao " \
-        #        "* valor_fixo * indexador_do_mes * no_de_pavimentos " \
-        #        "* taxa_de_ocupacao) + contribuicao_minima"
-
         return "(area_exclusiva_do_lote * coeficiente_da_zona_de_localizacao " \
+               "* valor_fixo * indexador_do_mes * no_de_pavimentos " \
                "* taxa_de_ocupacao) + contribuicao_minima"
 
     def _get_tax_amount_and_lines(self, land_id, formula):
@@ -61,7 +66,7 @@ class PropertyTax(models.Model):
         return eval(formula), lines
 
 
-
+    @api.multi
     def create_batch_land_taxes(self):
         land_ids = self.env['property.land'].search([], limit=10) # ToDo: Remove the limit
         formula = self._get_formula()

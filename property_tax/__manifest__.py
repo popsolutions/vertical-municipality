@@ -26,6 +26,7 @@
 
     # always loaded
     'data': [
+        'data/products.xml'
     ],
     # only loaded in demonstration mode
     'demo': [
