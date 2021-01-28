@@ -1,5 +1,6 @@
 import re
 from odoo import api, fields, models
+from odoo.exceptions import UserError
 
 
 class PropertyTaxLines(models.Model):
@@ -23,12 +24,6 @@ class PropertyTax(models.Model):
     invoice_id = fields.Many2one('account.invoice', 'Invoice', help="Invoice where this tax was processed")
     formula = fields.Text(help="Formula used to compute the tax. For reference only")
 
-    """
-    ÁREA EXCLUSIVA DO LOTE x COEFICIENTE  DA ZONA DE LOCALIZAÇÃO x VALOR FIXO 
-        x INDEXADOR DO MÊS x No. DE  PAVIMENTOS x TAXA DE OCUPAÇÃO = VALOR
-        +  CONTRIBUIÇÃO MÍNIMA.
-    """
-
     @api.depends('date', 'land_id')
     def _compute_name(self):
         for rec in self:
@@ -37,26 +32,25 @@ class PropertyTax(models.Model):
                 rec.land_id.name)
 
     def _get_formula(self):
-        # get it from ir.parameters
-        return "(area_exclusiva_do_lote * coeficiente_da_zona_de_localizacao " \
-               "* valor_fixo * indexador_do_mes * no_de_pavimentos " \
-               "* taxa_de_ocupacao) + contribuicao_minima"
+        return self.env['ir.config_parameter'].sudo().get_param('property_tax.formula')
 
     def _get_tax_amount_and_lines(self, land_id, formula):
-        """
-        ÁREA EXCLUSIVA DO LOTE x COEFICIENTE  DA ZONA DE LOCALIZAÇÃO x VALOR FIXO
-            x INDEXADOR DO MÊS x No. DE  PAVIMENTOS x TAXA DE OCUPAÇÃO = VALOR
-            +  CONTRIBUIÇÃO MÍNIMA.
-        """
+
+        get_param = self.env['ir.config_parameter'].sudo().get_param
 
         area_exclusiva_do_lote = 1.1
         coeficiente_da_zona_de_localizacao = 2.2
-        valor_fixo = 3.3
+        fixed_value = float(get_param('property_tax.fixed_value'))
         indexador_do_mes = 4.4
         no_de_pavimentos = 5.5
         taxa_de_ocupacao = 6.6
-        contribuicao_minima = 7.7
+        minimal_contribution = float(get_param('property_tax.minimal_contribution'))
 
+        if not (fixed_value and minimal_contribution):
+            raise UserError('You must configure settings values for Property Taxes')
+
+        # Keep record of all variables and their values used in the formula
+        # Look in property.tax.line
         variables_used = re.findall(r"[\w']+", formula)
         lines = []
         for var in variables_used:

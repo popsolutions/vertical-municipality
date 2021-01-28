@@ -27,6 +27,7 @@
     # always loaded
     'data': [
         'views/property_tax_views.xml',
+        'views/res_config_settings_views.xml',
         'security/ir.model.access.csv',
         'data/products.xml',
     ],
