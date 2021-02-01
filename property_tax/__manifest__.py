@@ -30,6 +30,7 @@
         'views/res_config_settings_views.xml',
         'security/ir.model.access.csv',
         'data/products.xml',
+        'data/ir_cron.xml',
     ],
     # only loaded in demonstration mode
     'demo': [

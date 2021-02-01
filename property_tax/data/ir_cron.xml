@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <record model="ir.cron" id="_cron_process_municipality_services">
+    <field name="name">Process Batch Property Taxes</field>
+    <field name="model_id" ref="property_tax.model_property_tax"/>
+    <field name="state">code</field>
+    <field name="code">model.create_batch_land_taxes()</field>
+    <field name="user_id" ref="base.user_root"/>
+    <field name="interval_number">10</field> <!-- To decide clearly -->
+    <field name="interval_type">minutes</field>
+    <field name="numbercall">-1</field>
+    <field name="active" eval="False"/>
+  </record>
+</odoo>
