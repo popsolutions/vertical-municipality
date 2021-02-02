@@ -42,9 +42,9 @@ class PropertyTax(models.Model):
         building_type = self.env['property.land.type'].search([('code', '=', 'P')])
         coefficient = land_id.type_id == building_type \
                       and land_id.module_id.coefficient_building or land_id.module_id.coefficient_house
-        area_exclusiva_do_lote = 1.1
+        exclusive_area = land_id.exclusive_area
         fixed_value = float(get_param('property_tax.fixed_value'))
-        indexador_do_mes = 4.4
+        monthly_index = float(get_param('property_tax.monthly_index'))
         pavement_qty = land_id.module_id.pavement_qty
         occupation_rate = land_id.module_id.occupation_rate
         minimal_contribution = float(get_param('property_tax.minimal_contribution'))

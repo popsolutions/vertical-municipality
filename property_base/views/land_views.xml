@@ -31,6 +31,7 @@
               <field name="stage_id"/>
             </group>
             <group string="Other"  col="4" colspan="2">
+              <field name="exclusive_area"/>
               <field name="number"/>
               <field name="zip"/>
               <field name="address" colspan="4"/>
@@ -56,6 +57,7 @@
         <field name="type_id"/>
         <field name="usage_id"/>
         <field name="stage_id"/>
+        <field name="exclusive_area"/>
         <field name="address"/>
         <field name="number"/>
         <field name="zip"/>

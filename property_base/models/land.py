@@ -13,6 +13,7 @@ class PropertyLand(models.Model):
     block_id = fields.Many2one('property.land.block', 'Block')
     lot_id = fields.Many2one('property.land.lot', 'Lot')
     zone_id = fields.Many2one('property.land.zone', 'Zone', related='module_id.zone_id')
+    exclusive_area = fields.Float()
     address = fields.Text()
     number = fields.Integer()
     zip = fields.Integer()

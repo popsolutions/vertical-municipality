@@ -38,6 +38,13 @@
                                         </div>
                                         <field name="property_tax_minimal_contribution"/>
                                     </div>
+                                    <div class="row mt8">
+                                        <label for="property_tax_monthly_index"/>
+                                        <div class="text-muted" id="property_tax_monthly_index">
+                                            Set HERE an explanation about what Monthly Index means
+                                        </div>
+                                        <field name="property_tax_monthly_index"/>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -48,10 +55,10 @@
                                     <div class="row mt8">
                                         <label for="property_tax_formula"/>
                                         <div class="text-muted" id="property_tax_formula">
-                                            <br/>area_exclusiva_do_lote: Explain <br/>
+                                            <br/>exclusive_area: Explain <br/>
                                             coefficient: Explain <br/>
                                             fixed_value: Explain <br/>
-                                            indexador_do_mes: Explain <br/>
+                                            monthly_index: Explain <br/>
                                             pavement_qty: Explain <br/>
                                             occupation_rate: Explain <br/>
                                             minimal_contribution: Explain <br/>
