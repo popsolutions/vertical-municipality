@@ -49,11 +49,11 @@
                                         <label for="property_tax_formula"/>
                                         <div class="text-muted" id="property_tax_formula">
                                             <br/>area_exclusiva_do_lote: Explain <br/>
-                                            coeficiente_da_zona_de_localizacao: Explain <br/>
+                                            coefficient: Explain <br/>
                                             fixed_value: Explain <br/>
                                             indexador_do_mes: Explain <br/>
-                                            no_de_pavimentos: Explain <br/>
-                                            taxa_de_ocupacao: Explain <br/>
+                                            pavement_qty: Explain <br/>
+                                            occupation_rate: Explain <br/>
                                             minimal_contribution: Explain <br/>
                                         </div>
                                         <field name="property_tax_formula" widget="text" class="col-lg-8"/>

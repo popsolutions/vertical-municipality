@@ -38,12 +38,15 @@ class PropertyTax(models.Model):
 
         get_param = self.env['ir.config_parameter'].sudo().get_param
 
+        # building_type = self.env.ref('property_base.type_building')
+        building_type = self.env['property.land.type'].search([('code', '=', 'P')])
+        coefficient = land_id.type_id == building_type \
+                      and land_id.module_id.coefficient_building or land_id.module_id.coefficient_house
         area_exclusiva_do_lote = 1.1
-        coeficiente_da_zona_de_localizacao = 2.2
         fixed_value = float(get_param('property_tax.fixed_value'))
         indexador_do_mes = 4.4
-        no_de_pavimentos = 5.5
-        taxa_de_ocupacao = 6.6
+        pavement_qty = land_id.module_id.pavement_qty
+        occupation_rate = land_id.module_id.occupation_rate
         minimal_contribution = float(get_param('property_tax.minimal_contribution'))
 
         if not (fixed_value and minimal_contribution):

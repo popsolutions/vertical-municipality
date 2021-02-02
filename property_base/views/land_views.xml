@@ -177,6 +177,10 @@
               <field name="code"/>
               <field name="name"/>
               <field name="zone_id"/>
+              <field name="coefficient_house"/>
+              <field name="coefficient_building"/>
+              <field name="pavement_qty"/>
+              <field name="occupation_rate"/>
               <field name="info" colspan="4"/>
           </group>
         </sheet>
@@ -193,6 +197,10 @@
         <field name="code"/>
         <field name="name"/>
         <field name="zone_id"/>
+        <field name="coefficient_house"/>
+        <field name="coefficient_building"/>
+        <field name="pavement_qty"/>
+        <field name="occupation_rate"/>
         <field name="info"/>
       </tree>
     </field>

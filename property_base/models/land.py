@@ -73,6 +73,10 @@ class PropertyLandModule(models.Model):
     code = fields.Char()
     name = fields.Char()
     zone_id = fields.Many2one('property.land.zone', 'Zone')
+    coefficient_house = fields.Float()
+    coefficient_building = fields.Float()
+    pavement_qty = fields.Float()
+    occupation_rate = fields.Integer()
     info = fields.Text()
 
     @api.multi
