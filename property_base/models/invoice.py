@@ -4,6 +4,8 @@ from odoo import api, fields, models
 class AccountInvoice(models.Model):
     _inherit = 'account.invoice'
 
+    land_id = fields.Many2one('property.land', string='Land')
+
     @api.multi
     def _get_process_methods_list(self):
         """Return the list of methods to invoke in order to

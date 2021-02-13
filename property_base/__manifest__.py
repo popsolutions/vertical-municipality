@@ -27,6 +27,7 @@
     'data': [
         'views/land_views.xml',
         'views/res_partner_views.xml',
+        'views/invoice_views.xml',
         'security/ir.model.access.csv',
         'data/ir_cron.xml',
         # 'views/templates.xml',

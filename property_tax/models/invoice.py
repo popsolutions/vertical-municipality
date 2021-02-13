@@ -18,23 +18,24 @@ class AccountInvoice(models.Model):
         """Main method that will be executed by the cron job
         and will create all of invoices from their pending property taxes"""
         product_id = self.env.ref('property_tax.product_property_tax')
-        account_id = product_id.product_tmpl_id.get_product_accounts()['income']
+        account_id = product_id.product_tmpl_id.get_product_accounts()[
+            'income']
 
-        property_tax_ids = self.env['property.tax'].search([('state', 'not in', ['processed'])])
+        property_tax_ids = self.env['property.tax'].search(
+            [('state', 'not in', ['processed'])])
+        inv_ids = self.search([('land_id', '!=', False),
+                               ('state', 'not in', ['in_payment',
+                                                    'paid',
+                                                    'cancel'])])
+        inv_land_ids = inv_ids.mapped('land_id').ids
 
         for p_tax in property_tax_ids:
-            inv_id = self.search([('partner_id', '=', p_tax.land_id.owner_id.id),
-                                  ('state', 'not in', ['in_payment', 'paid', 'cancel']),
-                                  ])
-            if not inv_id:
-                self._create_property_tax_customer_invoice(p_tax, product_id, account_id)
-
-
-        #get all non-processed taxes
-            #  self.env[property.land.tax].search([('state', 'not in', ['processed'])])
-        #create_invoices_lines
-        #mark them as processed
-        # _logger.info("\n\n TEST Land Tax \n")
+            if p_tax.land_id.id not in inv_land_ids:
+                self._create_property_tax_customer_invoice(
+                    p_tax, product_id, account_id)
+            # else:
+                #TODO: Add new lines to invoice
+            p_tax.state = 'processed'
 
     @api.multi
     def _create_property_tax_customer_invoice(self, p_tax, product_id, account_id):
@@ -51,6 +52,7 @@ class AccountInvoice(models.Model):
             'account_id': p_tax.land_id.owner_id.property_account_receivable_id.id,
             'partner_id': p_tax.land_id.owner_id.id,
             'origin': p_tax.name,
+            'land_id': p_tax.land_id.id,
             'invoice_line_ids': [(0, 0, inv_line_vals)],
         }
         self.sudo().create(inv_data)
