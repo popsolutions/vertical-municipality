@@ -46,7 +46,7 @@ class PropertyTax(models.Model):
         fixed_value = float(get_param('property_tax.fixed_value'))
         monthly_index = float(get_param('property_tax.monthly_index'))
         pavement_qty = land_id.module_id.pavement_qty
-        occupation_rate = land_id.module_id.occupation_rate
+        occupation_rate = land_id.module_id.occupation_rate / 100
         minimal_contribution = float(get_param('property_tax.minimal_contribution'))
 
         if not (fixed_value and minimal_contribution):
