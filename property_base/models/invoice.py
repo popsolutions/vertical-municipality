@@ -5,6 +5,9 @@ class AccountInvoice(models.Model):
     _inherit = 'account.invoice'
 
     land_id = fields.Many2one('property.land', string='Land')
+    block_id = fields.Many2one('property.land.block', 'Block', related='land_id.block_id')
+    module_id = fields.Many2one('property.land.module', 'Module', related='land_id.module_id')
+    zone_id = fields.Many2one('property.land.zone', 'Zone', related='land_id.module_id.zone_id')
 
     @api.multi
     def _get_process_methods_list(self):

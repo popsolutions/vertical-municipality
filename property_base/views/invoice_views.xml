@@ -6,8 +6,17 @@
         <field name="model">account.invoice</field>
         <field name="inherit_id" ref="account.invoice_form"/>
         <field name="arch" type="xml">
-            <xpath expr="//page[@name='other_info']//field[@name='origin']" position="after">
-                <field name="land_id"/>
+            <xpath expr="//page[@name='other_info']" position="after">
+            <page name="name" string="Property">
+                <group col="2">
+                    <field name="land_id"/>
+                    <field name="block_id"/>
+                    <field name="module_id"/>
+                    <field name="zone_id"/>
+                </group>
+            </page>
+
+
             </xpath>
         </field>
     </record>
