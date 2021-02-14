@@ -3,3 +3,4 @@
 from . import land
 from . import res_partner
 from . import invoice
+from . import wizard
