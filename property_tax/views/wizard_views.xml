@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record model="ir.ui.view" id="property_tax_wizard_form_view">
+        <field name="name">property.tax.wizard.form</field>
+        <field name="model">property.tax.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Create Property Taxes">
+                <group>
+                    <div>Click on <strong>Create Taxes</strong> to process this month's taxes</div>
+                </group>
+                <footer>
+                   <button name="process_batch_taxes" type="object"
+                                string="Create Taxes" class="oe_highlight"/>
+                    or
+                    <button special="cancel" string="Cancel"/>
+                </footer>
+
+            </form>
+        </field>
+    </record>
+
+    <record id="property_tax_wizard" model="ir.actions.act_window">
+        <field name="name">Create Batch Taxes</field>
+        <field name="res_model">property.tax.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <!-- <field name="binding_model_id" ref="model_property_tax"/> -->
+    </record>
+
+    <menuitem
+        id="property_tax_wizard_menu"
+        name="Create Batch Taxes"
+        action="property_tax_wizard"
+        parent="property_base.property_wizards_menu"
+        sequence="20"/>
+
+</odoo>

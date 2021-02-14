@@ -367,10 +367,13 @@
 
   <menuitem name="Property Management" id="root_menu" sequence="1"/>
     <menuitem name="Property" id="property_menu" parent="root_menu" sequence="10"/>
-    <menuitem name="Land" id="property_land_menu" parent="property_menu" action="property_land_action" sequence="10"/>
-    <menuitem name="Module" id="property_land_module_menu" parent="property_menu" action="property_land_module_action" sequence="20"/>
-    <menuitem name="Block" id="property_land_block_menu" parent="property_menu" action="property_land_block_action" sequence="30"/>
-    <menuitem name="Lot" id="property_land_lot_menu" parent="property_menu" action="property_land_lot_action" sequence="40"/>
+      <menuitem name="Land" id="property_land_menu" parent="property_menu" action="property_land_action" sequence="10"/>
+      <menuitem name="Module" id="property_land_module_menu" parent="property_menu" action="property_land_module_action" sequence="20"/>
+      <menuitem name="Block" id="property_land_block_menu" parent="property_menu" action="property_land_block_action" sequence="30"/>
+      <menuitem name="Lot" id="property_land_lot_menu" parent="property_menu" action="property_land_lot_action" sequence="40"/>
+
+    <menuitem name="Wizards" id="property_wizards_menu" parent="root_menu" sequence="80"/>
+
 
     <menuitem name="Settings" id="property_settings_menu" parent="root_menu" sequence="99"/>
       <menuitem name="Zone" id="property_land_zone_menu" parent="property_settings_menu" action="property_land_zone_action" sequence="10"/>

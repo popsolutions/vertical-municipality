@@ -28,6 +28,7 @@
     'data': [
         'views/property_tax_views.xml',
         'views/res_config_settings_views.xml',
+        'views/wizard_views.xml',
         'security/ir.model.access.csv',
         'data/products.xml',
         'data/ir_cron.xml',
