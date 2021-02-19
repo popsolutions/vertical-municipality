@@ -65,7 +65,7 @@ class PropertyTax(models.Model):
 
     @api.multi
     def create_batch_land_taxes(self):
-        land_ids = self.env['property.land'].search([], limit=10) # ToDo: Remove the limit
+        land_ids = self.env['property.land'].search([])
         formula = self._get_formula()
         for land in land_ids:
             amount, lines = self._get_tax_amount_and_lines(land, formula)
