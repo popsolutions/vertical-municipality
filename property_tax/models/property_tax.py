@@ -40,8 +40,7 @@ class PropertyTax(models.Model):
 
         # building_type = self.env.ref('property_base.type_building')
         building_type = self.env['property.land.type'].search([('code', '=', 'P')])
-        coefficient = land_id.type_id == building_type \
-                      and land_id.module_id.coefficient_building or land_id.module_id.coefficient_house
+        coefficient = land_id.module_id.coefficient
         exclusive_area = land_id.exclusive_area
         fixed_value = float(get_param('property_tax.fixed_value'))
         monthly_index = float(get_param('property_tax.monthly_index'))

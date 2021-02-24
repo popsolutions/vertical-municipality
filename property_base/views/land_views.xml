@@ -179,8 +179,7 @@
               <field name="code"/>
               <field name="name"/>
               <field name="zone_id"/>
-              <field name="coefficient_house"/>
-              <field name="coefficient_building"/>
+              <field name="coefficient"/>
               <field name="pavement_qty"/>
               <field name="occupation_rate"/>
               <field name="info" colspan="4"/>
@@ -199,8 +198,7 @@
         <field name="code"/>
         <field name="name"/>
         <field name="zone_id"/>
-        <field name="coefficient_house"/>
-        <field name="coefficient_building"/>
+        <field name="coefficient"/>
         <field name="pavement_qty"/>
         <field name="occupation_rate"/>
         <field name="info"/>
