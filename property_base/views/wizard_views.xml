@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record model="ir.ui.view" id="property_invoice_wizard_form_view">
+        <field name="name">property.invoice.wizard.form</field>
+        <field name="model">property.invoice.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Create Property Invoices">
+                <group>
+                    <div>Click on <strong>Create Invoices</strong> to process this month's Invoices</div>
+                </group>
+                <footer>
+                   <button name="process_batch_invoices" type="object"
+                                string="Create Invoices" class="oe_highlight"/>
+                    or
+                    <button special="cancel" string="Cancel"/>
+                </footer>
+
+            </form>
+        </field>
+    </record>
+
+    <record id="property_invoices_wizard" model="ir.actions.act_window">
+        <field name="name">Create Batch invoices</field>
+        <field name="res_model">property.invoice.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem
+        id="property_invoices_wizard_menu"
+        name="Create Batch Invoices"
+        action="property_invoices_wizard"
+        parent="property_base.property_wizards_menu"
+        sequence="90"/>
+
+</odoo>

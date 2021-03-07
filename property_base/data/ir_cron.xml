@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <record model="ir.cron" id="_cron_process_municipality_services">
+    <field name="name">Process municipality services (create inv. lines)</field>
+    <field name="model_id" ref="account.model_account_invoice"/>
+    <field name="state">code</field>
+    <field name="code">model._cron_process_municipality_services()</field>
+    <field name="user_id" ref="base.user_root"/>
+    <field name="interval_number">10</field> <!-- To decide clearly -->
+    <field name="interval_type">minutes</field>
+    <field name="numbercall">-1</field>
+    <field name="active" eval="False"/>
+  </record>
+</odoo>

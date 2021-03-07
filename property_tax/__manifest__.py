@@ -1,14 +1,15 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "Property Base",
+    'name': "Property Tax",
 
     'summary': """
-        Base Module to manage land and properties definitions
+        Module to charge the Tax on land properties
         """,
 
     'description': """
-        Set of Odoo12 module to manage land property taxes and other charges
-        like Water consumption, urban waste management, etc.
+        With this module you can process the Taxes for land property.
+        This module will add invoice lines for this concept when the
+        cron job is executed.
     """,
 
     'author': "PopSolutions",
@@ -21,17 +22,16 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['account'],
+    'depends': ['property_base'],
 
     # always loaded
     'data': [
-        'views/land_views.xml',
-        'views/res_partner_views.xml',
-        'views/invoice_views.xml',
+        'views/property_tax_views.xml',
+        'views/res_config_settings_views.xml',
         'views/wizard_views.xml',
         'security/ir.model.access.csv',
+        'data/products.xml',
         'data/ir_cron.xml',
-        # 'views/templates.xml',
     ],
     # only loaded in demonstration mode
     'demo': [

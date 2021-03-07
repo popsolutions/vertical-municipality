@@ -1,0 +1,72 @@
+<odoo>
+    <data>
+
+<!--        Property Tax -->
+
+        <record model="ir.ui.view" id="form_property_tax_view">
+            <field name="name">form.property.tax</field>
+            <field name="model">property.tax</field>
+            <field name="priority" eval="16"/>
+            <field name="arch" type="xml">
+                <form string="Property Tax Form">
+                    <sheet>
+                        <group>
+                            <field name="name"/>
+                            <field name="date"/>
+                            <field name="land_id"/>
+                            <field name="amount_total"/>
+                            <field name="tax_line_ids">
+                                <tree>
+                                    <field name="name"/>
+                                    <field name="value"/>
+                                </tree>
+                            </field>
+                            <field name="state"/>
+                            <field name="invoice_id"/>
+                            <field name="formula"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="tree_property_tax_view">
+            <field name="name">tree.property.tax</field>
+            <field name="model">property.tax</field>
+            <field name="priority" eval="16"/>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="date"/>
+                    <field name="land_id"/>
+                    <field name="amount_total"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="search_property_tax_view">
+            <field name="name">search.property.tax</field>
+            <field name="model">property.tax</field>
+            <field name="priority" eval="16"/>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name"/>
+                    <field name="date"/>
+                    <field name="land_id"/>
+                    <field name="state"/>
+                    <filter string="Current Month" name="current_month" domain="[('date','&lt;',(context_today()+relativedelta(months=1)).strftime('%%Y-%%m-01')), ('date','&gt;=',time.strftime('%%Y-%%m-01'))]"/>
+                    <filter string="Prev Month" name="prev_month" domain="[('date','&gt;=',(context_today()-relativedelta(months=1)).strftime('%%Y-%%m-01')),('date','&lt;',time.strftime('%%Y-%%m-01'))]"/>
+                </search>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="property_tax_action">
+            <field name="name">Property Tax</field>
+            <field name="res_model">property.tax</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem name="Property Tax" id="property_tax_menu" parent="property_base.root_menu" sequence="10" action="property_tax_action"/>
+    </data>
+</odoo>

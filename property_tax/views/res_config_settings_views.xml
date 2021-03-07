@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="res_config_settings_view_form" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.crm</field>
+        <field name="model">res.config.settings</field>
+        <field name="priority" eval="5"/>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[hasclass('settings')]" position="inside">
+                <div class="app_settings_block" data-string="Property" string="Property" data-key="property_base">
+                    <h2>Property Tax</h2>
+<!--                    <div class="row mt16 o_settings_container">-->
+<!--                        <div class="col-lg-6 o_setting_box">-->
+<!--                            <div class="o_setting_left_pane">-->
+<!--                            </div>-->
+<!--                            <div class="o_setting_right_pane">-->
+<!--                                -->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+                    <div class="row mt16 o_settings_container">
+                        <div class="col-lg-6 o_setting_box">
+                            <div class="o_setting_left_pane"/>
+                            <div class="o_setting_right_pane">
+                                <div class="content-group ml16">
+                                    <div class="row mt16">
+                                        <label for="property_tax_fixed_value"/>
+                                        <div class="text-muted" id="property_tax_fixed_value">
+                                            Set HERE an explanation about what Fixed Value means
+                                        </div>
+                                        <field name="property_tax_fixed_value"/>
+                                    </div>
+                                    <div class="row mt8">
+                                        <label for="property_tax_minimal_contribution"/>
+                                        <div class="text-muted" id="property_tax_minimal_contribution">
+                                            Set HERE an explanation about what Minimal Contribution means
+                                        </div>
+                                        <field name="property_tax_minimal_contribution"/>
+                                    </div>
+                                    <div class="row mt8">
+                                        <label for="property_tax_monthly_index"/>
+                                        <div class="text-muted" id="property_tax_monthly_index">
+                                            Set HERE an explanation about what Monthly Index means
+                                        </div>
+                                        <field name="property_tax_monthly_index"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 o_setting_box">
+                            <div class="o_setting_left_pane"/>
+                            <div class="o_setting_right_pane">
+                                <div class="content-group ml16">
+                                    <div class="row mt8">
+                                        <label for="property_tax_formula"/>
+                                        <div class="text-muted" id="property_tax_formula">
+                                            <br/>exclusive_area: Explain <br/>
+                                            coefficient: Explain <br/>
+                                            fixed_value: Explain <br/>
+                                            monthly_index: Explain <br/>
+                                            pavement_qty: Explain <br/>
+                                            occupation_rate: Explain <br/>
+                                            minimal_contribution: Explain <br/>
+                                        </div>
+                                        <field name="property_tax_formula" widget="text" class="col-lg-8"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+<!--                    <div class="row mt16 o_settings_container">-->
+<!--                            <div class="col-12 col-lg-6 o_setting_box" title="These taxes are set in any new product created.">-->
+<!--                                <div class="o_setting_left_pane"/>-->
+<!--                                <div class="o_setting_right_pane">-->
+<!--                                    <span class="o_form_label">Default Taxes</span>-->
+<!--                                    <span class="fa fa-lg fa-building-o" title="Values set here are company-specific." aria-label="Values set here are company-specific." groups="base.group_multi_company" role="img"/>-->
+<!--                                    <div class="text-muted">-->
+<!--                                        Default taxes applied to local transactions-->
+<!--                                    </div>-->
+<!--                                    <div class="content-group">-->
+<!--                                        <div class="row mt16">-->
+<!--                                            <label string="Sales Tax" for="sale_tax_id" class="col-lg-3 o_light_label"/>-->
+<!--                                            <field name="sale_tax_id" domain="[('type_tax_use', 'in', ('sale', 'all')), ('company_id', '=', company_id)]"/>-->
+<!--                                        </div>-->
+<!--                                        <div class="row">-->
+<!--                                            <label string="Purchase Tax" for="purchase_tax_id" class="col-lg-3 o_light_label"/>-->
+<!--                                            <field name="purchase_tax_id" domain="[('type_tax_use', 'in', ('purchase', 'all')), ('company_id', '=', company_id)]"/>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+
+
+
+<!--                    <div class="row mt16 o_settings_container">-->
+<!--                        <div class="col-12 col-lg-6 o_setting_box" id="crm_lead"-->
+<!--                            title="Use leads if you need a qualification step before creating an opportunity or a customer. It can be a business card you received, a contact form filled in your website, or a file of unqualified prospects you import, etc. Once qualified, the lead can be converted into a business opportunity and/or a new customer in your address book.">-->
+<!--                            <div class="o_setting_left_pane">-->
+<!--                                <field name="group_use_lead"/>-->
+<!--                            </div>-->
+<!--                            <div class="o_setting_right_pane">-->
+<!--                                <label for="group_use_lead"/>-->
+<!--                                <div class="text-muted">-->
+<!--                                    Add a qualification step before creating an opportunity-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                        <div class="col-12 col-lg-6 o_setting_box" id="crm_lead"-->
+<!--                                attrs="{'invisible': [('group_use_lead','=',False)]}"-->
+<!--                                title="Emails received to that address generate new leads not assigned to any Sales Team yet. This can be made when converting them into opportunities. Incoming emails can be automatically assigned to specific Sales Teams. To do so, set an email alias on the Sales Team."-->
+<!--                                groups="base.group_no_one">-->
+<!--                            <div class="o_setting_left_pane">-->
+<!--                                <field name="generate_lead_from_alias"/>-->
+<!--                            </div>-->
+<!--                            <div class="o_setting_right_pane">-->
+<!--                                <label for="generate_lead_from_alias" string="Manual Assignation of Incoming Emails"/>-->
+<!--                                <div class="text-muted">-->
+<!--                                    Generate leads from incoming emails and assign them-->
+<!--                                    to a Sales Team manually-->
+<!--                                </div>-->
+<!--                                <div class="content-group" attrs="{'invisible': [('generate_lead_from_alias','=',False)]}">-->
+<!--                                    <div class="mt16">-->
+<!--                                        <label for="crm_alias_prefix" string="Alias" class="o_light_label"/>-->
+<!--                                        <field name="crm_alias_prefix" class="oe_inline"-->
+<!--                                            attrs="{'required': [('generate_lead_from_alias', '=', True)]}"/>-->
+<!--                                        <label for="alias_domain" string="@"/>-->
+<!--                                        <field name="alias_domain" readonly="1" class="oe_inline"/>-->
+<!--                                    </div>-->
+<!--                                    <div attrs="{'invisible': [('alias_domain', 'not in', ['localhost', '', False])]}">-->
+<!--                                        <button type="action"-->
+<!--                                            name="base_setup.action_general_configuration"-->
+<!--                                            string="Use an External Email Server" icon="fa-arrow-right" class="oe_link"/>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                    <div class="row mt16 o_settings_container">-->
+<!--                        <div class="col-lg-6 o_setting_box">-->
+<!--                            <div class="o_setting_left_pane">-->
+<!--                                <field name="module_crm_reveal"/>-->
+<!--                            </div>-->
+
+<!--                            <div class="o_setting_right_pane crm_reveal_settings">-->
+<!--                                <label string="Website Lead Generation" for="module_crm_reveal"/>-->
+<!--                                <div class="text-muted">-->
+<!--                                    Convert visitors of your website into leads in the CRM. We do data enrichment based on their IP address.-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+
+<!--                    <h2>Contacts</h2>-->
+<!--                    <div class="row mt16 o_settings_container">-->
+<!--                        <div class="col-lg-6 o_setting_box">-->
+<!--                            <div class="o_setting_left_pane">-->
+<!--                                <field name="module_crm_phone_validation"/>-->
+<!--                            </div>-->
+<!--                            <div class="o_setting_right_pane">-->
+<!--                                <label for="module_crm_phone_validation"/>-->
+<!--                                <div class="text-muted" id="module_crm_phone_validation">-->
+<!--                                    Format phone numbers based on national conventions-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="property_tax_config_settings_action" model="ir.actions.act_window">
+        <field name="name">Settings</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">res.config.settings</field>
+        <field name="view_id" ref="res_config_settings_view_form"/>
+        <field name="view_mode">form</field>
+        <field name="target">inline</field>
+        <field name="context">{'module' : 'property_base'}</field>
+    </record>
+
+    <menuitem id="property_tax_config_settings_menu"
+            name="Settings"
+            parent="property_base.property_settings_menu"
+            action="property_tax_config_settings_action"
+            groups="base.group_system"
+            sequence="0"/>
+</odoo>
