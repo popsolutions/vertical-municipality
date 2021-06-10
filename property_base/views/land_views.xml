@@ -30,11 +30,17 @@
               <field name="usage_id"/>
               <field name="stage_id"/>
             </group>
-            <group string="Other"  col="4" colspan="2">
+            <group string="Other" col="4" colspan="2">
+              <field name="pavement_qty"/>
               <field name="exclusive_area"/>
               <field name="number"/>
               <field name="zip"/>
               <field name="address" colspan="4"/>
+            </group>
+            <group string="Rates" col="4" colspan="2">
+              <field name="coefficient"/>
+              <field name="occupation_rate"/>
+              <field name="discount"/>
             </group>
           </group>
         </sheet>
@@ -57,6 +63,7 @@
         <field name="type_id"/>
         <field name="usage_id"/>
         <field name="stage_id"/>
+        <field name="pavement_qty"/>
         <field name="exclusive_area"/>
         <field name="address"/>
         <field name="number"/>
@@ -79,6 +86,7 @@
           <field name="type_id"/>
           <field name="usage_id"/>
           <field name="stage_id"/>
+          <field name="pavement_qty"/>
           <field name="address"/>
         </search>
     </field>
@@ -331,6 +339,7 @@
           <group col="4">
             <field name="code"/>
             <field name="name"/>
+            <field name="discount"/>
             <field name="info" colspan="4"/>
           </group>
         </sheet>
@@ -346,6 +355,7 @@
       <tree string="Property Land Stage tree">
         <field name="code"/>
         <field name="name"/>
+        <field name="discount"/>
         <field name="info"/>
       </tree>
     </field>

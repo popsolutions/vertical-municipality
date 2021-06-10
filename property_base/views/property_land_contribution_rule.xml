@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2021 - TODAY, Marcel Savegnago <marcel.savegnago@gmail.com>
+     License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+
+<odoo>
+
+    <record model="ir.ui.view" id="property_land_contribution_rule_form_view">
+        <field name="name">property.land.contribution.rule.form (in property_base)</field>
+        <field name="model">property.land.contribution.rule</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <field name="state" widget="statusbar" clickable="True"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name" class="oe_edit_only" string="Rule"/>
+                        <h1><field name="name" placeholder="Describe the Contribution Rule..."/></h1>
+                    </div>
+                    <group>
+                        <field name="coefficient"/>
+                        <field name="module_ids">
+                            <tree>
+                                <field name="code"/>
+                                <field name="name"/>
+                                <field name="zone_id"/>
+                                <field name="info"/>
+                            </tree>
+                        </field>
+                        <field name="type_ids"/>
+                        <field name="stage_ids"/>
+                        <field name="occupation_rate_ids">
+                            <tree editable="bottom">
+                                <field name="pavement_qty"/>
+                                <field name="occupation_rate"/>
+                            </tree>
+                        </field>
+                    </group>
+                </sheet>
+                <div class="oe_chatter"></div>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="property_land_contribution_rule_search_view">
+        <field name="name">property.land.contribution.rule.search (in property_base)</field>
+        <field name="model">property.land.contribution.rule</field>
+        <field name="arch" type="xml">
+            <search>
+            </search>
+    </field>
+    </record>
+
+    <record model="ir.ui.view" id="property_land_contribution_rule_tree_view">
+        <field name="name">property.land.contribution.rule.tree (in property_base)</field>
+        <field name="model">property.land.contribution.rule</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="coefficient"/>
+                <field name="module_ids" widget="many2many_tags"/>
+                <field name="type_ids" widget="many2many_tags"/>
+                <field name="stage_ids" widget="many2many_tags"/>
+            </tree>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="property_land_contribution_rule_act_window">
+        <field name="name">Property Land Contribution Rule</field> <!-- TODO -->
+        <field name="res_model">property.land.contribution.rule</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[]</field>
+        <field name="context">{}</field>
+    </record>
+
+    <record model="ir.ui.menu" id="property_land_contribution_rule_menu">
+        <field name="name">Contribution Rules</field>
+        <field name="parent_id" ref="property_base.property_settings_menu"/> <!-- TODO -->
+        <field name="action" ref="property_land_contribution_rule_act_window"/>
+        <field name="sequence" eval="99"/> <!-- TODO -->
+    </record>
+
+</odoo>

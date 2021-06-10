@@ -25,6 +25,9 @@
 
     # always loaded
     'data': [
+        'security/property_land_contribution_rule_occupation_rate.xml',
+        'security/property_land_contribution_rule.xml',
+        'views/property_land_contribution_rule.xml',
         'views/land_views.xml',
         'views/res_partner_views.xml',
         'views/invoice_views.xml',

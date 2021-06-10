@@ -13,12 +13,46 @@ class PropertyLand(models.Model):
     block_id = fields.Many2one('property.land.block', 'Block')
     lot_id = fields.Many2one('property.land.lot', 'Lot')
     zone_id = fields.Many2one('property.land.zone', 'Zone', related='module_id.zone_id')
+    pavement_qty = fields.Float()
     exclusive_area = fields.Float()
     address = fields.Text()
     number = fields.Integer()
     zip = fields.Integer()
     # ToDo: attached_land_ids = m2m self
     stage_id = fields.Many2one('property.land.stage', 'Stage')
+
+    coefficient = fields.Float(compute='_compute_rate')
+    occupation_rate = fields.Float(compute='_compute_rate')
+    discount = fields.Float(related="stage_id.discount")
+
+    # TODO: implementar se o registro é ativo ou inativo
+
+    # TODO: Implementar o filtro da regra de contribuição
+    def _compute_rate(self):
+        for record in self:
+            contribution_rule_id = self.env['property.land.contribution.rule'].search(
+                [
+                    ('state', '=', 'approved'),
+
+                ],
+                limit=1,
+            )
+            occupation_rate_id = self.env['property.land.contribution.rule.occupation.rate'].search(
+                [
+                    ('contribution_rule_id', '=', contribution_rule_id.id),
+                    ('pavement_qty', '>=', record.pavement_qty )
+
+                ],
+                order='pavement_qty ASC',
+                limit=1,
+            )
+
+            record.coefficient = contribution_rule_id.coefficient
+
+            if not occupation_rate_id.occupation_rate:
+                record.occupation_rate = 100
+            else:
+                record.occupation_rate = occupation_rate_id.occupation_rate
 
     @api.depends('module_id', 'block_id', 'lot_id')
     def _compute_name(self):
@@ -117,4 +151,5 @@ class PropertyLandStage(models.Model):
 
     code = fields.Char()
     name = fields.Char()
+    discount = fields.Float(string="Discount (%)")
     info = fields.Text()
