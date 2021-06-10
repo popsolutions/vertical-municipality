@@ -74,18 +74,18 @@ class PropertyLandModule(models.Model):
     code = fields.Char()
     name = fields.Char()
     zone_id = fields.Many2one('property.land.zone', 'Zone')
-    coefficient = fields.Float()
-    pavement_qty = fields.Float()
-    occupation_rate = fields.Integer()
+    # coefficient = fields.Float()
+    # pavement_qty = fields.Float()
+    # occupation_rate = fields.Integer()
     info = fields.Text()
 
-    @api.multi
-    def name_get(self):
-        res = []
-        for rec in self:
-            custom_name = "{} ({})".format(rec.code, rec.name)
-            res.append((rec.id, custom_name))
-        return res
+    # @api.multi
+    # def name_get(self):
+    #     res = []
+    #     for rec in self:
+    #         custom_name = "{} ({})".format(rec.code, rec.name)
+    #         res.append((rec.id, custom_name))
+    #     return res
 
 class PropertyLandZone(models.Model):
     _name = 'property.land.zone'
