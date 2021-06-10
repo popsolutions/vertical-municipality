@@ -33,7 +33,9 @@ class PropertyLand(models.Model):
             contribution_rule_id = self.env['property.land.contribution.rule'].search(
                 [
                     ('state', '=', 'approved'),
-
+                    ('module_ids', 'in', record.module_id.id),
+                    ('type_ids', 'in', record.type_id.id),
+                    ('stage_ids', 'in', record.stage_id.id),
                 ],
                 limit=1,
             )
@@ -47,7 +49,8 @@ class PropertyLand(models.Model):
                 limit=1,
             )
 
-            record.coefficient = contribution_rule_id.coefficient
+            if contribution_rule_id.coefficient:
+                record.coefficient = contribution_rule_id.coefficient
 
             if not occupation_rate_id.occupation_rate:
                 record.occupation_rate = 100
