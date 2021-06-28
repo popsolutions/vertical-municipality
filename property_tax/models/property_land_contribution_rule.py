@@ -8,9 +8,12 @@ class PropertyLandContributionRule(models.Model):
 
     _name = 'property.land.contribution.rule'
     _description = 'Property Land Contribution Rule'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
 
     name = fields.Char()
-
+    active = fields.Boolean(
+        default=True
+    )
     module_ids = fields.Many2many(
         "property.land.module",
         "property_land_module_rel",
@@ -18,7 +21,6 @@ class PropertyLandContributionRule(models.Model):
         "module_id",
         "Modules",
     )
-
     type_ids = fields.Many2many(
         "property.land.type",
         "property_land_type_rel",
@@ -26,7 +28,6 @@ class PropertyLandContributionRule(models.Model):
         "type_id",
         "Types",
     )
-
     stage_ids = fields.Many2many(
         "property.land.stage",
         "property_land_stage_rel",
@@ -34,20 +35,28 @@ class PropertyLandContributionRule(models.Model):
         "stage_id",
         "Stages",
     )
-
     occupation_rate_ids = fields.One2many(
         comodel_name='property.land.contribution.rule.occupation.rate',
         inverse_name='contribution_rule_id',
         string='Occupation Rates',
     )
-
     coefficient = fields.Float()
-
     state = fields.Selection(
         string="State",
         selection=[
             ('draft', 'Draft'),
             ('approved', 'Approved'),
         ],
-        default="draft"
+        readonly=True,
+        copy=False,
+        track_visibility='onchange',
+        default='draft'
     )
+
+    @api.multi
+    def action_approve(self):
+        return self.write({'state': 'approved'})
+
+    @api.multi
+    def action_draft(self):
+        return self.write({'state': 'draft'})

@@ -12,6 +12,5 @@ class PropertyLandContributionRuleOccupationRate(models.Model):
     contribution_rule_id = fields.Many2one(
         'property.land.contribution.rule',
         string='Contribution Rule')
-
     pavement_qty = fields.Float(string="Pavement Quantity")
     occupation_rate = fields.Float(string="Occupation Rate (%)")

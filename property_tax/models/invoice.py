@@ -1,3 +1,6 @@
+# Copyright 2021 - TODAY, Marcel Savegnago <marcel.savegnago@gmail.com>
+# License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
+
 import logging
 from odoo import api, fields, models
 
@@ -5,6 +8,7 @@ _logger = logging.getLogger(__name__)
 
 
 class AccountInvoice(models.Model):
+
     _inherit = 'account.invoice'
 
     @api.multi

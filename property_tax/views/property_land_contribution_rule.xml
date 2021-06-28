@@ -10,9 +10,18 @@
         <field name="arch" type="xml">
             <form>
                 <header>
-                    <field name="state" widget="statusbar" clickable="True"/>
+                    <button name="action_approve" states="draft" type="object" string="Approve" class="btn-primary"/>
+                    <button name="action_draft" states="approved" type="object" string="Set to Draft"/>
+                    <field name="state" widget="statusbar"/>
                 </header>
                 <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="toggle_active" type="object"
+                                class="oe_stat_button" icon="fa-archive">
+                            <field name="active" widget="boolean_button"
+                                options='{"terminology": "archive"}'/>
+                        </button>
+                    </div>
                     <div class="oe_title">
                         <label for="name" class="oe_edit_only" string="Rule"/>
                         <h1><field name="name" placeholder="Describe the Contribution Rule..."/></h1>
@@ -37,7 +46,13 @@
                         </field>
                     </group>
                 </sheet>
-                <div class="oe_chatter"></div>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"
+                           widget="mail_followers"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                    <field name="message_ids" widget="mail_thread"
+                           options="{'post_refresh': 'recipients'}"/>
+                </div>
             </form>
         </field>
     </record>
@@ -48,7 +63,7 @@
         <field name="arch" type="xml">
             <search>
             </search>
-    </field>
+        </field>
     </record>
 
     <record model="ir.ui.view" id="property_land_contribution_rule_tree_view">
@@ -66,7 +81,7 @@
     </record>
 
     <record model="ir.actions.act_window" id="property_land_contribution_rule_act_window">
-        <field name="name">Property Land Contribution Rule</field> <!-- TODO -->
+        <field name="name">Property Land Contribution Rule</field>
         <field name="res_model">property.land.contribution.rule</field>
         <field name="view_mode">tree,form</field>
         <field name="domain">[]</field>
@@ -75,9 +90,9 @@
 
     <record model="ir.ui.menu" id="property_land_contribution_rule_menu">
         <field name="name">Contribution Rules</field>
-        <field name="parent_id" ref="property_base.property_settings_menu"/> <!-- TODO -->
+        <field name="parent_id" ref="property_base.property_settings_menu"/>
         <field name="action" ref="property_land_contribution_rule_act_window"/>
-        <field name="sequence" eval="99"/> <!-- TODO -->
+        <field name="sequence" eval="99"/>
     </record>
 
 </odoo>

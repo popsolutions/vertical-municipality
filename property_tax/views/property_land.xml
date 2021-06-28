@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2021 - TODAY, Marcel Savegnago <marcel.savegnago@gmail.com>
+     License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+
+<odoo>
+
+    <record model="ir.ui.view" id="property_land_form_view">
+        <field name="name">property.land.form (in property_tax)</field>
+        <field name="model">property.land</field>
+        <field name="inherit_id" ref="property_base.property_land_form_view"/>
+        <field name="arch" type="xml">
+            <header position="inside">
+                <button name="action_block" states="done" type="object" string="Suspend Tax Calculation" class="btn-warning"/>
+                <button name="action_done" states="block" type="object" string="In Progress" class="btn-primary"/>
+            </header>
+            <notebook position="inside">
+                <page name="tax_rates" string="Tax Rates">
+                    <group>
+                        <field name="coefficient"/>
+                        <field name="occupation_rate"/>
+                        <field name="is_not_taxpayer"/>
+                        <field name="alternative_contribution_tax_amount"
+                               attrs="{'invisible': [('is_not_taxpayer', '=', False)]}"/>
+                    </group>
+                </page>
+                <page name="property_taxes" string="Property Taxes">
+                    <field name="property_tax_ids" readonly="1"/>
+                </page>
+            </notebook>
+        </field>
+    </record>
+
+<!--    <record model="ir.ui.view" id="property_land_search_view">-->
+<!--        <field name="name">property.land.search (in property_tax)</field>-->
+<!--        <field name="model">property.land</field>-->
+<!--        <field name="inherit_id" ref="TODO othermodule.search_view"/>-->
+<!--        <field name="arch" type="xml">-->
+<!--            &lt;!&ndash; TODO &ndash;&gt;-->
+<!--        </field>-->
+<!--    </record>-->
+
+<!--    <record model="ir.ui.view" id="property_land_tree_view">-->
+<!--        <field name="name">property.land.tree (in property_tax)</field>-->
+<!--        <field name="model">property.land</field>-->
+<!--        <field name="inherit_id" ref="TODO othermodule.tree_view"/>-->
+<!--        <field name="arch" type="xml">-->
+<!--            &lt;!&ndash; TODO &ndash;&gt;-->
+<!--        </field>-->
+<!--    </record>-->
+
+</odoo>
