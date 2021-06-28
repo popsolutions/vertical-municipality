@@ -1,7 +1,11 @@
+# Copyright 2021 - TODAY, Marcel Savegnago <marcel.savegnago@gmail.com>
+# License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
+
 from odoo import api, fields, models
 
 
 class AccountInvoice(models.Model):
+
     _inherit = 'account.invoice'
 
     land_id = fields.Many2one('property.land', string='Land')

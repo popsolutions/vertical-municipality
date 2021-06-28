@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2021 - TODAY, Marcel Savegnago <marcel.savegnago@gmail.com>
+     License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+
+<odoo>
+    <data>
+
+        <record model="ir.ui.view" id="property_land_usage_form_view">
+            <field name="name">property.land.usage.form</field>
+            <field name="model">property.land.usage</field>
+            <field name="priority" eval="16"/>
+            <field name="arch" type="xml">
+                <form string="Property Land Usage form">
+                    <sheet>
+                        <group col="4">
+                            <field name="code"/>
+                            <field name="name"/>
+                            <field name="info" colspan="4"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="property_land_usage_tree_view">
+            <field name="name">property.land.usage.tree</field>
+            <field name="model">property.land.usage</field>
+            <field name="priority" eval="16"/>
+            <field name="arch" type="xml">
+                <tree string="Property Land Usage tree">
+                    <field name="code"/>
+                    <field name="name"/>
+                    <field name="info"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="property_land_usage_action">
+            <field name="name">Property Land Usage</field>
+            <field name="res_model">property.land.usage</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+
+    </data>
+</odoo>

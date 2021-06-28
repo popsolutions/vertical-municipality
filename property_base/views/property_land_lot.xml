@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2021 - TODAY, Marcel Savegnago <marcel.savegnago@gmail.com>
+     License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+
+<odoo>
+    <data>
+
+        <record model="ir.ui.view" id="property_land_lot_form_view">
+            <field name="name">property.land.lot.form</field>
+            <field name="model">property.land.lot</field>
+            <field name="priority" eval="16"/>
+            <field name="arch" type="xml">
+                <form string="Property Land Lot form">
+                    <sheet>
+                        <group col="4">
+                            <field name="code"/>
+                            <field name="block_id"/>
+                            <field name="info" colspan="4"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="property_land_lot_tree_view">
+            <field name="name">property.land.lot.tree</field>
+            <field name="model">property.land.lot</field>
+            <field name="priority" eval="16"/>
+            <field name="arch" type="xml">
+                <tree string="Property Land Lot tree">
+                    <field name="code"/>
+                    <field name="block_id"/>
+                    <field name="info"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="property_land_lot_action">
+            <field name="name">Property Land Lot</field>
+            <field name="res_model">property.land.lot</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+    </data>
+</odoo>
