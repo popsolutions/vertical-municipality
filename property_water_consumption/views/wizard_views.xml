@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2021 - TODAY, Marcel Savegnago <marcel.savegnago@gmail.com>
+     License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+
+<odoo>
+
+    <record model="ir.ui.view" id="property_water_consumption_wizard_form_view">
+        <field name="name">property.water.consumption.wizard.form</field>
+        <field name="model">property.water.consumption.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Create Water Consumptions">
+                <group>
+                    <div>Click on <strong>Create Water Consumptions</strong> to process this month's Water
+                        Consumptions</div>
+                </group>
+                <footer>
+                    <button name="process_batch_water_consumptions" type="object"
+                            string="Create Water Consumptions" class="oe_highlight"/>
+                    or
+                    <button special="cancel" string="Cancel"/>
+                </footer>
+
+            </form>
+        </field>
+    </record>
+
+    <record id="property_water_consumption_wizard" model="ir.actions.act_window">
+        <field name="name">Create Batch Water Consumptions</field>
+        <field name="res_model">property.water.consumption.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem
+            id="property_water_consumption_wizard_menu"
+            name="Create Batch Water Consumptions"
+            action="property_water_consumption_wizard"
+            parent="property_base.property_wizards_menu"
+            sequence="30"/>
+
+</odoo>

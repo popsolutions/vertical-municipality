@@ -1,0 +1,6 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_water_consumption_user,Property Water Consumption User,model_property_water_consumption,,1,1,1,1
+access_water_consumption_issue_user,Property Water Consumption Issue User,model_property_water_consumption_issue,,1,1,1,1
+access_water_consumption_route_user,Property Water Consumption Route User,model_property_water_consumption_route,,1,1,1,1
+access_water_consumption_computation_parameter_user,Property Water Consumption Computation Parameter User,model_property_water_consumption_computation_parameter,,1,1,1,1
+access_water_consumption_computation_parameter_line_user,Property Water Consumption Computation Parameter Line User,model_property_water_consumption_computation_parameter_line,,1,1,1,1

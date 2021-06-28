@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2021 - TODAY, Marcel Savegnago <marcel.savegnago@gmail.com>
+     License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+
+<odoo>
+
+    <record id="property_water_consumption_issue_view_form" model="ir.ui.view">
+        <field name="name">property.water.consumption.issue.view.form</field>
+        <field name="model">property.water.consumption.issue</field>
+        <field name="arch" type="xml">
+            <form string="">
+                <sheet>
+                    <group>
+                        <field name="code"/>
+                        <field name="name"/>
+                        <field name="info"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="property_water_consumption_issue_view_tree" model="ir.ui.view">
+        <field name="name">property.water.consumption.issue.view.tree</field>
+        <field name="model">property.water.consumption.issue</field>
+        <field name="arch" type="xml">
+            <tree string="">
+                <field name="code"/>
+                <field name="name"/>
+                <field name="info"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="property_water_consumption_issue_action" model="ir.actions.act_window">
+        <field name="name">Water Consumption Issues</field>
+        <field name="res_model">property.water.consumption.issue</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[]</field>
+        <field name="context">{}</field>
+    </record>
+
+</odoo>
