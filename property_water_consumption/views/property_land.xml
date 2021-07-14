@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="act_land_water_consumption" model="ir.actions.act_window">
+        <field name="name">Water Consumptions</field>
+        <field name="res_model">property.water.consumption</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{'search_default_land_id': active_id, 'default_land_id': active_id}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a Water Consumption! This Land has none.
+            </p>
+        </field>
+    </record>
+
+    <record id="property_land_form_view_inherit" model="ir.ui.view">
+        <field name="name">property.land.view.form.inherit</field>
+        <field name="model">property.land</field>
+        <field name="inherit_id" ref="property_base.property_land_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page name="water_consumption" string="Water Consumption">
+                    <group>
+                        <group>
+                            <field name="is_not_waterpayer"/>
+                            <field name="alternative_contribution_water_amount"
+                                   attrs="{'invisible': [('is_not_waterpayer', '=', False)]}"/>
+                            <field name="water_connection_date"/>
+                            <field name="water_charging_date"/>
+                            <field name="sewage_connection_date"/>
+                            <field name="sewage_charging_date"/>
+                        </group>
+                        <group>
+                            <field name="water_computation_parameter_id"/>
+                            <field name="water_consumption_route_id"/>
+                            <field name="water_consumption_meter_code"/>
+                            <field name="water_consumption_economy_qty"/>
+                            <field name="water_consumption_unit_qty"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+
+            <button name="toggle_active" position="before">
+                <button class="oe_stat_button" type="action" name="%(property_water_consumption.act_land_water_consumption)d"
+                        icon="fa-tint">
+                    <field string="Water Consumptions" name="water_consumption_count" widget="statinfo"/>
+                </button>
+            </button>
+
+        </field>
+    </record>
+
+
+</odoo>

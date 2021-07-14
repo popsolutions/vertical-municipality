@@ -1,40 +1,36 @@
-# -*- coding: utf-8 -*-
+# Copyright 2021 - TODAY, PopSolutions
+# License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
+
 {
     'name': "Property Base",
-
     'summary': """
         Base Module to manage land and properties definitions
         """,
-
     'description': """
-        Set of Odoo12 module to manage land property taxes and other charges
+        Set of module to manage land property taxes and other charges
         like Water consumption, urban waste management, etc.
     """,
-
     'author': "PopSolutions",
     'website': "https://www.popsolutions.co",
-
-    # Categories can be used to filter modules in modules listing
-    # Check https://github.com/odoo/odoo/blob/12.0/odoo/addons/base/data/ir_module_category_data.xml
-    # for the full list
     'category': 'Uncategorized',
-    'version': '0.1',
-
-    # any module necessary for this one to work correctly
-    'depends': ['account'],
-
-    # always loaded
+    'version': '12.0.0.1.0',
+    'depends': [
+        'account',
+    ],
     'data': [
-        'views/land_views.xml',
+        'views/property_land.xml',
+        'views/property_land_block.xml',
+        'views/property_land_lot.xml',
+        'views/property_land_module.xml',
+        'views/property_land_stage.xml',
+        'views/property_land_type.xml',
+        'views/property_land_usage.xml',
+        'views/property_land_zone.xml',
+        'views/menu.xml',
         'views/res_partner_views.xml',
         'views/invoice_views.xml',
         'views/wizard_views.xml',
         'security/ir.model.access.csv',
         'data/ir_cron.xml',
-        # 'views/templates.xml',
-    ],
-    # only loaded in demonstration mode
-    'demo': [
-        # 'demo/demo.xml',
     ],
 }

@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2021 - TODAY, Marcel Savegnago <marcel.savegnago@gmail.com>
+     License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+
+<odoo>
+    <data>
+
+        <record model="ir.ui.view" id="property_land_form_view">
+            <field name="name">property.land.form</field>
+            <field name="model">property.land</field>
+            <field name="priority" eval="16"/>
+            <field name="arch" type="xml">
+                <form string="Property Land form">
+                    <header>
+                        <button name="action_done" states="draft" type="object" string="In Progress" class="btn-primary"/>
+                        <button name="action_draft" states="done" type="object" string="Set to Draft"/>
+                        <field name="state" widget="statusbar"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button name="toggle_active" type="object"
+                                    class="oe_stat_button" icon="fa-archive">
+                                <field name="active" widget="boolean_button"
+                                    options='{"terminology": "archive"}'/>
+                            </button>
+                        </div>
+                        <field name="image" widget='image' class="oe_avatar" options='{"preview_image": "image_medium", "size": [90, 90]}'/>
+                        <div class="oe_title">
+                            <h1 class="ml-5">
+                                Property: <field name="name" readonly="1"/>
+                            </h1>
+                        </div>
+                        <group col="4">
+                            <group col="4" colspan="4">
+                                <field name="owner_id" colspan="4"/>
+                            </group>
+                            <group string="Basic Information" col="2" colspan="2">
+                                <field name="module_id"/>
+                                <field name="block_id" domain="[('module_id', '=', module_id)]"/>
+                                <field name="lot_id" domain="[('block_id', '=', block_id)]"/>
+                                <field name="zone_id"/>
+                            </group>
+                            <group string="Classification" col="2" colspan="2">
+                                <field name="type_id"/>
+                                <field name="usage_id"/>
+                                <field name="stage_id"/>
+                            </group>
+                            <group string="Other" col="4" colspan="2">
+                                <field name="number"/>
+                                <field name="zip"/>
+                                <field name="address" colspan="4"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page name="properties" string="Properties">
+                                <group>
+                                    <field name="pavement_qty"/>
+                                    <field name="exclusive_area"/>
+                                    <field name="building_area"/>
+                                    <field name="discount"/>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"
+                               widget="mail_followers"/>
+                        <field name="activity_ids" widget="mail_activity"/>
+                        <field name="message_ids" widget="mail_thread"
+                               options="{'post_refresh': 'recipients'}"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="property_land_tree_view">
+            <field name="name">property.land.tree</field>
+            <field name="model">property.land</field>
+            <field name="priority" eval="16"/>
+            <field name="arch" type="xml">
+                <tree string="Property Land tree">
+                    <field name="name"/>
+                    <field name="owner_id"/>
+                    <field name="module_id"/>
+                    <field name="block_id"/>
+                    <field name="lot_id"/>
+                    <field name="zone_id"/>
+                    <field name="type_id"/>
+                    <field name="usage_id"/>
+                    <field name="stage_id"/>
+                    <field name="pavement_qty"/>
+                    <field name="exclusive_area"/>
+                    <field name="address"/>
+                    <field name="number"/>
+                    <field name="zip"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="property_land_search_view">
+            <field name="name">property.land.search</field>
+            <field name="model">property.land</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name"/>
+                    <field name="owner_id"/>
+                    <field name="module_id"/>
+                    <field name="block_id"/>
+                    <field name="lot_id"/>
+                    <field name="zone_id"/>
+                    <field name="type_id"/>
+                    <field name="usage_id"/>
+                    <field name="stage_id"/>
+                    <field name="pavement_qty"/>
+                    <field name="address"/>
+                    <filter string="Archived" name="inactive" domain="[('active','=',False)]"/>
+                </search>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="property_land_action">
+            <field name="name">Property Land</field>
+            <field name="res_model">property.land</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+    </data>
+</odoo>

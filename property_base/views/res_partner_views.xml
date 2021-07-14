@@ -2,31 +2,28 @@
 <odoo>
 
     <record id="act_res_partner_properties" model="ir.actions.act_window">
-            <field name="name">Properties</field>
-            <field name="res_model">property.land</field>
-            <field name="view_type">form</field>
-            <field name="view_mode">tree,form</field>
-            <field name="context">{'search_default_owner_id': active_id}</field>
-<!--            <field name="groups_id" eval="[(4, ref('sales_team.group_sale_salesman'))]"/>-->
-            <field name="help" type="html">
-              <p class="o_view_nocontent_smiling_face">
+        <field name="name">Properties</field>
+        <field name="res_model">property.land</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{'search_default_owner_id': active_id}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
                 Create a Property Land! This Owner has none.
-              </p>
-            </field>
-        </record>
+            </p>
+        </field>
+    </record>
 
     <record id="res_partner_view_buttons" model="ir.ui.view">
         <field name="name">res.partner.view.buttons.land</field>
         <field name="model">res.partner</field>
-        <field name="inherit_id" ref="base.view_partner_form" />
+        <field name="inherit_id" ref="base.view_partner_form"/>
         <field name="priority" eval="3"/>
-        <!--    <field name="groups_id" eval="[(4, ref('sales_team.group_sale_salesman'))]"/>-->
         <field name="arch" type="xml">
             <button name="toggle_active" position="before">
-                    <button class="oe_stat_button" type="action" name="%(property_base.act_res_partner_properties)d"
-                    attrs="{'invisible': [('customer', '=', False)]}"
-                    icon="fa-home">
-        <!--                icon="fa-building-o">-->
+                <button class="oe_stat_button" type="action" name="%(property_base.act_res_partner_properties)d"
+                        attrs="{'invisible': [('customer', '=', False)]}"
+                        icon="fa-home">
                     <field string="Properties" name="property_count" widget="statinfo"/>
                 </button>
             </button>

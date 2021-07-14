@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2021 - TODAY, Marcel Savegnago <marcel.savegnago@gmail.com>
+     License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+
+<odoo>
+
+    <record model="ir.ui.view" id="property_land_type_form_view">
+        <field name="name">property.land.type.form (in property_tax)</field>
+        <field name="model">property.land.type</field>
+        <field name="inherit_id" ref="property_base.property_land_type_form_view"/>
+        <field name="arch" type="xml">
+            <notebook position="inside">
+                <page name="taxes_rules" string="Taxes Rules">
+                    <group>
+                        <field name="used_area_to_tax"/>
+                    </group>
+                </page>
+            </notebook>
+        </field>
+    </record>
+
+<!--    <record model="ir.ui.view" id="property_land_type_search_view">-->
+<!--        <field name="name">property.land.type.search (in property_tax)</field>-->
+<!--        <field name="model">property.land.type</field>-->
+<!--        <field name="inherit_id" ref="TODO othermodule.search_view"/>-->
+<!--        <field name="arch" type="xml">-->
+<!--            &lt;!&ndash; TODO &ndash;&gt;-->
+<!--        </field>-->
+<!--    </record>-->
+
+<!--    <record model="ir.ui.view" id="property_land_type_tree_view">-->
+<!--        <field name="name">property.land.type.tree (in property_tax)</field>-->
+<!--        <field name="model">property.land.type</field>-->
+<!--        <field name="inherit_id" ref="TODO othermodule.tree_view"/>-->
+<!--        <field name="arch" type="xml">-->
+<!--            &lt;!&ndash; TODO &ndash;&gt;-->
+<!--        </field>-->
+<!--    </record>-->
+
+</odoo>

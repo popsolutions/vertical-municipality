@@ -10,12 +10,11 @@
                     <div>Click on <strong>Create Invoices</strong> to process this month's Invoices</div>
                 </group>
                 <footer>
-                   <button name="process_batch_invoices" type="object"
-                                string="Create Invoices" class="oe_highlight"/>
+                    <button name="process_batch_invoices" type="object"
+                            string="Create Invoices" class="oe_highlight"/>
                     or
                     <button special="cancel" string="Cancel"/>
                 </footer>
-
             </form>
         </field>
     </record>
@@ -28,10 +27,10 @@
     </record>
 
     <menuitem
-        id="property_invoices_wizard_menu"
-        name="Create Batch Invoices"
-        action="property_invoices_wizard"
-        parent="property_base.property_wizards_menu"
-        sequence="90"/>
+            id="property_invoices_wizard_menu"
+            name="Create Batch Invoices"
+            action="property_invoices_wizard"
+            parent="property_base.property_wizards_menu"
+            sequence="90"/>
 
 </odoo>

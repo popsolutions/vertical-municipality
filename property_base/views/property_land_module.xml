@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2021 - TODAY, Marcel Savegnago <marcel.savegnago@gmail.com>
+     License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+
+<odoo>
+    <data>
+
+        <record model="ir.ui.view" id="property_land_module_form_view">
+            <field name="name">property.land.module.form</field>
+            <field name="model">property.land.module</field>
+            <field name="priority" eval="16"/>
+            <field name="arch" type="xml">
+                <form string="Property Land Module form">
+                    <sheet>
+                        <group col="4">
+                            <field name="code"/>
+                            <field name="name"/>
+                            <field name="zone_id"/>
+                            <field name="info" colspan="4"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="property_land_module_tree_view">
+            <field name="name">property.land.module.tree</field>
+            <field name="model">property.land.module</field>
+            <field name="priority" eval="16"/>
+            <field name="arch" type="xml">
+                <tree string="Property Land Module tree">
+                    <field name="code"/>
+                    <field name="name"/>
+                    <field name="zone_id"/>
+                    <field name="info"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="property_land_module_action">
+            <field name="name">Property Land Module</field>
+            <field name="res_model">property.land.module</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+    </data>
+</odoo>

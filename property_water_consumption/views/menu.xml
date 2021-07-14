@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2021 - TODAY, Marcel Savegnago <marcel.savegnago@gmail.com>
+     License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+
+<odoo>
+
+    <menuitem name="Water Consumption" id="property_water_consumption_menu" parent="property_base.root_menu" sequence="20"
+              action="water_consumption_action"/>
+    <menuitem name="Water Consumption" id="property_water_consumption_settings_menu" parent="property_base.property_settings_menu"
+              sequence="50"/>
+    <menuitem name="Computation Parameters" id="property_water_computation_parameter_menu" parent="property_water_consumption_settings_menu"
+              action="property_water_consumption_computation_parameter_action" sequence="10"/>
+    <menuitem name="Issues" id="property_water_consumption_issues_menu" parent="property_water_consumption_settings_menu"
+              action="property_water_consumption_issue_action" sequence="20"/>
+
+</odoo>

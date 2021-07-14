@@ -7,27 +7,21 @@
         <field name="inherit_id" ref="account.invoice_form"/>
         <field name="arch" type="xml">
             <xpath expr="//page[@name='other_info']" position="after">
-            <page name="name" string="Property">
-                <group col="2">
-                    <field name="land_id"/>
-                    <field name="block_id"/>
-                    <field name="module_id"/>
-                    <field name="zone_id"/>
+                <page name="name" string="Property">
+                    <group col="2">
+                        <field name="land_id"/>
+                        <field name="block_id"/>
+                        <field name="module_id"/>
+                        <field name="zone_id"/>
 
-                    <field name="name" />
-                    <field name="date" />
-                    <field name="land_id" />
-                    <field name="amount_total" />
-                    <field name="tax_line_ids" />
-                    <field name="state" />
-
-
-
-
-                </group>
-            </page>
-
-
+                        <field name="name"/>
+                        <field name="date"/>
+                        <field name="land_id"/>
+                        <field name="amount_total"/>
+                        <field name="tax_line_ids"/>
+                        <field name="state"/>
+                    </group>
+                </page>
             </xpath>
         </field>
     </record>

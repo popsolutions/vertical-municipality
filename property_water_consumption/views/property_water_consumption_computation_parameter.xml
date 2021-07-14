@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2021 - TODAY, Marcel Savegnago <marcel.savegnago@gmail.com>
+     License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+
+<odoo>
+
+    <record id="water_consumption_comp_parameter_view_form" model="ir.ui.view">
+        <field name="name">property.water.consumption.computation.parameter.view.form</field>
+        <field name="model">property.water.consumption.computation.parameter</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                </header>
+                <sheet>
+                    <group>
+                        <field name="code"/>
+                        <field name="info"/>
+                    </group>
+                    <notebook>
+                        <page name="lines" string="Details">
+                            <field name="line_ids" nolabel="1">
+                                <tree editable="bottom">
+                                    <field name="start"/>
+                                    <field name="end"/>
+                                    <field name="amount"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="water_consumption_computation_parameter_view_tree" model="ir.ui.view">
+        <field name="name">property.water.consumption.computation.parameter.view.tree</field>
+        <field name="model">property.water.consumption.computation.parameter</field>
+        <field name="arch" type="xml">
+            <tree string="Water Consumption Computation Parameters">
+                <field name="code"/>
+                <field name="info"/>
+                <field name="line_ids"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="property_water_consumption_computation_parameter_action" model="ir.actions.act_window">
+        <field name="name">Computation Parameters</field>
+        <field name="res_model">property.water.consumption.computation.parameter</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[]</field>
+        <field name="context">{}</field>
+    </record>
+
+</odoo>

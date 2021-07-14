@@ -1,7 +1,11 @@
+# Copyright 2021 - TODAY, Marcel Savegnago <marcel.savegnago@gmail.com>
+# License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
+
 from odoo import api, fields, models
 
 
 class ResPartner(models.Model):
+
     _inherit = 'res.partner'
 
     property_count = fields.Integer(compute='_compute_property_count', string='Property Land Count')

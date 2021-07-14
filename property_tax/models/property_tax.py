@@ -1,17 +1,15 @@
+# Copyright 2021 - TODAY, Marcel Savegnago <marcel.savegnago@gmail.com>
+# License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
+
 import re
 from odoo import api, fields, models
 from odoo.exceptions import UserError
 
 
-class PropertyTaxLines(models.Model):
-    _name = 'property.tax.line'
-
-    tax_id = fields.Many2one('property.tax', 'Tax')
-    name = fields.Char()
-    value = fields.Float()
-
 class PropertyTax(models.Model):
+
     _name = 'property.tax'
+    _description = 'Property Tax'
 
     name = fields.Char(compute='_compute_name', store=True)
     date = fields.Datetime(default=fields.Datetime.now)
@@ -40,12 +38,12 @@ class PropertyTax(models.Model):
 
         # building_type = self.env.ref('property_base.type_building')
         building_type = self.env['property.land.type'].search([('code', '=', 'P')])
-        coefficient = land_id.module_id.coefficient
+        coefficient = land_id.coefficient
         exclusive_area = land_id.exclusive_area
         fixed_value = float(get_param('property_tax.fixed_value'))
         monthly_index = float(get_param('property_tax.monthly_index'))
-        pavement_qty = land_id.module_id.pavement_qty
-        occupation_rate = land_id.module_id.occupation_rate / 100
+        pavement_qty = land_id.pavement_qty
+        occupation_rate = land_id.occupation_rate / 100
         minimal_contribution = float(get_param('property_tax.minimal_contribution'))
 
         if not (fixed_value and minimal_contribution):
@@ -61,10 +59,11 @@ class PropertyTax(models.Model):
                                  }))
         return eval(formula), lines
 
-
     @api.multi
     def create_batch_land_taxes(self):
-        land_ids = self.env['property.land'].search([])
+        land_ids = self.env['property.land'].search([
+            ('active','=', True), ('state', '=', 'done')]
+        )
         formula = self._get_formula()
         for land in land_ids:
             amount, lines = self._get_tax_amount_and_lines(land, formula)

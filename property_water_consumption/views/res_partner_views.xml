@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<!-- Copyright 2021 - TODAY, Marcel Savegnago <marcel.savegnago@gmail.com>
+     License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+
+<odoo>
+
+    <record id="res_partner_water_consumption_view_inherit" model="ir.ui.view">
+        <field name="name">res.partner.view.land.water.consumption</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="priority" eval="3"/>
+        <field name="arch" type="xml">
+            <page name="sales_purchases" position="after">
+                <page string="Property" name="property_management">
+                    <group>
+                        <group string="Water Consumption" name="water_consumption" priority="3">
+                            <field name="water_consumption_reader"/>
+                        </group>
+                    </group>
+                </page>
+            </page>
+        </field>
+    </record>
+
+    <record id="view_res_partner_filter_water_consumption_reader" model="ir.ui.view">
+        <field name="name">res.partner.water.consumption.reader.inherit.search</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_res_partner_filter"/>
+        <field name="arch" type="xml">
+            <field name="category_id" position="before">
+                <separator/>
+                <filter string="Water Consumption Reader" name="water_consumption_reader" domain="[('water_consumption_reader', '=', True)]"/>
+            </field>
+        </field>
+    </record>
+
+</odoo>

@@ -1,7 +1,11 @@
+# Copyright 2021 - TODAY, Marcel Savegnago <marcel.savegnago@gmail.com>
+# License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
+
 from odoo import api, fields, models
 
 
 class ResConfigSettings(models.TransientModel):
+
     _inherit = 'res.config.settings'
 
     property_tax_fixed_value = fields.Float('Fixed Value', digits=(12,4), config_parameter='property_tax.fixed_value')

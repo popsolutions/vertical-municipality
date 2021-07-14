@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2021 - TODAY, Marcel Savegnago <marcel.savegnago@gmail.com>
+     License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+
+<odoo>
+
+    <record id="water_consumption_view_form" model="ir.ui.view">
+        <field name="name">property.water.consumption.view.form</field>
+        <field name="model">property.water.consumption</field>
+        <field name="arch" type="xml">
+            <form string="Water Consumption Form">
+                <sheet>
+                    <group col="4">
+                        <field name="date"/>
+                        <field name="state"/>
+                        <field name="last_read" attrs="{'readonly': [('state', 'not in', ['draft'])]}"/>
+                        <field name="current_read" attrs="{'readonly': [('state', 'not in', ['draft'])]}"/>
+                        <field name="consumption"/>
+                        <field name="total"/>
+                        <field name="reader_id" domain="[('water_consumption_reader', '=', True)]"
+                               context="{'default_water_consumption_reader': True}"/>
+                        <field name="issue_id"/>
+                        <field name="land_id" attrs="{'readonly': [('state', 'not in', ['draft'])]}"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="water_consumption_view_tree" model="ir.ui.view">
+        <field name="name">property.water.consumption.view.tree</field>
+        <field name="model">property.water.consumption</field>
+        <field name="arch" type="xml">
+            <tree string="Water Consumption List">
+                <field name="land_id"/>
+                <field name="date"/>
+                <field name="last_read"/>
+                <field name="current_read"/>
+                <field name="consumption"/>
+                <field name="total"/>
+                <field name="reader_id"/>
+                <field name="issue_id"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="water_consumption_action" model="ir.actions.act_window">
+        <field name="name">Water Consumption</field>
+        <field name="res_model">property.water.consumption</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[]</field>
+        <field name="context">{}</field>
+    </record>
+
+</odoo>
