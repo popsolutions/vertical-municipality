@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  © 2017 Akretion (Alexis de Lattre <alexis.delattre@akretion.com>)
+  License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
+-->
+
+<odoo noupdate="0">
+
+<!--Zonas-->
+    <record id="land_zone_001" model="property.land.zone">
+        <field name="code">T</field>
+        <field name="name">Zona Turística</field>
+    </record>
+
+    <record id="land_zone_002" model="property.land.zone">
+        <field name="code">R</field>
+        <field name="name">Zona Residencial</field>
+    </record>
+
+    <record id="land_zone_003" model="property.land.zone">
+        <field name="code">M</field>
+        <field name="name">Zona Mista</field>
+    </record>
+
+<!--Módulos - Zona Turística-->
+    <record id="land_module_001" model="property.land.module">
+        <field name="code">001</field>
+        <field name="name">001</field>
+        <field name="zone_id" ref="property_base.land_zone_001" />
+    </record>
+
+    <record id="land_module_002" model="property.land.module">
+        <field name="code">002</field>
+        <field name="name">002</field>
+        <field name="zone_id" ref="property_base.land_zone_001" />
+    </record>
+
+<!--Módulos - Zona Residencial-->
+    <record id="land_module_010" model="property.land.module">
+        <field name="code">010</field>
+        <field name="name">010</field>
+        <field name="zone_id" ref="property_base.land_zone_002" />
+    </record>
+
+    <record id="land_module_011" model="property.land.module">
+        <field name="code">011</field>
+        <field name="name">011</field>
+        <field name="zone_id" ref="property_base.land_zone_002" />
+    </record>
+
+<!--Módulos - Zona Mista-->
+    <record id="land_module_023" model="property.land.module">
+        <field name="code">023</field>
+        <field name="name">023</field>
+        <field name="zone_id" ref="property_base.land_zone_003" />
+    </record>
+
+    <record id="land_module_024" model="property.land.module">
+        <field name="code">024</field>
+        <field name="name">024</field>
+        <field name="zone_id" ref="property_base.land_zone_003" />
+    </record>
+
+<!--Blocos-->
+    <record id="land_block_mod_001_001" model="property.land.block">
+        <field name="code">001</field>
+        <field name="module_id" ref="property_base.land_module_001" />
+    </record>
+
+    <record id="land_block_mod_010_001" model="property.land.block">
+        <field name="code">001</field>
+        <field name="module_id" ref="property_base.land_module_010" />
+    </record>
+
+    <record id="land_block_mod_023_001" model="property.land.block">
+        <field name="code">001</field>
+        <field name="module_id" ref="property_base.land_module_023" />
+    </record>
+
+<!--Lotes-->
+    <record id="land_lot_mod_001_001_lot1" model="property.land.lot">
+        <field name="code">001</field>
+        <field name="block_id" ref="property_base.land_block_mod_001_001" />
+    </record>
+
+    <record id="land_lot_mod_010_001_lot1" model="property.land.lot">
+        <field name="code">001</field>
+        <field name="block_id" ref="property_base.land_block_mod_010_001" />
+    </record>
+
+    <record id="land_lot_mod_023_001_lot1" model="property.land.lot">
+        <field name="code">001</field>
+        <field name="block_id" ref="property_base.land_block_mod_023_001" />
+    </record>
+
+<!--Estágios-->
+    <record id="land_stage_lv" model="property.land.stage">
+        <field name="code">LV</field>
+        <field name="name">Livre</field>
+        <field name="discount">65</field>
+    </record>
+
+    <record id="land_stage_op" model="property.land.stage">
+        <field name="code">OP</field>
+        <field name="name">Obra Pronta</field>
+        <field name="discount">0</field>
+    </record>
+
+    <record id="land_stage_oa" model="property.land.stage">
+        <field name="code">OA</field>
+        <field name="name">Obra em Andamento</field>
+        <field name="discount">0</field>
+    </record>
+
+<!--Tipos-->
+    <record id="land_type_cs" model="property.land.type">
+        <field name="code">CS</field>
+        <field name="name">Casa</field>
+    </record>
+
+    <record id="land_type_pp" model="property.land.type">
+        <field name="code">PP</field>
+        <field name="name">Prédio</field>
+    </record>
+
+    <record id="land_type_cm" model="property.land.type">
+        <field name="code">CM</field>
+        <field name="name">Comércio</field>
+    </record>
+
+</odoo>

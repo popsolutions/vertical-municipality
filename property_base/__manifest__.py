@@ -32,5 +32,6 @@
         'views/wizard_views.xml',
         'security/ir.model.access.csv',
         'data/ir_cron.xml',
+        'demo/demo.xml',
     ],
 }
