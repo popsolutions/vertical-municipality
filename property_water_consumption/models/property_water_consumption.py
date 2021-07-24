@@ -41,7 +41,17 @@ class PropertyWaterConsumption(models.Model):
     def _compute_total(self):
         for rec in self:
             if rec.consumption and rec.land_id and rec.state in ['draft']:
-                rec.total = rec.land_id.wc_param_id.get_total(rec.consumption)
+                consumption = rec.consumption
+                water_consumption_economy_qty = rec.land_id.water_consumption_economy_qty or 1
+                if consumption <= rec.land_id.type_id.minimum_water_consumption:
+                    consumption = rec.land_id.type_id.minimum_water_consumption
+                    water_consumption_economy_qty = 1
+                else:
+                    consumption = float(consumption / water_consumption_economy_qty)
+                rec.total = (
+                        rec.land_id.type_id.water_computation_parameter_id.get_total(
+                            consumption)*water_consumption_economy_qty
+                )
 
     @api.multi
     def get_last_read(self, land_id):
