@@ -20,7 +20,7 @@
         'views/property_water_consumption.xml',
         'views/property_water_consumption_issue.xml',
         'views/property_water_consumption_computation_parameter.xml',
-        'views/property_land_type_water_consumption_rule.xml',
+        # 'views/property_land_type_water_consumption_rule.xml',
         'views/property_land_type.xml',
         'views/wizard_views.xml',
         'views/res_partner_views.xml',
