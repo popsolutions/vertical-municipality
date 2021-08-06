@@ -10,9 +10,14 @@ class PropertyLandType(models.Model):
 
     minimum_water_consumption = fields.Float()
 
-    water_consumption_rule_ids = fields.One2many(
-        'property.land.type.water.consumption.rule',
-        'land_type_id',
-        'Water Consumption Rules',
-        help="Water Consumption Rules"
+    water_computation_parameter_id = fields.Many2one(
+        'property.water.consumption.computation.parameter',
+        string="Consumption Parameters"
     )
+
+    # water_consumption_rule_ids = fields.One2many(
+    #     'property.land.type.water.consumption.rule',
+    #     'land_type_id',
+    #     'Water Consumption Rules',
+    #     help="Water Consumption Rules"
+    # )

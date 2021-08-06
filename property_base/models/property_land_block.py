@@ -13,7 +13,8 @@ class PropertyLandBlock(models.Model):
     info = fields.Text()
     module_id = fields.Many2one(
         'property.land.module',
-        'Module',required=True
+        'Module',
+        # required=True
     )
 
     @api.multi

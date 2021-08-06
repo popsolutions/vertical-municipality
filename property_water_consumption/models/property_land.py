@@ -20,10 +20,10 @@ class PropertyLand(models.Model):
         'property.water.consumption.route',
         string="Consumption Route"
     )
-    water_computation_parameter_id = fields.Many2one(
-        'property.water.consumption.computation.parameter',
-        string="Consumption Parameters"
-    )
+    # water_computation_parameter_id = fields.Many2one(
+    #     'property.water.consumption.computation.parameter',
+    #     string="Consumption Parameters"
+    # )
     water_consumption_meter_code = fields.Char(
         string="Consumption Meter Code"
     )

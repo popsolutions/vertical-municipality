@@ -13,7 +13,7 @@
                 <page name="water_consumption_rules" string="Water Consumption Rules">
                     <group>
                         <field name="minimum_water_consumption"/>
-                        <field name="water_consumption_rule_ids"/>
+                        <field name="water_computation_parameter_id"/>
                     </group>
                 </page>
             </notebook>
