@@ -32,13 +32,13 @@ class PropertyLand(models.Model):
         'property.land.type',
         'Type',
         track_visibility='onchange',
-        required=True,
+        # required=True,
     )
     usage_id = fields.Many2one(
         'property.land.usage',
         'Usage',
         track_visibility='onchange',
-        required=True,
+        # required=True,
     )
     owner_id = fields.Many2one(
         'res.partner',
@@ -49,7 +49,7 @@ class PropertyLand(models.Model):
         'property.land.module',
         'Module',
         track_visibility='onchange',
-        required=True,
+        # required=True,
     )
     block_id = fields.Many2one(
         'property.land.block',
@@ -73,7 +73,7 @@ class PropertyLand(models.Model):
         'property.land.stage',
         'Stage',
         track_visibility='onchange',
-        required=True,
+        # required=True,
     )
     pavement_qty = fields.Float(
         'Pavement Qty',
