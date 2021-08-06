@@ -52,6 +52,7 @@ class PropertyWaterConsumption(models.Model):
                         rec.land_id.type_id.water_computation_parameter_id.get_total(
                             consumption)*water_consumption_economy_qty
                 )
+                rec.total += rec.total*0.8
 
     @api.multi
     def get_last_read(self, land_id):
