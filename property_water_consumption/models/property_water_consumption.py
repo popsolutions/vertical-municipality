@@ -20,6 +20,7 @@ class PropertyWaterConsumption(models.Model):
         ('pending', 'Pending'),
         ('processed', 'Processed')
         ], default='draft')
+    photo = fields.Binary('Photo')
 
     @api.multi
     def name_get(self):
