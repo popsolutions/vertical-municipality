@@ -8,6 +8,8 @@ class PropertyWaterConsumption(models.Model):
     _description = 'Property Water Consumption'
 
     land_id = fields.Many2one('property.land')
+    property_land_address = fields.Text('property.land', related='land_id.address', readonly=True)
+    property_land_number = fields.Integer('property.land', related='land_id.number', readonly=True)
     date = fields.Date(default=fields.Date.context_today)
     last_read = fields.Integer()
     current_read = fields.Integer()
