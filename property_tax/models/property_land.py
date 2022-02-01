@@ -43,28 +43,28 @@ class PropertyLand(models.Model):
 
     @api.multi
     def write(self, vals):
-        if 'module_id' in vals:
-            module_id = vals['module_id']
-        else:
-            module_id = self.module_id.id
+        for item in self:
+            if 'module_id' in vals:
+                module_id = vals['module_id']
+            else:
+                module_id = item.module_id.id
 
-        if 'type_id' in vals:
-            type_id = vals['type_id']
-        else:
-            type_id = self.type_id.id
+            if 'type_id' in vals:
+                type_id = vals['type_id']
+            else:
+                type_id = item.type_id.id
 
-        if 'stage_id' in vals:
-            stage_id = vals['stage_id']
-        else:
-            stage_id = self.stage_id.id
+            if 'stage_id' in vals:
+                stage_id = vals['stage_id']
+            else:
+                stage_id = item.stage_id.id
 
-        contribution_rule_calcs = self.get_contribution_rule_calcs(module_id, type_id, stage_id)
+            contribution_rule_calcs = item.get_contribution_rule_calcs(module_id, type_id, stage_id)
 
-        if 'pavement_qty' in contribution_rule_calcs:
-            vals['pavement_qty'] = contribution_rule_calcs['pavement_qty']
+            if 'pavement_qty' in contribution_rule_calcs:
+                vals['pavement_qty'] = contribution_rule_calcs['pavement_qty']
 
-        res = super(PropertyLand, self).write(vals)
-        return res
+            super(PropertyLand, item).write(vals)
 
 
     # TODO: Implementar o filtro da regra de contribuição
