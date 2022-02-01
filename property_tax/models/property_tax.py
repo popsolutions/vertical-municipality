@@ -35,29 +35,35 @@ class PropertyTax(models.Model):
     def _get_tax_amount_and_lines(self, land_id, formula):
 
         get_param = self.env['ir.config_parameter'].sudo().get_param
-
-        # building_type = self.env.ref('property_base.type_building')
-        building_type = self.env['property.land.type'].search([('code', '=', 'P')])
-        coefficient = land_id.coefficient
-        exclusive_area = land_id.exclusive_area
-        fixed_value = float(get_param('property_tax.fixed_value'))
-        monthly_index = float(get_param('property_tax.monthly_index'))
-        pavement_qty = land_id.pavement_qty
-        occupation_rate = land_id.occupation_rate / 100
-        minimal_contribution = float(get_param('property_tax.minimal_contribution'))
-
-        if not (fixed_value and minimal_contribution):
-            raise UserError('You must configure settings values for Property Taxes')
-
-        # Keep record of all variables and their values used in the formula
-        # Look in property.tax.line
-        variables_used = re.findall(r"[\w']+", formula)
         lines = []
-        for var in variables_used:
-            lines.append((0, 0, {'name': var,
-                                 'value': eval(var),
+
+        if land_id.alternative_contribution_tax_amount and land_id.alternative_contribution_tax_amount > 0:
+            lines.append((0, 0, {'name': 'alternative_contribution_tax_amount',
+                                 'value': str(land_id.alternative_contribution_tax_amount),
                                  }))
-        return eval(formula), lines
+            return land_id.alternative_contribution_tax_amount, lines
+        else:
+            # building_type = self.env.ref('property_base.type_building')
+            building_type = self.env['property.land.type'].search([('code', '=', 'P')])
+            coefficient = land_id.coefficient
+            exclusive_area = land_id.exclusive_area
+            fixed_value = float(get_param('property_tax.fixed_value'))
+            monthly_index = float(get_param('property_tax.monthly_index'))
+            pavement_qty = land_id.pavement_qty
+            occupation_rate = land_id.occupation_rate / 100
+            minimal_contribution = float(get_param('property_tax.minimal_contribution'))
+
+            if not (fixed_value and minimal_contribution):
+                raise UserError('You must configure settings values for Property Taxes')
+
+            # Keep record of all variables and their values used in the formula
+            # Look in property.tax.line
+            variables_used = re.findall(r"[\w']+", formula)
+            for var in variables_used:
+                lines.append((0, 0, {'name': var,
+                                     'value': eval(var),
+                                     }))
+            return eval(formula), lines
 
     @api.multi
     def create_batch_land_taxes(self):
