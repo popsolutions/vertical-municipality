@@ -114,4 +114,4 @@ class PropertyLand(models.Model):
 
     @api.multi
     def action_block(self):
-        return self.write({'state': 'block'})
+        return self.write({'state': 'block_tax'})
