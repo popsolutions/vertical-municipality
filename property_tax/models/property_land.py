@@ -15,6 +15,13 @@ class PropertyLand(models.Model):
         compute='_compute_rate',
         track_visibility='onchange',
     )
+
+    pavement_qty = fields.Float(
+        'Pavement Qty',
+        track_visibility='onchange',
+        readonly=True
+    )
+
     occupation_rate = fields.Float(
         compute='_compute_rate',
         track_visibility='onchange'
@@ -34,36 +41,76 @@ class PropertyLand(models.Model):
         help="Property Taxes"
     )
 
+    @api.multi
+    def write(self, vals):
+        if 'module_id' in vals:
+            module_id = vals['module_id']
+        else:
+            module_id = self.module_id.id
+
+        if 'type_id' in vals:
+            type_id = vals['type_id']
+        else:
+            type_id = self.type_id.id
+
+        if 'stage_id' in vals:
+            stage_id = vals['stage_id']
+        else:
+            stage_id = self.stage_id.id
+
+        contribution_rule_calcs = self.get_contribution_rule_calcs(module_id, type_id, stage_id)
+
+        if 'pavement_qty' in contribution_rule_calcs:
+            vals['pavement_qty'] = contribution_rule_calcs['pavement_qty']
+
+        res = super(PropertyLand, self).write(vals)
+        return res
+
+
     # TODO: Implementar o filtro da regra de contribuição
     def _compute_rate(self):
         for record in self:
-            contribution_rule_id = self.env['property.land.contribution.rule'].search(
-                [
-                    ('active', '=', True),
-                    ('state', '=', 'approved'),
-                    ('module_ids', 'in', record.module_id.id),
-                    ('type_ids', 'in', record.type_id.id),
-                    ('stage_ids', 'in', record.stage_id.id),
-                ],
-                limit=1,
-            )
-            occupation_rate_id = self.env['property.land.contribution.rule.occupation.rate'].search(
-                [
-                    ('contribution_rule_id', '=', contribution_rule_id.id),
-                    ('pavement_qty', '>=', record.pavement_qty)
+            contribution_rule_calcs = self.get_contribution_rule_calcs(record.module_id.id, record.type_id.id, record.stage_id.id)
 
-                ],
-                order='pavement_qty ASC',
-                limit=1,
-            )
+            if 'coefficient' in contribution_rule_calcs:
+                record.coefficient = contribution_rule_calcs['coefficient']
 
-            if contribution_rule_id.coefficient:
-                record.coefficient = contribution_rule_id.coefficient
+            record.occupation_rate = contribution_rule_calcs['occupation_rate']
 
-            if not occupation_rate_id.occupation_rate:
-                record.occupation_rate = 100
-            else:
-                record.occupation_rate = occupation_rate_id.occupation_rate
+    def get_contribution_rule_calcs(self, module_id, type_id, stage_id):
+        contribution_rule_id = self.env['property.land.contribution.rule'].search(
+            [
+                ('active', '=', True),
+                ('state', '=', 'approved'),
+                ('module_ids', 'in', module_id),
+                ('type_ids', 'in', type_id),
+                ('stage_ids', 'in', stage_id),
+            ],
+            limit=1,
+        )
+        occupation_rate_id = self.env['property.land.contribution.rule.occupation.rate'].search(
+            [
+                ('contribution_rule_id', '=', contribution_rule_id.id)
+            ],
+            limit=1,
+        )
+
+        res = {}
+
+        if contribution_rule_id.coefficient:
+            res.update({'coefficient': contribution_rule_id.coefficient})
+
+        if occupation_rate_id.pavement_qty:
+            res.update({'pavement_qty': occupation_rate_id.pavement_qty})
+        else:
+            res.update({'pavement_qty': 0})
+
+        if not occupation_rate_id.occupation_rate:
+            res.update({'occupation_rate': 0})
+        else:
+            res.update({'occupation_rate': occupation_rate_id.occupation_rate})
+
+        return res
 
     @api.multi
     def action_block(self):
