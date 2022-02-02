@@ -51,6 +51,7 @@ class PropertyTax(models.Model):
             monthly_index = float(get_param('property_tax.monthly_index'))
             pavement_qty = land_id.pavement_qty
             occupation_rate = land_id.occupation_rate / 100
+            discount = land_id.discount
             minimal_contribution = float(get_param('property_tax.minimal_contribution'))
 
             if not (fixed_value and minimal_contribution):
@@ -72,11 +73,14 @@ class PropertyTax(models.Model):
         )
         formula = self._get_formula()
         for land in land_ids:
-            amount, lines = self._get_tax_amount_and_lines(land, formula)
-            values = {
-                'land_id': land.id,
-                'amount_total': amount,
-                'tax_line_ids': lines,
-                'formula': formula,
-            }
-            self.create(values)
+            self._process_tax_amount_and_lines(land, formula)
+
+    def _process_tax_amount_and_lines(self, land, formula):
+        amount, lines = self._get_tax_amount_and_lines(land, formula)
+        values = {
+            'land_id': land.id,
+            'amount_total': amount,
+            'tax_line_ids': lines,
+            'formula': formula,
+        }
+        self.create(values)

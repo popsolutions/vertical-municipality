@@ -12,6 +12,7 @@
             <header position="inside">
                 <button name="action_block" states="done" type="object" string="Suspend Tax Calculation" class="btn-warning"/>
                 <button name="action_done" states="block_tax" type="object" string="In Progress" class="btn-primary"/>
+                <button name="action_create_batch_taxes"  type="object" string="Create Taxes"/>
             </header>
             <notebook position="inside">
                 <page name="tax_rates" string="Tax Rates">

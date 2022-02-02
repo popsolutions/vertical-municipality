@@ -115,3 +115,9 @@ class PropertyLand(models.Model):
     @api.multi
     def action_block(self):
         return self.write({'state': 'block_tax'})
+
+    @api.multi
+    def action_create_batch_taxes(self):
+        formula = self.env['property.tax']._get_formula()
+        for property_land in self:
+            self.env['property.tax']._process_tax_amount_and_lines(property_land, formula)
