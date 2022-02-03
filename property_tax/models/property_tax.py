@@ -73,7 +73,7 @@ class PropertyTax(models.Model):
                     lines.append((0, 0, {'name': var,
                                          'value': eval(var),
                                          }))
-            return eval(formula), lines
+            return eval(formula), lines, formula
 
     @api.multi
     def create_batch_land_taxes(self):
@@ -85,7 +85,7 @@ class PropertyTax(models.Model):
             self._process_tax_amount_and_lines(land, formula)
 
     def _process_tax_amount_and_lines(self, land, formula):
-        amount, lines = self._get_tax_amount_and_lines(land, formula)
+        amount, lines, formula = self._get_tax_amount_and_lines(land, formula)
         values = {
             'land_id': land.id,
             'amount_total': amount,
