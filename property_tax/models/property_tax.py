@@ -41,7 +41,7 @@ class PropertyTax(models.Model):
             lines.append((0, 0, {'name': 'alternative_contribution_tax_amount',
                                  'value': str(land_id.alternative_contribution_tax_amount),
                                  }))
-            return land_id.alternative_contribution_tax_amount, lines
+            return land_id.alternative_contribution_tax_amount, lines, 'alternative_contribution_tax_amount'
         else:
             if land_id.formula:
                 formula = land_id.formula #substituí a fórmula global pela fórmula específica desta rule (Possibilidade de criar fórmula para rule #21)
