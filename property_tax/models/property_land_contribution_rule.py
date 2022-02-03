@@ -11,6 +11,7 @@ class PropertyLandContributionRule(models.Model):
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
     name = fields.Char()
+    formula = fields.Char('Fórmula')
     active = fields.Boolean(
         default=True
     )

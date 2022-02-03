@@ -16,6 +16,11 @@ class PropertyLand(models.Model):
         track_visibility='onchange',
     )
 
+    formula = fields.Char(
+        compute='_compute_rate',
+        track_visibility='onchange',
+    )
+
     pavement_qty = fields.Float(
         'Pavement Qty',
         track_visibility='onchange',
@@ -77,6 +82,8 @@ class PropertyLand(models.Model):
 
             record.occupation_rate = contribution_rule_calcs['occupation_rate']
 
+            record.formula = contribution_rule_calcs['formula']
+
     def get_contribution_rule_calcs(self, module_id, type_id, stage_id):
         contribution_rule_id = self.env['property.land.contribution.rule'].search(
             [
@@ -96,6 +103,8 @@ class PropertyLand(models.Model):
         )
 
         res = {}
+
+        res.update({'formula': contribution_rule_id.formula})
 
         if contribution_rule_id.coefficient:
             res.update({'coefficient': contribution_rule_id.coefficient})

@@ -43,10 +43,18 @@ class PropertyTax(models.Model):
                                  }))
             return land_id.alternative_contribution_tax_amount, lines
         else:
+            if land_id.formula:
+                formula = land_id.formula #substituí a fórmula global pela fórmula específica desta rule (Possibilidade de criar fórmula para rule #21)
+
             # building_type = self.env.ref('property_base.type_building')
             building_type = self.env['property.land.type'].search([('code', '=', 'P')])
             coefficient = land_id.coefficient
-            exclusive_area = land_id.exclusive_area
+            if (formula.find('exclusive_area') != -1):
+                exclusive_area = land_id.exclusive_area
+
+            if (formula.find('building_area') != -1):
+                building_area = land_id.building_area
+
             fixed_value = float(get_param('property_tax.fixed_value'))
             monthly_index = float(get_param('property_tax.monthly_index'))
             pavement_qty = land_id.pavement_qty
@@ -61,9 +69,10 @@ class PropertyTax(models.Model):
             # Look in property.tax.line
             variables_used = re.findall(r"[\w']+", formula)
             for var in variables_used:
-                lines.append((0, 0, {'name': var,
-                                     'value': eval(var),
-                                     }))
+                if var not in ('100'):
+                    lines.append((0, 0, {'name': var,
+                                         'value': eval(var),
+                                         }))
             return eval(formula), lines
 
     @api.multi
