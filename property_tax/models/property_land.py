@@ -27,6 +27,11 @@ class PropertyLand(models.Model):
         readonly=True
     )
 
+    pavement_qty_calc = fields.Float(
+        compute='_compute_rate',
+        track_visibility='onchange',
+    )
+
     occupation_rate = fields.Float(
         compute='_compute_rate',
         track_visibility='onchange'
@@ -81,7 +86,7 @@ class PropertyLand(models.Model):
                 record.coefficient = contribution_rule_calcs['coefficient']
 
             record.occupation_rate = contribution_rule_calcs['occupation_rate']
-
+            record.pavement_qty_calc = contribution_rule_calcs['pavement_qty']
             record.formula = contribution_rule_calcs['formula']
 
     def get_contribution_rule_calcs(self, module_id, type_id, stage_id):

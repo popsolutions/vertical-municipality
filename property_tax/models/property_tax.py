@@ -37,7 +37,7 @@ class PropertyTax(models.Model):
         get_param = self.env['ir.config_parameter'].sudo().get_param
         lines = []
 
-        if land_id.alternative_contribution_tax_amount and land_id.alternative_contribution_tax_amount > 0:
+        if land_id.is_not_taxpayer:
             lines.append((0, 0, {'name': 'alternative_contribution_tax_amount',
                                  'value': str(land_id.alternative_contribution_tax_amount),
                                  }))
@@ -57,7 +57,7 @@ class PropertyTax(models.Model):
 
             fixed_value = float(get_param('property_tax.fixed_value'))
             monthly_index = float(get_param('property_tax.monthly_index'))
-            pavement_qty = land_id.pavement_qty
+            pavement_qty = land_id.pavement_qty_calc
             occupation_rate = land_id.occupation_rate / 100
             discount = land_id.discount
             minimal_contribution = float(get_param('property_tax.minimal_contribution'))
