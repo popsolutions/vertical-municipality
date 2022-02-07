@@ -1,5 +1,6 @@
 from odoo import api, fields, models
-
+from datetime import datetime
+from dateutil.relativedelta import relativedelta
 
 class PropertyWaterConsumption(models.Model):
 
@@ -64,14 +65,34 @@ class PropertyWaterConsumption(models.Model):
 
     @api.multi
     def create_batch_water_consumptions(self):
-        land_ids = self.env['property.land'].search([], limit=10) #TODO: Remove this limit
-        # formula = self._get_formula()
-        for land in land_ids:
-            # wc_id = self.search([('land_id', '=', land.id)])
-            # amount, lines = self._get_tax_amount_and_lines(land, formula)
-            values = {
-                'land_id': land.id,
-                'last_read': self.get_last_read(land.id)
-            }
+        current_year_month = datetime.today().strftime("%Y%m")
+        old_year_month = (datetime.today() - relativedelta(months=1)).strftime("%Y%m")
 
-            self.create(values)
+        #O Sql abaixo vai criar em property_water_consumption os registros existentes no mẽs anterior.
+        insert_property_water_consumption = """
+insert into property_water_consumption(id, land_id, last_read, current_read, consumption, total, state, "date", create_date, write_date, create_uid, write_uid)
+select nextval('property_water_consumption_id_seq') id,
+       pwc_old.land_id land_id,
+       pwc_old.current_read last_read,
+       null current_read,
+       null consumption,
+       null total,
+       'draft' state,
+       current_date "date",
+       current_timestamp create_date,
+       current_timestamp write_date,
+       1 create_uid,
+       1 write_uid
+  from property_water_consumption pwc_old
+         left join property_water_consumption pwc_current 
+                on (     pwc_current.land_id = pwc_old.land_id 
+                    and  TO_CHAR(pwc_current."date", 'yyyymm') = '""" + current_year_month + """'
+                   ),
+       property_land pl
+ where TO_CHAR(pwc_old."date", 'yyyymm') = '""" + old_year_month + """'
+   and pwc_current.id is null
+   and pl.id = pwc_old.land_id 
+   and pl.state = 'done'
+        """
+
+        self.env.cr.execute(insert_property_water_consumption)
