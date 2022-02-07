@@ -27,7 +27,7 @@ class PropertyWaterConsumption(models.Model):
         sql = """
 with t as ( 
 select w.id,
-       round((w.total * t.factor_rate_catchment_monthy)::numeric, 2) rate_catchment_calc
+       round((w.consumption * t.factor_rate_catchment_monthy)::numeric, 2) rate_catchment_calc
        --w.total, t.factor_rate_catchment_monthy, rate_catchment_monthy, water_consumption_sum
   from property_water_consumption w,
        (select t.rate_catchment_monthy / coalesce(nullif(t.water_consumption_sum, 0), 1) factor_rate_catchment_monthy, rate_catchment_monthy, water_consumption_sum
@@ -38,7 +38,7 @@ select w.id,
                        ), 0) rate_catchment_monthy,
                        coalesce(
                        (
-                       select sum(coalesce(w.total, 0))  
+                       select sum(coalesce(w.consumption, 0))  
                          from property_water_consumption w
                         where TO_CHAR(w.date, 'yyyymm') = '""" + current_year_month + """'
                        ), 0) water_consumption_sum
