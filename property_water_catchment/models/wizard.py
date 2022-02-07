@@ -7,7 +7,7 @@ class PropertyWaterConsumptionWizard(models.TransientModel):
 
     @api.model
     def process_batch_water_consumptions(self, fields):
-        # res = super(PropertyWaterConsumptionWizard, self).process_batch_water_consumptions() todo.remover este comentário
+        res = super(PropertyWaterConsumptionWizard, self).process_batch_water_consumptions()
         self.env['property.water.catchment.monthly.rate']._compute_catchment_rate_current_month()
-        return
-        # return res
+        return res
+
