@@ -9,6 +9,7 @@ class PropertyGaTax(models.Model):
 
     _name = 'property.ga.tax'
     _description = 'Property Green Area Maintenance Tax'
+    _order = 'date desc'
 
     land_id = fields.Many2one('property.land')
     # property_land_address = fields.Text('property.land', related='land_id.address', readonly=True)
