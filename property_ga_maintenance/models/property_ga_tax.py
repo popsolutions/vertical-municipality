@@ -36,11 +36,13 @@ select nextval('property_ga_tax_id_seq') id,
        1 write_uid,
        current_timestamp write_date
   from property_land pl 
-         left join property_ga_tax pgt_old on pgt_old.land_id = pl.id and TO_CHAR(pgt_old.date, 'yyyymm') = '""" + old_year_month + """'
-         left join property_ga_tax pgt_cur on pgt_cur.land_id = pl.id and TO_CHAR(pgt_cur.date, 'yyyymm') = '""" + current_year_month + """',         
+         left join property_ga_tax pgt_old on pgt_old.land_id = pl.id and TO_CHAR(pgt_old.date, 'yyyymm') = '""" + old_year_month + """',         
        (select rcs.property_ga_tax_index  from res_config_settings rcs order by id desc limit 1) rcs
  where not pl.is_not_tax_ga
-   and pgt_cur.id is null
+   and not exists (select id 
+                     from property_ga_tax pgt_cur 
+                    where pgt_cur.land_id = pl.id 
+                      and TO_CHAR(pgt_cur.date, 'yyyymm') = '""" + current_year_month + """'
+                  )   
         """
         self.env.cr.execute(insert_property_ga_tax_From_Old_Month)
-
