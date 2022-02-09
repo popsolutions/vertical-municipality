@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2022 popsolutions
+     License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+
+<odoo>
+
+    <record model="ir.ui.view" id="property_ga_tax_form_view">
+        <field name="name">property.ga.tax.form (in property_ga_maintenance)</field>
+        <field name="model">property.ga.tax</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="date"/>
+                        <field name="tax_index"/>
+                        <field name="last_tax"/>
+                        <field name="current_tax"/>
+                        <field name="land_id"/>
+                    </group>
+                </sheet>
+                <div class="oe_chatter"></div>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="property_ga_tax_search_view">
+        <field name="name">property.ga.tax.search (in property_ga_maintenance)</field>
+        <field name="model">property.ga.tax</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="land_id"/>
+                <field name="date"/>
+                <field name="tax_index"/>
+                <field name="last_tax"/>
+                <field name="current_tax"/>
+            </search>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="property_ga_tax_tree_view">
+        <field name="name">property.ga.tax.tree (in property_ga_maintenance)</field>
+        <field name="model">property.ga.tax</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="land_id"/>
+                <field name="date"/>
+                <field name="tax_index"/>
+                <field name="last_tax"/>
+                <field name="current_tax"/>
+            </tree>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="property_ga_tax_act_window">
+        <field name="name">Property Ga Tax</field>
+        <field name="res_model">property.ga.tax</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[]</field>
+        <field name="context">{}</field>
+    </record>
+
+    <record model="ir.ui.menu" id="property_ga_tax_menu">
+        <field name="name">Property Ga Tax</field>
+        <field name="parent_id" ref="property_base.root_menu"/>
+        <field name="action" ref="property_ga_tax_act_window"/>
+        <field name="sequence" eval="25"/>
+    </record>
+
+</odoo>
+
