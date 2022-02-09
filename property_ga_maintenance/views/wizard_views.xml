@@ -4,18 +4,17 @@
 
 <odoo>
 
-    <record model="ir.ui.view" id="property_water_consumption_wizard_form_view">
-        <field name="name">property.water.consumption.wizard.form</field>
-        <field name="model">property.water.consumption.wizard</field>
+    <record model="ir.ui.view" id="property_ga_maintenance_wizard_form_view">
+        <field name="name">property.ga.maintenance.wizard.form.view</field>
+        <field name="model">property.ga.tax.wizard</field>
         <field name="arch" type="xml">
-            <form string="Create Water Consumptions">
+            <form string="Create Green Area Tax">
                 <group>
-                    <div>Click on <strong>Create Water Consumptions</strong> to process this month's Water
-                        Consumptions</div>
+                    <div>Click on <strong>Create Green Area Tax</strong> to process this month's Create Green Area Tax</div>
                 </group>
                 <footer>
-                    <button name="process_batch_water_consumptions" type="object"
-                            string="Create Water Consumptions" class="oe_highlight"/>
+                    <button name="process_batch_property_ga_maintenance" type="object"
+                            string="Create Green Area Tax" class="oe_highlight"/>
                     or
                     <button special="cancel" string="Cancel"/>
                 </footer>
@@ -24,18 +23,18 @@
         </field>
     </record>
 
-    <record id="property_water_consumption_wizard" model="ir.actions.act_window">
-        <field name="name">Create Batch Water Consumptions</field>
-        <field name="res_model">property.water.consumption.wizard</field>
+    <record id="property_ga_maintenance_wizard" model="ir.actions.act_window">
+        <field name="name">Create Green Area Tax</field>
+        <field name="res_model">property.ga.tax.wizard</field>
         <field name="view_mode">form</field>
         <field name="target">new</field>
     </record>
 
     <menuitem
-            id="property_water_consumption_wizard_menu"
-            name="Create Batch Water Consumptions"
-            action="property_water_consumption_wizard"
+            id="property_ga_maintenance_wizard_menu"
+            name="Create Green Area Tax"
+            action="property_ga_maintenance_wizard"
             parent="property_base.property_wizards_menu"
-            sequence="30"/>
+            sequence="40"/>
 
 </odoo>

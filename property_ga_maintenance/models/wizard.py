@@ -3,10 +3,9 @@ from odoo import fields, models, api
 
 class PropertyWaterConsumptionWizard(models.TransientModel):
 
-    _name = 'property.water.consumption.wizard'
-    _description = 'Property Water Consumption Wizard'
+    _name = 'property.ga.tax.wizard'
+    _description = 'Property Green Area Maintenance Tax Wizard'
 
-    def process_batch_water_consumptions(self):
-        self.env['property.water.consumption'].create_batch_water_consumptions()
-
-        return self.env.ref('property_water_consumption.water_consumption_action').read()[0]
+    def process_batch_property_ga_maintenance(self):
+        self.env['property.ga.tax'].process_batch_property_ga_maintenance()
+        # return self.env.ref('property_ga_tax.property_ga_tax_act_window').read()[0]
