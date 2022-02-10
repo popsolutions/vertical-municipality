@@ -33,13 +33,29 @@ class AccountInvoice(models.Model):
                                                     'cancel'])])
         inv_land_ids = inv_ids.mapped('land_id').ids
 
+        records_len = len(property_tax_ids)
+        records_index = 0
+
         for p_tax in property_tax_ids:
             if p_tax.land_id.id not in inv_land_ids:
                 self._create_property_tax_customer_invoice(
                     p_tax, product_id, account_id)
-            # else:
-                #TODO: Add new lines to invoice
+            else:
+                inv_id = self.search([('land_id', '=', p_tax.land_id.id), ('state', 'not in', ['in_payment',
+                                                                                              'paid',
+                                                                                              'cancel'])], limit=1)
+                inv_id.write({'invoice_line_ids': [(0, 0, {
+                    'product_id': product_id.id,
+                    'name': product_id.name,
+                    'price_unit': p_tax.amount_total,
+                    'account_id': account_id.id,
+                    'invoice_line_tax_ids': [(6, 0, product_id.taxes_id.ids)],
+                })]})
             p_tax.state = 'processed'
+
+            records_index += 1
+            print('account.invoice - property.tax - record ' + str(records_index) + '/' + str(records_len))
+
 
     @api.multi
     def _create_property_tax_customer_invoice(self, p_tax, product_id, account_id):
