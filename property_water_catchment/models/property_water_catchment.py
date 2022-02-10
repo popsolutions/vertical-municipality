@@ -62,7 +62,3 @@ select nextval('property_water_catchment_id_seq') id,
        ) 
 """
         self.env.cr.execute(sql)
-
-    _sql_constraints = [
-        ('property_water_catchment_monthly_rate_year_month_uniq', 'unique (year_month)', 'Ano/Mês duplicado !')
-    ]

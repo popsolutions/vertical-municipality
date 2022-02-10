@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2021 - TODAY, Marcel Savegnago <marcel.savegnago@gmail.com>
+     License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+
+<odoo>
+
+    <record model="ir.ui.view" id="property_land_form_view">
+        <field name="name">property.land.form (in property_water_catchment)</field>
+        <field name="model">property.land</field>
+        <field name="inherit_id" ref="property_base.property_land_form_view"/>
+        <field name="arch" type="xml">
+            <notebook position="inside">
+                <page name="property_water_catchment_ids_page" string="Water Catchment">
+                    <field name="property_water_catchment_ids" readonly="1"/>
+                </page>
+            </notebook>
+        </field>
+    </record>
+</odoo>
