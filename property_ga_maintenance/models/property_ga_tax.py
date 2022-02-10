@@ -19,6 +19,7 @@ class PropertyGaTax(models.Model):
     last_tax = fields.Float('Last Tax')
     current_tax = fields.Float('Current Tax')
 
+
     def process_batch_property_ga_maintenance(self):
         current_year_month = datetime.today().strftime("%Y%m")
         old_year_month = (datetime.today() - relativedelta(months=1)).strftime("%Y%m")

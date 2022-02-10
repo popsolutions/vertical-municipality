@@ -3,6 +3,11 @@
      License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
 
 <odoo>
-    <menuitem name="Catchment Monthly Rate" id="property_water_catchment_monthly_rate_menu" parent="property_base.root_menu" sequence="30"
+    <menuitem name="Catchment Rate" id="property_water_catchment_main_menu" parent="property_base.root_menu" sequence="15"/>
+
+    <menuitem name="Catchment Monthly Rate" id="property_water_catchment_monthly_rate_menu" parent="property_water_catchment.property_water_catchment_main_menu" sequence="10"
               action="property_water_catchment_monthly_rate_menu_action"/>
+
+    <menuitem name="Property Water Catchment" id="property_water_catchment_menu" parent="property_water_catchment.property_water_catchment_main_menu" sequence="20"
+              action="property_water_catchment_act_window"/>
 </odoo>

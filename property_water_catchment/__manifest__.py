@@ -16,8 +16,8 @@
         'data/products.xml',
         'views/property_water_catchment_monthly_rate_view_form.xml',
         'views/menu.xml',
-        'views/property_water_consumption.xml',
+        'views/property_water_catchment.xml',
+        'views/wizard_views.xml',
         'security/ir.model.access.csv'
-
     ],
 }

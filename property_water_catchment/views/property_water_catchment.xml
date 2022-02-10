@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2022 popsolutions
+     License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+
+<odoo>
+
+    <record model="ir.ui.view" id="property_water_catchment_form_view">
+        <field name="name">property.water.catchment.form (in property_water_catchment)</field>
+        <field name="model">property.water.catchment</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="date"/>
+                        <field name="rate_catchment"/>
+                        <field name="state"/>
+                        <field name="land_id"/>
+                    </group>
+                </sheet>
+                <div class="oe_chatter"></div>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="property_water_catchment_search_view">
+        <field name="name">property.water.catchment.search (in property_water_catchment)</field>
+        <field name="model">property.water.catchment</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="land_id"/>
+                <field name="date"/>
+                <field name="rate_catchment"/>
+                <field name="state"/>
+            </search>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="property_water_catchment_tree_view">
+        <field name="name">property.water.catchment.tree (in property_water_catchment)</field>
+        <field name="model">property.water.catchment</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="land_id"/>
+                <field name="date"/>
+                <field name="rate_catchment"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="property_water_catchment_act_window">
+        <field name="name">Property Water Catchment</field>
+        <field name="res_model">property.water.catchment</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[]</field>
+        <field name="context">{}</field>
+    </record>
+
+</odoo>
+
