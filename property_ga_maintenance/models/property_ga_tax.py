@@ -18,7 +18,11 @@ class PropertyGaTax(models.Model):
     tax_index = fields.Float('Tax index')
     last_tax = fields.Float('Last Tax')
     current_tax = fields.Float('Current Tax')
-
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('pending', 'Pending'),
+        ('processed', 'Processed')
+        ], default='draft')
 
     def process_batch_property_ga_maintenance(self):
         current_year_month = datetime.today().strftime("%Y%m")

@@ -15,6 +15,7 @@
                         <field name="tax_index"/>
                         <field name="last_tax"/>
                         <field name="current_tax"/>
+                        <field name="state"/>
                         <field name="land_id"/>
                     </group>
                 </sheet>
@@ -33,6 +34,7 @@
                 <field name="tax_index"/>
                 <field name="last_tax"/>
                 <field name="current_tax"/>
+                <field name="state"/>
             </search>
         </field>
     </record>
@@ -47,6 +49,7 @@
                 <field name="tax_index"/>
                 <field name="last_tax"/>
                 <field name="current_tax"/>
+                <field name="state"/>
             </tree>
         </field>
     </record>

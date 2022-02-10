@@ -1,13 +1,13 @@
 <odoo>
     <data noupdate="1">
-        <record id="product_property_water_catchment" model="product.product">
-            <field name="name">Property Water Catchment</field>
+        <record id="property_ga_maintenance" model="product.product">
+            <field name="name">Property Green Area Maintenance Tax</field>
             <field name="standard_price">0.00</field>
             <field name="list_price">0.00</field>
             <field name="type">service</field>
             <field name="purchase_ok">0</field>
             <field name="sale_ok">1</field>
-            <field name="default_code">PROPWC</field>
+            <field name="default_code">PROPGT</field>
             <field name="description">This product is used in Property Management module</field>
         </record>
     </data>
