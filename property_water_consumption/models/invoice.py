@@ -30,6 +30,9 @@ class AccountInvoice(models.Model):
                                                     'cancel'])])
         inv_land_ids = inv_ids.mapped('land_id').ids
 
+        records_len = len(property_wc_ids)
+        records_index = 0
+
         for p_wc in property_wc_ids:
             if p_wc.land_id.id not in inv_land_ids:
                 self._create_property_wc_customer_invoice(
@@ -46,6 +49,10 @@ class AccountInvoice(models.Model):
                     'invoice_line_tax_ids': [(6, 0, product_id.taxes_id.ids)],
                  })]})
             p_wc.state = 'processed'
+
+            records_index += 1
+            print('account.invoice - property.water.consumption - record ' + str(records_index) + '/' + str(records_len))
+
 
     @api.multi
     def _create_property_wc_customer_invoice(self, p_wc, product_id, account_id):
