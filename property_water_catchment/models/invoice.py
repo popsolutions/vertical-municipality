@@ -17,7 +17,7 @@ class AccountInvoice(models.Model):
     @api.multi
     def process_property_water_catchment(self):
         """Main method that will be executed by the cron job
-        and will create all of invoices from their pending water consumptions"""
+        and will create all of invoices from their pending water catchment"""
         product_id = self.env.ref('property_water_catchment.product_property_water_catchment')
         account_id = product_id.product_tmpl_id.get_product_accounts()[
             'income']
@@ -33,7 +33,7 @@ class AccountInvoice(models.Model):
         records_len = len(property_wc_ids)
         records_index = 0
 
-        for p_wc in property_wc_ids:
+        for p_wc in self.web_progress_iter(property_wc_ids, msg="Process Water Catchment"):
             if p_wc.land_id.id not in inv_land_ids:
                 self._create_property_wcc_customer_invoice(
                     p_wc, product_id, account_id)

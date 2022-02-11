@@ -33,7 +33,7 @@ class AccountInvoice(models.Model):
         records_len = len(property_wc_ids)
         records_index = 0
 
-        for p_wc in property_wc_ids:
+        for p_wc in self.web_progress_iter(property_wc_ids, msg="Process Green Area Tax"):
             if p_wc.land_id.id not in inv_land_ids:
                 self._create_property_ga_customer_invoice(
                     p_wc, product_id, account_id)

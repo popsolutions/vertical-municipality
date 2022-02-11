@@ -36,7 +36,7 @@ class AccountInvoice(models.Model):
         records_len = len(property_tax_ids)
         records_index = 0
 
-        for p_tax in property_tax_ids:
+        for p_tax in self.web_progress_iter(property_tax_ids, msg="Process Property taxes"):
             if p_tax.land_id.id not in inv_land_ids:
                 self._create_property_tax_customer_invoice(
                     p_tax, product_id, account_id)
