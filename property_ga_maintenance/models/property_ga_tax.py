@@ -11,6 +11,7 @@ class PropertyGaTax(models.Model):
     _description = 'Property Green Area Maintenance Tax'
     _order = 'date desc'
 
+    name = fields.Char(compute='_compute_name', store=True)
     land_id = fields.Many2one('property.land')
     # property_land_address = fields.Text('property.land', related='land_id.address', readonly=True)
     # property_land_number = fields.Integer('property.land', related='land_id.number', readonly=True)
@@ -23,6 +24,13 @@ class PropertyGaTax(models.Model):
         ('pending', 'Pending'),
         ('processed', 'Processed')
         ], default='draft')
+
+    @api.depends('date', 'land_id')
+    def _compute_name(self):
+        for rec in self:
+            rec.name = "{}/{}".format(
+                rec.date.strftime('%m-%Y'),
+                rec.land_id.name)
 
     def process_batch_property_ga_maintenance(self):
         current_year_month = datetime.today().strftime("%Y%m")

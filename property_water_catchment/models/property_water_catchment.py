@@ -11,6 +11,7 @@ class PropertyGaTax(models.Model):
     _description = 'Property Water Catchment'
     _order = 'date desc'
 
+    name = fields.Char(compute='_compute_name', store=True)
     land_id = fields.Many2one('property.land')
     date = fields.Date(default=fields.Date.context_today)
     rate_catchment = fields.Float('Rate Catchment')
@@ -20,6 +21,12 @@ class PropertyGaTax(models.Model):
         ('processed', 'Processed')
         ], default='draft')
 
+    @api.depends('date', 'land_id')
+    def _compute_name(self):
+        for rec in self:
+            rec.name = "{}/{}".format(
+                rec.date.strftime('%m-%Y'),
+                rec.land_id.name)
     @api.multi
     def _compute_catchment_rate_current_month(self):
         current_year_month = datetime.now().strftime("%Y%m")
