@@ -72,6 +72,7 @@ class AccountInvoice(models.Model):
             'account_id': p_tax.land_id.owner_id.property_account_receivable_id.id,
             'partner_id': p_tax.land_id.owner_id.id,
             'origin': p_tax.name,
+            'date_invoice': fields.Date.today(),
             'land_id': p_tax.land_id.id,
             'invoice_line_ids': [(0, 0, inv_line_vals)],
         }
