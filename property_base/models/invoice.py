@@ -1,8 +1,10 @@
 # Copyright 2021 - TODAY, Marcel Savegnago <marcel.savegnago@gmail.com>
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
+import logging
 
 from odoo import api, fields, models
-
+import logging
+_logger = logging.getLogger(__name__)
 
 class AccountInvoice(models.Model):
 
@@ -31,3 +33,71 @@ class AccountInvoice(models.Model):
                 getattr(self, method)()
             else:
                 _logger.info("The {} method wasn't found".format(method))
+
+    @api.multi
+    def process_property_invoice(self, productIdName, modelName, modelLabel, price_unitFieldName, domain=None):
+        """Main method that will be executed by the cron job
+        and will create all of invoices from their pending <modelName> param"""
+        product_id = self.env.ref(productIdName)
+        account_id = product_id.product_tmpl_id.get_product_accounts()[
+            'income']
+
+        if domain:
+            property_wc_ids_domain = domain
+        else:
+            property_wc_ids_domain = [('state', 'not in', ['processed'])]
+
+        property_wc_ids = self.env[modelName].search(property_wc_ids_domain)
+
+        inv_ids = self.search([('land_id', '!=', False),
+                               ('state', 'not in', ['in_payment',
+                                                    'paid',
+                                                    'cancel'])])
+        inv_land_ids = inv_ids.mapped('land_id').ids
+
+        records_len = len(property_wc_ids)
+        records_index = 0
+
+        for p_wc in self.web_progress_iter(property_wc_ids, msg="Process " + modelLabel):
+
+            if p_wc.land_id.id not in inv_land_ids:
+                self._create_property_customer_invoice(
+                    p_wc, product_id, account_id, price_unitFieldName)
+            else:
+                inv_id = self.search([('land_id', '=', p_wc.land_id.id), ('state', 'not in', ['in_payment',
+                                                                                              'paid',
+                                                                                              'cancel'])], limit=1)
+                inv_id.write({'invoice_line_ids': [(0, 0, {
+                    'product_id': product_id.id,
+                    'name': product_id.name,
+                    'price_unit': p_wc[price_unitFieldName],
+                    'account_id': account_id.id,
+                    'invoice_line_tax_ids': [(6, 0, product_id.taxes_id.ids)],
+                })]})
+            p_wc.state = 'processed'
+
+            records_index += 1
+            _logger.info('account.invoice - ' + modelName + ' - record ' + str(records_index) + '/' + str(records_len))
+
+    @api.multi
+    def _create_property_customer_invoice(self, p_wc, product_id, account_id, price_unitFieldName):
+        invoice_owner_id = p_wc.land_id.getInvoiceOwner_id()
+
+        inv_line_vals = {
+            'product_id': product_id.id,
+            'name': product_id.name,
+            'price_unit': p_wc[price_unitFieldName],
+            'account_id': account_id.id,
+            'invoice_line_tax_ids': [(6, 0, product_id.taxes_id.ids)],
+        }
+        inv_data = {
+            'type': 'out_invoice',
+            'account_id': invoice_owner_id.property_account_receivable_id.id,
+            'partner_id': invoice_owner_id.id,
+            'origin': p_wc.display_name,
+            'date_invoice': fields.Date.today(),
+            'land_id': p_wc.land_id.id,
+            'invoice_line_ids': [(0, 0, inv_line_vals)],
+        }
+        self.sudo().create(inv_data)
+
