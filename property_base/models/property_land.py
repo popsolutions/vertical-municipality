@@ -45,6 +45,11 @@ class PropertyLand(models.Model):
         'Owner',
         track_visibility='onchange'
     )
+    owner_invoice_id = fields.Many2one(
+        'res.partner',
+        'Owner Invoice',
+        track_visibility='onchange'
+    )
     module_id = fields.Many2one(
         'property.land.module',
         'Module',
@@ -160,3 +165,6 @@ class PropertyLand(models.Model):
         tools.image_resize_images(vals, sizes={'image': (1024, None)})
         result = super(PropertyLand, self).write(vals)
         return result
+
+    def getInvoiceOwner_id(self):
+        return self.owner_invoice_id or self.owner_id
