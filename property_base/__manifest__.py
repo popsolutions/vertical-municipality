@@ -15,7 +15,7 @@
     'category': 'Uncategorized',
     'version': '12.0.0.1.0',
     'depends': [
-        'account',
+        'account', 'l10n_br_account_payment_order'
     ],
     'data': [
         'views/property_land.xml',
