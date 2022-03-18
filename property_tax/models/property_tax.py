@@ -81,7 +81,7 @@ class PropertyTax(models.Model):
             ('active','=', True), ('state', '=', 'done')]
         )
         formula = self._get_formula()
-        for land in land_ids:
+        for land in self.web_progress_iter(land_ids, msg='Process Batch Tax'):
             self._process_tax_amount_and_lines(land, formula)
 
     def _process_tax_amount_and_lines(self, land, formula):
