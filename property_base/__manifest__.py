@@ -26,6 +26,7 @@
         'views/property_land_type.xml',
         'views/property_land_usage.xml',
         'views/property_land_zone.xml',
+        'views/account_portal_templates.xml',
         'views/menu.xml',
         'views/res_partner_views.xml',
         'views/invoice_views.xml',

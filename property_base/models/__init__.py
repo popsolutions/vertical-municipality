@@ -8,4 +8,4 @@ from . import property_land_usage
 from . import property_land_zone
 from . import res_partner
 from . import invoice
-from . import wizard, account_move_line, mail_template
+from . import wizard, account_move_line, mail_template, account_invoice

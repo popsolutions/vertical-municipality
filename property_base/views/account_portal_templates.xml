@@ -1,0 +1,25 @@
+<odoo>
+    <template id="portal_invoice_payment_boleto" name="Boleto" inherit_id="account.portal_my_invoices">
+        <xpath expr="//t[@t-call='portal.portal_table']/thead/tr/th" position="after">
+            <th class="text-center">Boleto</th>
+        </xpath>
+        <xpath expr="//t[@t-foreach='invoices']/tr/td" position="after">
+            <td class="text-center">
+                <t t-set="tx_ids" t-value="invoice.transaction_ids.filtered(lambda tx: tx.state in ('pending', 'authorized', 'done'))"/>
+                <t t-set="pending_manual_txs" t-value="tx_ids.filtered(lambda tx: tx.state == 'pending' and tx.acquirer_id.provider in ('transfer', 'manual'))"/>
+                <a t-if="invoice.state == 'open' and invoice.amount_total and invoice.type == 'out_invoice' and (pending_manual_txs or not tx_ids)"
+                    t-att-href="invoice.get_portal_url(query_string='/bank_slip')" title="Boleto" aria-label="Pay now" class="btn btn-sm btn-primary" role="button">
+                    <i class="fa fa-arrow-circle-right"/><span class='d-none d-md-inline'>Boleto</span>
+                </a>
+            </td>
+        </xpath>
+    </template>
+
+<!--    <template id="portal_invoice_page_boleto" name="Boleto" inherit_id="account.portal_invoice_page">-->
+<!--        <xpath expr="//iframe[@id='invoice_html']" position="replace">-->
+<!--            <h1>teste</h1>-->
+<!--            <iframe id="invoice_html" class="mt8 mb8" width="100%" height="100%" frameborder="0" scrolling="no" t-att-src="invoice.get_portal_url(report_type='pdf')"/>-->
+<!--        </xpath>-->
+
+<!--    </template>-->
+</odoo>
