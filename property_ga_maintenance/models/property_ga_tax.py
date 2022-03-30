@@ -33,15 +33,29 @@ class PropertyGaTax(models.Model):
                 rec.land_id.name)
 
     def process_batch_property_ga_maintenance(self):
-        current_year_month = datetime.today().strftime("%Y%m")
-        old_year_month = (datetime.today() - relativedelta(months=1)).strftime("%Y%m")
+        self.env.cr.execute("select to_char(t.maxdate, 'yyyy') old_year, to_char(t.maxdate, 'mm') old_month from (select max(date) maxdate from property_ga_tax) t")
+        res = self.env.cr.fetchall()
+        old_year = int(res[0][0])
+        old_month = int(res[0][1])
+
+        current_month = old_month + 1
+        current_year = old_year
+
+        if current_month > 12:
+            current_year = current_year + 1
+            current_month = 1
+
+        old_year_month = str(old_year) + str(old_month).zfill(2)
+        current_year_month = str(current_year) + str(current_month).zfill(2)
+
+        date = str(current_year) + '-' + str(current_month).zfill(2) + '-01 23:00:00'
 
         # This query inserts in the current month the green area calculation (property_ga_tax) based on the values of the previous month
         insert_property_ga_tax_From_Old_Month = """
 insert into property_ga_tax(id,land_id,"date",tax_index,last_tax,current_tax,create_uid,create_date,write_uid,write_date)
 select nextval('property_ga_tax_id_seq') id,
        pl.id land_id,
-       current_date "date",
+       '""" + date + """' "date",
        rcs.property_ga_tax_index tax_index,
        coalesce(pgt_old.current_tax, pl.tax_ga_initial_value) last_tax,
        coalesce(pgt_old.current_tax, pl.tax_ga_initial_value) * rcs.property_ga_tax_index current_tax,

@@ -29,14 +29,24 @@ class PropertyGaTax(models.Model):
                 rec.land_id.name)
     @api.multi
     def _compute_catchment_rate_current_month(self):
-        current_year_month = datetime.now().strftime("%Y%m")
+        self.env.cr.execute("select to_char(t.maxdate, 'yyyy') old_year, to_char(t.maxdate, 'mm') old_month from (select max(date) maxdate from property_water_catchment pwc) t")
+        res = self.env.cr.fetchall()
+        current_year = int(res[0][0])
+        current_month = int(res[0][1]) + 1
+
+        if current_month > 12:
+            current_year = current_year + 1
+            current_month = 1
+
+        current_year_month = str(current_year) + str(current_month).zfill(2)
+        date = str(current_year) + '-' + str(current_month).zfill(2) + '-01'
 
         #this sql calculate  set property_water_consumption.rate_catchment values
         sql = """
 insert into property_water_catchment (id, land_id,"date",rate_catchment,state,create_uid,create_date,write_uid,write_date)
 select nextval('property_water_catchment_id_seq') id,
        w.land_id,
-       current_date "date",
+       '""" + date + """' "date",
        round((w.consumption * t.factor_rate_catchment_monthy)::numeric, 2) rate_catchment,
        'draft' state,
        1 create_uid,
