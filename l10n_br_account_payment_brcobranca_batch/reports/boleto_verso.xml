@@ -2,18 +2,18 @@
 <odoo>
   <data>
     <template id="report_invoice_boleto_verso">
-      <t t-call="web.html_container">
+<!--      <t t-call="web.html_container">-->
         <t t-foreach="docs" t-as="o">
           <t t-set="lang"
              t-value="o.user_id.sudo().lang if o.type in ('in_invoice', 'in_refund') else o.partner_id.lang"/>
           <t t-call="l10n_br_account_payment_brcobranca_batch.report_invoice_boleto_frente" t-lang="lang"/>
           <t t-call="l10n_br_account_payment_brcobranca_batch.report_invoice_boleto_verso_report" t-lang="lang"/>
         </t>
-      </t>
+<!--      </t>-->
     </template>
 
     <template id="report_invoice_boleto_verso_report">
-      <t t-call="web.external_layout">
+      <t t-call="web.basic_layout">
                         <t t-set="o" t-value="o.with_context(lang=lang)" />
          <h1>.</h1>
         <div class="header" t-att-style="report_header_style">
@@ -56,8 +56,7 @@
             <span>Tel.: Contas à Receber (13) 3319-5012 - e-mail: dcr@rivierasl.com.br Entregue aos correios em</span>
             <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d/%m/%Y')"/>
           </div>
-
-          <div class="footer o_standard_footer">
+          <div style="position:absolute;top:850px; page-break-inside: avoid;">
             <span>O PAGAMENTO DESTA CONTA NÃO QUITA DÉBITOS ANTERIORES.</span>
             <span>Faça a opção para receber sua FATURA DIGITAL, cadastre seu e-mail</span>
             <span>junto ao dcr@rivierasl.com.br</span>

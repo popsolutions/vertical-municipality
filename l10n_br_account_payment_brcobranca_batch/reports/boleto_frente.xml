@@ -2,7 +2,7 @@
 <odoo>
     <data>
         <template id="report_invoice_boleto_frente">
-            <t t-call="web.external_layout">
+            <t t-call="web.basic_layout">
                 <t t-set="o" t-value="o.with_context(lang=lang)" />
                 <t t-set="address">
                     <address t-field="o.partner_id" t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": True}' />

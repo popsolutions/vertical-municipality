@@ -40,7 +40,7 @@ class ReportControllerInherited(ReportController):
                     del data['context']['lang']
                 context.update(data['context'])
 
-            pdfVersoBoleto = report.with_context(context).render_qweb_pdf(docids, data=data)[0]
+            pdfVersoBoleto = report.with_context(context).render_qweb_pdf(docids, data=data)
 
             # pdfhttpheaders = [('Content-Type', 'application/pdf'), ('Content-Length', len(pdfVersoBoleto))]
             # jpdfres = request.make_response(pdfVersoBoleto, headers=pdfhttpheaders)
@@ -52,7 +52,7 @@ class ReportControllerInherited(ReportController):
             pdfBoleto = account_invoice.gera_boleto_pdf_multi()
 
             #Join PDFs
-            jpdf = join_two_pdf([pdfBoleto, base64.b64encode(pdfVersoBoleto)])
+            jpdf = join_two_pdf([pdfBoleto, base64.b64encode(pdfVersoBoleto[0])])
 
             pdfhttpheaders = [('Content-Type', 'application/pdf'), ('Content-Length', len(jpdf))]
             jpdfres = request.make_response(jpdf, headers=pdfhttpheaders)
@@ -73,10 +73,11 @@ def join_two_pdf(pdf_chunks: List[bytes]) -> bytes:
         raise Exception('PDFs(Boleto e verso do boleto) o número de páginas está incompatível.')
 
     pageNum = 0
-    while pageNum < len(pdfVerso.pages):
+    while pageNum < len(pdfBoleto.pages):
+        pageFatura = pageNum * 2
         page_Boleto = Page(pdfBoleto.pages[pageNum])
-        page_Fatura = Page(pdfVerso.pages[pageNum])
-        page_Verso = Page(pdfVerso.pages[pageNum + 1])
+        page_Fatura = Page(pdfVerso.pages[pageFatura])
+        page_Verso = Page(pdfVerso.pages[pageFatura + 1])
 
         # page_Boleto.cropbox = Rectangle(0, 395, page_Boleto.width, page_Boleto.height)
         page_Boleto.cropbox = [0, 0, 595, 395]
@@ -85,7 +86,7 @@ def join_two_pdf(pdf_chunks: List[bytes]) -> bytes:
         result_pdf.pages.append(page_Fatura)
         result_pdf.pages.append(page_Verso)
 
-        pageNum += 2
+        pageNum += 1
 
     # Writes all bytes to bytes-stream
     response_bytes_stream = io.BytesIO()
