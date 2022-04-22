@@ -1,50 +1,102 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
-        <template id="report_invoice_boleto_verso">
-            <t t-call="web.html_container">
-                <t t-foreach="docs" t-as="o">
-                  <t t-set="lang" t-value="o.user_id.sudo().lang if o.type in ('in_invoice', 'in_refund') else o.partner_id.lang"/>
-<!--                  <t t-call="account_payment.portal_invoice_payment" t-lang="lang"/>-->
-                  <!--                    <t t-call="account_payment.portal_invoice_payment" t-lang="lang"/>-->
+  <data>
+    <template id="report_invoice_boleto_verso">
+      <t t-call="web.html_container">
+        <t t-foreach="docs" t-as="o">
+          <t t-set="lang"
+             t-value="o.user_id.sudo().lang if o.type in ('in_invoice', 'in_refund') else o.partner_id.lang"/>
+          <t t-call="l10n_br_account_payment_brcobranca_batch.report_invoice_boleto_frente" t-lang="lang"/>
+          <t t-call="l10n_br_account_payment_brcobranca_batch.report_invoice_boleto_verso_report" t-lang="lang"/>
+        </t>
+      </t>
+    </template>
 
-<!--                  <t t-call="account.report_invoice_document_with_payments" t-lang="lang"/>-->
-                  <t t-call="l10n_br_account_payment_brcobranca_batch.report_invoice_boleto_frente" t-lang="lang"/>
-                  <t t-call="l10n_br_account_payment_brcobranca_batch.report_invoice_boleto_verso_report" t-lang="lang"/>
-                </t>
-            </t>
-        </template>
+    <template id="report_invoice_boleto_verso_report">
+      <t t-call="web.external_layout">
+                        <t t-set="o" t-value="o.with_context(lang=lang)" />
+         <h1>.</h1>
+        <div class="header" t-att-style="report_header_style">
+          <img class="img" src="/l10n_br_account_payment_brcobranca_batch/static/img/para uso do correio.png"/>
+        </div>
 
-        <template id="report_invoice_boleto_verso_report">
-            <t t-call="web.external_layout">
-<!--                <t t-set="o" t-value="o.with_context(lang=lang)" />-->
-                 <div class="text-center">
-                    <t t-set="address">
-                        <h1>. </h1>
-                        <h1>. </h1>
-                        <h1>. </h1>
-                        <address t-field="o.partner_id" t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": True}' />
-                        <div t-if="o.partner_id.vat" class="mt16"><t t-esc="o.company_id.country_id.vat_label or 'Tax ID'"/>: <span t-field="o.partner_id.vat"/></div>
-                    </t>
-                </div>
-                <a t-att-href="o.get_portal_url()" t-att-title="o.number">
-                    <t t-esc="o.number" t-if="o.number"/>
-                    <em t-else="">Draft Invoice</em>
-                </a>
-                <t t-value="o.get_portal_url()"/>
-            </t>
-        </template>
+        <div>
+          <div>
+            <t t-set="data_report_margin_top" t-value="100"/>
+            <div><span>Remetende: ASSOCIACAO DOS AMIGOS DA RIVIERA DE SAO LOURENCO</span></div>
+            <div><span>Endereço: Caixa Posta n. 01</span></div>
 
-        <report
-            id="l10n_br_account_payment_brcobranca_batch.report_invoice_boleto_verso_report_id"
-            model="account.invoice"
-            string="Boleto/Verso"
-            report_type="qweb-pdf"
-            name="l10n_br_account_payment_brcobranca_batch.report_invoice_boleto_verso"
-            file="l10n_br_account_payment_brcobranca_batch.report_invoice_boleto_verso"
-            attachment="(object.state in ('open','in_payment','paid')) and ('INV'+(object.number or '').replace('/','')+'.pdf')"
-            print_report_name="(object._get_report_base_filename())"
-            groups="account.group_account_invoice"
-        />
-    </data>
+            <div><span>Cep: 11261-318</span></div>
+          </div>
+
+          <img class="img" src="/l10n_br_account_payment_brcobranca_batch/static/img/img carta.png"/>
+
+          <div class="text-center">
+            <span t-field="o.partner_id.name"/>
+            <span t-field="o.land_id.module_id.code"/>
+            <span>/</span>
+            <span t-field="o.land_id.block_id.code"/>
+            <span> / </span>
+            <span t-field="o.land_id.lot_id.code"/>
+          </div>
+
+          <div class="text-center">
+            <span t-field="o.partner_id.street_name"/>
+            <span t-field="o.partner_id.street_number"/>
+            <span> </span>
+            <span t-field="o.partner_id.street2"/>
+            <span t-field="o.partner_id.district"/>
+            <span t-field="o.partner_id.city"/>
+            <span t-field="o.partner_id.city_id.state_id.code"/>
+          </div>
+          <div class="text-center">
+            <span t-field="o.partner_id.zip"/>
+          </div>
+          <div class="text-center">
+            <span>Tel.: Contas à Receber (13) 3319-5012 - e-mail: dcr@rivierasl.com.br Entregue aos correios em</span>
+            <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d/%m/%Y')"/>
+          </div>
+
+          <div class="footer o_standard_footer">
+            <span>O PAGAMENTO DESTA CONTA NÃO QUITA DÉBITOS ANTERIORES.</span>
+            <span>Faça a opção para receber sua FATURA DIGITAL, cadastre seu e-mail</span>
+            <span>junto ao dcr@rivierasl.com.br</span>
+            <span>AS INFORMAÇÕES DA QUALIDADE DA ÁGUA PRODUZIDA PELA AARSL, ESTÃO DISPONÍVEIS</span>
+            <span>NO SITE DA RIVIERA www.rivieradesaolourenco.com.br NO LINK DA AARSL. CONFORME</span>
+            <span>DECRETO No 5440 DE 04/05/2005.</span>
+          </div>
+        </div>
+        <div id="informations" class="row mt32 mb32">
+          <div class="col-auto mw-100 mb-2" t-if="o.name" name="description">
+            <strong>Description:</strong>
+            <p class="m-0" t-field="o.number"/>
+          </div>
+        </div>
+        <!--                 <div class="text-center">-->
+        <!--                    <t t-set="address">-->
+        <!--&lt;!&ndash;                      <img class="img" src="/l10n_br_account_payment_brcobranca_batch/static/img/para uso do correio.png" style="height:45%;width:100%;" />&ndash;&gt;-->
+        <!--                        <address t-field="o.partner_id" t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": True}' />-->
+        <!--                        <div t-if="o.partner_id.vat" class="mt16"><t t-esc="o.company_id.country_id.vat_label or 'Tax ID'"/>: <span t-field="o.partner_id.vat"/></div>-->
+        <!--                    </t>-->
+        <!--                </div>-->
+        <a t-att-href="o.get_portal_url()" t-att-title="o.number">
+          <t t-esc="o.number" t-if="o.number"/>
+          <em t-else="">Draft Invoice</em>
+        </a>
+        <t t-value="o.get_portal_url()"/>
+      </t>
+    </template>
+
+    <report
+      id="l10n_br_account_payment_brcobranca_batch.report_invoice_boleto_verso_report_id"
+      model="account.invoice"
+      string="Boleto/Verso"
+      report_type="qweb-html"
+      name="l10n_br_account_payment_brcobranca_batch.report_invoice_boleto_verso"
+      file="l10n_br_account_payment_brcobranca_batch.report_invoice_boleto_verso"
+      attachment="(object.state in ('open','in_payment','paid')) and ('INV'+(object.number or '').replace('/','')+'.pdf')"
+      print_report_name="(object._get_report_base_filename())"
+      groups="account.group_account_invoice"
+    />
+  </data>
 </odoo>
