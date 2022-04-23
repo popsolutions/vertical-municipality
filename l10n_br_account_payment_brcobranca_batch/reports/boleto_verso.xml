@@ -16,7 +16,8 @@
       <t t-call="web.basic_layout">
                         <t t-set="o" t-value="o.with_context(lang=lang)" />
          <h1>.</h1>
-        <div class="header" t-att-style="report_header_style">
+        <!-- <div class="header" t-att-style="report_header_style"> -->
+        <div>
           <img class="img" src="/l10n_br_account_payment_brcobranca_batch/static/img/para uso do correio.png"/>
         </div>
 
@@ -56,7 +57,7 @@
             <span>Tel.: Contas à Receber (13) 3319-5012 - e-mail: dcr@rivierasl.com.br Entregue aos correios em</span>
             <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d/%m/%Y')"/>
           </div>
-          <div style="position:absolute;top:850px; page-break-inside: avoid;">
+          <div style="position:absolute;top:1250px; page-break-inside: avoid;">
             <span>O PAGAMENTO DESTA CONTA NÃO QUITA DÉBITOS ANTERIORES.</span>
             <span>Faça a opção para receber sua FATURA DIGITAL, cadastre seu e-mail</span>
             <span>junto ao dcr@rivierasl.com.br</span>
@@ -90,7 +91,7 @@
       id="l10n_br_account_payment_brcobranca_batch.report_invoice_boleto_verso_report_id"
       model="account.invoice"
       string="Boleto/Verso"
-      report_type="qweb-html"
+      report_type="qweb-pdf"
       name="l10n_br_account_payment_brcobranca_batch.report_invoice_boleto_verso"
       file="l10n_br_account_payment_brcobranca_batch.report_invoice_boleto_verso"
       attachment="(object.state in ('open','in_payment','paid')) and ('INV'+(object.number or '').replace('/','')+'.pdf')"

@@ -81,7 +81,7 @@ def join_two_pdf(pdf_chunks: List[bytes]) -> bytes:
 
         # page_Boleto.cropbox = Rectangle(0, 395, page_Boleto.width, page_Boleto.height)
         page_Boleto.cropbox = [0, 0, 595, 395]
-        page_Fatura.add_underlay(page_Boleto) # Do boleto na fatura
+        page_Fatura.add_overlay(page_Boleto, Rectangle(0, 0, 595, 395)) # Do boleto na fatura
 
         result_pdf.pages.append(page_Fatura)
         result_pdf.pages.append(page_Verso)

@@ -40,26 +40,12 @@ class AccountInvoice(models.Model):
             else:
                 boletos.extend(boleto)
 
-        pdf_string = self._get_brcobranca_boleto(boletos)
+        pdf_string = self.get_brcobranca_boleto(boletos)
         pdf_string = base64.b64encode(pdf_string)
         return pdf_string
 
-        file_name = "boleto_nf.pdf"
-        file_pdf_id = self.env["ir.attachment"].create(
-            {
-                "name": file_name,
-                "datas_fname": file_name,
-                "res_model": self._name,
-                "res_id": self.id,
-                "datas": base64.b64encode(pdf_string),
-                "mimetype": "application/pdf",
-                "type": "binary",
-            }
-        )
 
-        return file_pdf_id
-
-    def _get_brcobranca_boleto(self, boletos):
+    def get_brcobranca_boleto(self, boletos):
 
         content = json.dumps(boletos)
         f = open(tempfile.mktemp(), "w")
@@ -73,7 +59,6 @@ class AccountInvoice(models.Model):
         logger.info(
             "Connecting to %s to get Boleto of invoice %s",
             brcobranca_service_url,
-            self.name,
         )
         res = requests.post(brcobranca_service_url, data={"type": "pdf"}, files=files)
 
