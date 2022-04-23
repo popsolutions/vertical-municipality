@@ -15,7 +15,7 @@
     <template id="report_invoice_boleto_verso_report">
       <t t-call="web.basic_layout">
                         <t t-set="o" t-value="o.with_context(lang=lang)" />
-         <h1>.</h1>
+         <h1 style="color: red;font-size: 2px; padding: 2px; margin: 2px; line-height:0;">.</h1>
         <!-- <div class="header" t-att-style="report_header_style"> -->
         <div>
           <img class="img" src="/l10n_br_account_payment_brcobranca_batch/static/img/para uso do correio.png"/>
