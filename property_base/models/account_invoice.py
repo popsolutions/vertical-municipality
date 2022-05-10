@@ -9,7 +9,7 @@ import tempfile
 
 import requests
 
-from odoo import _, fields, models
+from odoo import _, fields, models, api
 from odoo.exceptions import Warning as UserError
 
 from ..constants.br_cobranca import get_brcobranca_api_url
@@ -109,3 +109,9 @@ class AccountInvoice(models.Model):
         if not self.file_boleto_pdf_id:
             self.gera_boleto_pdf()
         return self.file_pdf_id.local_url
+
+    @api.model
+    def action_account_invoice_accumulated(self):
+        for invoice in self.web_progress_iter(self):
+            if invoice.state in ("draft", "open"):
+                self.env.cr.execute('select account_invoice_accumulated_create_invoice_id(' + str(invoice.id) + ')')
