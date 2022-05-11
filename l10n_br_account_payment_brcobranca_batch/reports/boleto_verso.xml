@@ -30,6 +30,7 @@
             <div><span>Cep: 11261-318</span></div>
           </div>
 
+<!--          <img class="img" src="/l10n_br_account_payment_brcobranca_batch/static/img/img carta.png" style= "max-height: auto; max-width: 100%;"/>-->
           <img class="img" src="/l10n_br_account_payment_brcobranca_batch/static/img/img carta.png"/>
 
           <div class="text-center">
@@ -57,13 +58,18 @@
             <span>Tel.: Contas à Receber (13) 3319-5012 - e-mail: dcr@rivierasl.com.br Entregue aos correios em</span>
             <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d/%m/%Y')"/>
           </div>
-          <div style="position:absolute;top:1250px; page-break-inside: avoid;">
-            <span>O PAGAMENTO DESTA CONTA NÃO QUITA DÉBITOS ANTERIORES.</span>
-            <span>Faça a opção para receber sua FATURA DIGITAL, cadastre seu e-mail</span>
-            <span>junto ao dcr@rivierasl.com.br</span>
-            <span>AS INFORMAÇÕES DA QUALIDADE DA ÁGUA PRODUZIDA PELA AARSL, ESTÃO DISPONÍVEIS</span>
-            <span>NO SITE DA RIVIERA www.rivieradesaolourenco.com.br NO LINK DA AARSL. CONFORME</span>
-            <span>DECRETO No 5440 DE 04/05/2005.</span>
+          <div style="position:absolute;top:750px; page-break-inside: avoid;">
+            <div class="text-center">
+              <b><div><span>O PAGAMENTO DESTA CONTA NÃO QUITA DÉBITOS ANTERIORES.</span></div></b>
+              <br></br>
+              <br></br>
+              <b><div><span>Faça a opção para receber sua FATURA DIGITAL, cadastre seu e-mail</span></div></b>
+              <b><div><span>junto ao dcr@rivierasl.com.br</span></div></b>
+              <br></br>
+              <div><span>AS INFORMAÇÕES DA QUALIDADE DA ÁGUA PRODUZIDA PELA AARSL, ESTÃO DISPONÍVEIS</span></div>
+              <div><span>NO SITE DA RIVIERA www.rivieradesaolourenco.com.br NO LINK DA AARSL. CONFORME</span></div>
+              <div><span>DECRETO No 5440 DE 04/05/2005.</span></div>
+            </div>
           </div>
         </div>
         <div id="informations" class="row mt32 mb32">
