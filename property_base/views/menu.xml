@@ -35,5 +35,12 @@
             <field name="state">code</field>
             <field name="code">action = records.action_account_invoice_accumulated()</field>
         </record>
+        <record id="action_account_invoice_remover_cnab" model="ir.actions.server">
+            <field name="name">Remover CNAB e Marcar como PAGO</field>
+            <field name="model_id" ref="account.model_account_invoice"/>
+            <field name="binding_model_id" ref="account.model_account_invoice"/>
+            <field name="state">code</field>
+            <field name="code">action = records.remover_cnab()</field>
+        </record>
     </data>
 </odoo>

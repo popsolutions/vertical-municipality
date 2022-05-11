@@ -13,6 +13,7 @@ from odoo import _, fields, models, api
 from odoo.exceptions import Warning as UserError
 
 from ..constants.br_cobranca import get_brcobranca_api_url
+from datetime import datetime
 
 logger = logging.getLogger(__name__)
 
@@ -115,3 +116,18 @@ class AccountInvoice(models.Model):
         for invoice in self.web_progress_iter(self):
             if invoice.state in ("draft", "open"):
                 self.env.cr.execute('select account_invoice_accumulated_create_invoice_id(' + str(invoice.id) + ')')
+
+    def remover_cnab(self):
+        # Esta rotina é temporária, e serve apenas para corrigir dados da importação.
+        # Esta rotina remove o cnab e marca o boleto como pago.
+        for invoice in self.web_progress_iter(self):
+            date_due = invoice.date_due
+
+            if date_due > datetime.strptime('09/05/2022', '%d/%m/%Y').date():
+                raise UserError('Data de vencimento maior que o permitido')
+
+            if invoice.state in ("draft", "open"):
+                invoice.write({'state': 'cancel'})
+                invoice.write({'state': 'draft'})
+                invoice.write({'payment_mode_id': False})
+                invoice.write({'state': 'open', 'date_due': date_due})
