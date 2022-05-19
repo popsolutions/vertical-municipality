@@ -1,0 +1,11 @@
+td.rounded {
+    border: 1px solid black;
+    border-radius: 10px;
+  }
+
+td.whiteborderbgsilver {
+    border: 1px solid white; 
+    border-radius:8pt; 
+    background-color: silver; 
+    border-spacing: 3px;
+}
