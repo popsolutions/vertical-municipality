@@ -8,4 +8,4 @@ class ResConfigSettings(models.TransientModel):
 
     _inherit = 'res.config.settings'
 
-    property_ga_tax_index = fields.Float('Green Area Tax Index', config_parameter='property_ga_maintenance.property_ga_tax_index')
+    property_ga_tax_index = fields.Float('INPC', config_parameter='property_ga_maintenance.property_ga_tax_index', digits=(12, 4))
