@@ -68,3 +68,12 @@ class AccountInvoice(models.Model):
             raise UserError(res.text.encode("utf-8"))
 
         return pdf_string
+
+    def dataLeitura(self):
+        return '29/04/2022'
+        sql = '''
+select max(ail.create_date)
+  from account_invoice_line ail inner join product_product pp on pp.id = ail.product_id
+ where ail.invoice_id = 132868  
+   and pp.id = 7        
+    '''
