@@ -95,6 +95,22 @@
       </t>
     </template>
 
+    <record id="invoice_paper" model="report.paperformat">
+        <field name="name">Invoice</field>
+        <field name="default" eval="True"/>
+        <field name="format">custom</field>
+        <field name="page_height">297</field>
+        <field name="page_width">210</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">5</field>
+        <field name="margin_bottom">5</field>
+        <field name="margin_left">10</field>
+        <field name="margin_right">10</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">3</field>
+        <field name="dpi">90</field>
+    </record>
+
     <report
       id="l10n_br_account_payment_brcobranca_batch.report_invoice_boleto_verso_report_id"
       model="account.invoice"
@@ -105,6 +121,7 @@
       attachment="(object.state in ('open','in_payment','paid')) and ('INV'+(object.number or '').replace('/','')+'.pdf')"
       print_report_name="(object._get_report_base_filename())"
       groups="account.group_account_invoice"
+      paperformat="l10n_br_account_payment_brcobranca_batch.invoice_paper"/>
     />
   </data>
 </odoo>
