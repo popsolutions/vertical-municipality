@@ -9,6 +9,7 @@
         <!--        <xpath expr="//head" position="replace"></xpath>-->
 
         <t t-set="o" t-value="o.with_context(lang=lang)"/>
+        <t t-set="boletoData" t-value="o.boletoData()"/>
 
         <div class="row clearfix" draggable="false">
           <div class="column full" style="text-align: right;">
@@ -18,7 +19,6 @@
         </div>
 
         <div class="page">
-
 
           <table id="sub_header"
                  style="width:50%; border: 1px solid white; border-radius:8pt; border-collapse:separate; border-spacing: 5px;">
@@ -52,7 +52,7 @@
               </td>
               <td style="border: 1px solid white; border-radius:8pt; background-color: silver; border-spacing: 3px;">
                 <!--                <t t-esc="o.date_due" t-options='{"format": "MM/dd/yyyy"}'/>-->
-                <span t-field="o.date_due" t-options='{"format": "MM/dd/yyyy"}'/>
+                <span t-field="o.date_due" t-options='{"format": "dd/MM/yyyy"}'/>
               </td>
               <td style="border: 1px solid white; border-radius:8pt; background-color: silver; border-spacing: 3px;">
                 <!--                                <t t-esc="o.amount_total "/>-->
@@ -98,7 +98,7 @@
                   </tr>
                   <tr>
                     <td>
-                      ABRIL
+                      <t t-esc="boletoData['mesReferencia']"/>
                     </td>
                   </tr>
                 </table>
@@ -112,7 +112,7 @@
                   </tr>
                   <tr>
                     <td>
-                      <t t-esc="o.dataLeitura()"/>
+                      <t t-esc="boletoData['readDate']"/>
                     </td>
                   </tr>
                 </table>
@@ -126,7 +126,7 @@
                   </tr>
                   <tr>
                     <td>
-                      2.967
+                       <t t-esc="boletoData['last_read']"/>
                     </td>
                   </tr>
                 </table>
@@ -140,7 +140,7 @@
                   </tr>
                   <tr>
                     <td>
-                      3.197
+                        <t t-esc="boletoData['current_read']"/>
                     </td>
                   </tr>
                 </table>
@@ -154,7 +154,7 @@
                   </tr>
                   <tr>
                     <td>
-                      230
+                      <t t-esc="boletoData['consumption']"/>
                     </td>
                   </tr>
                 </table>
@@ -168,7 +168,7 @@
                   </tr>
                   <tr>
                     <td>
-                      346
+                      <t t-esc="boletoData['mediam3']"/>
                     </td>
                   </tr>
                 </table>
@@ -182,7 +182,7 @@
                   </tr>
                   <tr>
                     <td>
-                      2660
+                        <t t-esc="boletoData['economias']"/>
                     </td>
                   </tr>
                 </table>
@@ -196,7 +196,7 @@
                   </tr>
                   <tr>
                     <td>
-                      23/05/2022
+                                            <t t-esc="boletoData['readNext']"/>
                     </td>
                   </tr>
                 </table>
@@ -219,51 +219,36 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
-                      <td>março/2022</td>
-                      <td style="border-right: 1px solid;">442</td>
-                      <td>setembro/2021</td>
-                      <td>327</td>
-                    </tr>
-                    <tr>
-                      <td>fevereiro/2022</td>
-                      <td style="border-right: 1px solid;">442</td>
-                      <td>agosto/2021</td>
-                      <td>201</td>
-                    </tr>
-                    <tr>
-                      <td>janeiro/2022</td>
-                      <td style="border-right: 1px solid;">731</td>
-                      <td>&#x20;&#x20; julho/2021</td>
-                      <td>325</td>
-                    </tr>
-                    <tr>
-                      <td>dezembro/2021</td>
-                      <td style="border-right: 1px solid;">335</td>
-                      <td>junho/2021</td>
-                      <td>225</td>
-                    </tr>
-                    <tr>
-                      <td>novembro/2021</td>
-                      <td style="border-right: 1px solid;">306</td>
-                      <td>maio/2021</td>
-                      <td>217</td>
-                    </tr>
-                    <tr>
-                      <td>outubro/2021</td>
-                      <td style="border-right: 1px solid;">298</td>
-                      <td>abril/2021</td>
-                      <td>303</td>
-                    </tr>
+                    <t t-foreach="boletoData['consumptionJsonHst']" t-as="consumption">
+                      <tr>
+                        <td>
+                          <t t-esc="consumption['anomes_coluna1']"/>
+                        </td>
+                        <td style="border-right: 1px solid;">
+                          <t t-esc="consumption['consumption_coluna1']"/>
+                        </td>
+                        <td>
+                          <t t-esc="consumption['anomes_coluna2']"/>
+                        </td>
+                        <td style="border-right: 1px solid;">
+                          <t t-esc="consumption['consumption_coluna2']"/>
+                        </td>
+                      </tr>
+                    </t>
                   </tbody>
                   <tfoot>
                     <tr>
                       <td style="text-align: center;">Total</td>
-                      <td style="text-align: center;">4.152m³</td>
+                      <td style="text-align: center;">
+                        <t t-esc="boletoData['somam3']"/>
+                      </td>
                     </tr>
                     <tr>
                       <td style="text-align: center;">Média de Consumo</td>
-                      <td style="text-align: center;">436m³/mês</td>
+                      <td style="text-align: center;">
+                        <t t-esc="boletoData['mediam3formatated']"/>
+                      </td>
+
                     </tr>
                   </tfoot>
                 </table>

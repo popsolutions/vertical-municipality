@@ -21,8 +21,9 @@ class ReportControllerInherited(ReportController):
         '/report/<converter>/<reportname>/<docids>',
     ], type='http', auth='user', website=True)
     def report_routes(self, reportname, docids=None, converter=None, **data):
-        # account_invoice = request.env['account.invoice'].sudo().search([('id', '=', docids)])
-        # return super().report_routes(reportname, docids, converter, **data)
+        logger.info('xxxx')
+        account_invoice = request.env['account.invoice'].sudo().search([('id', '=', docids)])
+        return super().report_routes(reportname, docids, converter, **data)
 
         if (reportname != 'l10n_br_account_payment_brcobranca_batch.report_invoice_boleto_verso'):
             return super().report_routes(reportname, docids, converter, **data)
