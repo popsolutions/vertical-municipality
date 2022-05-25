@@ -2,11 +2,16 @@
 <odoo>
   <data>
     <template id="report_invoice_boleto_frente">
-
+      <style type="text/css">
+        .basic_css {
+        border-spacing: 1px !important;
+        border: 0px solid white !important;
+        }
+      </style>
       <t t-call="web.basic_layout">
         <t t-set="hide_header_footer" t-value="True"/>
-        <h1 style="color: black;font-size: 2px; padding: 2px; margin: 2px; line-height:0;">.</h1>
-        <!--        <xpath expr="//head" position="replace"></xpath>-->
+        <h1 style="color: black;font-size: 1px; padding: 2px; margin: 2px; line-height:0;">.</h1>
+                <xpath expr="//head" position="replace"></xpath>
 
         <t t-set="o" t-value="o.with_context(lang=lang)"/>
         <t t-set="boletoData" t-value="o.boletoData()"/>
@@ -20,8 +25,8 @@
 
         <div class="page">
 
-          <table id="sub_header"
-                 style="width:50%; border: 1px solid white; border-radius:8pt; border-collapse:separate; border-spacing: 5px;">
+          <table id="sub_header" class="basic_css"
+                 style="width:50%; border-radius:8pt; border-collapse:separate;">
             <tr>
               <td style="background-color: white; font-size: x-small;">Módulo</td>
               <td style="background-color: silver; border-radius:8pt;">
@@ -38,8 +43,8 @@
             </tr>
           </table>
 
-          <table
-            style="width:100%; border: 1px solid white; border-radius:8pt; border-collapse:separate; border-spacing: 5px;">
+          <table class="basic_css"
+            style="width:100%; border-radius:8pt; border-collapse:separate">
             <tr style="font-size: x-small;">
               <th style="background-color: white;">Proprietário</th>
               <th style="background-color: white;">Vencimento</th>
@@ -63,12 +68,11 @@
               </td>
               <td style="border: 1px solid white; border-radius:8pt; background-color: silver; border-spacing: 3px;">
                 <t t-esc="o.partner_id.id"/>
-
               </td>
             </tr>
           </table>
 
-          <table style="width:75%; border-spacing: 5px;">
+          <table class="basic_css" style="width:75%;">
             <tr style="font-size: x-small;">
               <th>Tipo de Obra</th>
               <th>Nosso Número</th>
@@ -81,10 +85,9 @@
               <td>
                 <t t-esc="o.number"/>
               </td>
-              <td>3399-2/0012500-8 ????????</td>
+              <td>3399-2/0012500-8</td>
             </tr>
           </table>
-          <br/>
 
           <table
             style="width:100%; border: 1px solid black; border-radius:8pt; border-collapse:separate; text-align: center;">
@@ -203,11 +206,10 @@
               </td>
             </tr>
           </table>
-          <br/>
 
-          <table style="width:100%;">
+          <table class="basic_css" style="width:100%;">
             <tr>
-              <td>
+              <td name="tabela historico consumo e qualidade da água" style="width:50%; vertical-align: text-top">
                 <table
                   style="width:95%; align:left; border: 1pt solid black; border-collapse:separate; border-radius:8pt; font-size: small;">
                   <p style="font-size: x-small; margin-bottom: 0px;">Histórico de Consumo (m3)</p>
@@ -253,11 +255,11 @@
                   </tfoot>
                 </table>
                 <div>
-                  <img class="img" src="/l10n_br_account_payment_brcobranca_batch/static/img/image_analise.jpg"
+                  <img class="img" src="/l10n_br_account_payment_brcobranca_batch/static/img/image_analise.jpeg"
                        style="max-height: auto; max-width: 95%;"/>
                 </div>
               </td>
-              <td>
+              <td name="tabela da descrição do faturamento" style="vertical-align: text-top" >
                 <table
                   style="width:100%; align:right; border: 1pt solid black; border-collapse:separate; border-radius:8pt; font-size: small; padding:1px;">
                   <p style="font-size: x-small; margin-bottom: 0px;">Descriminação do Faturamento Valores em R$</p>
