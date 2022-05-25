@@ -4,6 +4,7 @@
     <template id="report_invoice_boleto_verso">
 <!--      <t t-call="web.html_container">-->
         <t t-foreach="docs" t-as="o">
+          <t t-set="boletoData" t-value="o.boletoData()"/>
           <t t-set="lang"
              t-value="o.user_id.sudo().lang if o.type in ('in_invoice', 'in_refund') else o.partner_id.lang"/>
           <t t-call="l10n_br_account_payment_brcobranca_batch.report_invoice_boleto_frente" t-lang="lang"/>
@@ -68,7 +69,12 @@
               <br></br>
               <b><div><span>Faça a opção para receber sua FATURA DIGITAL, cadastre seu e-mail</span></div></b>
               <b><div><span>junto ao dcr@rivierasl.com.br</span></div></b>
-              <br></br>
+              <t t-if="boletoData['exibir_mensagem_aumento_agua']">
+                <br></br>
+                <b><div><span>Conforme valores divulgados pela SABESP publicados em 07/04/22, a AARSL</span></div></b>
+                <b><div><span>reajustou a tarifa de água/esgoto em 12,8%.</span></div></b>
+                <br></br>
+              </t>
               <div><span>AS INFORMAÇÕES DA QUALIDADE DA ÁGUA PRODUZIDA PELA AARSL, ESTÃO DISPONÍVEIS</span></div>
               <div><span>NO SITE DA RIVIERA www.rivieradesaolourenco.com.br NO LINK DA AARSL. CONFORME</span></div>
               <div><span>DECRETO No 5440 DE 04/05/2005.</span></div>

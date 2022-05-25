@@ -13,9 +13,6 @@
         <h1 style="color: black;font-size: 1px; padding: 2px; margin: 2px; line-height:0;">.</h1>
                 <xpath expr="//head" position="replace"></xpath>
 
-        <t t-set="o" t-value="o.with_context(lang=lang)"/>
-        <t t-set="boletoData" t-value="o.boletoData()"/>
-
         <div class="row clearfix" draggable="false">
           <div class="column full" style="text-align: right;">
             <img class="img" src="/l10n_br_account_payment_brcobranca_batch/static/img/header.png"

@@ -86,7 +86,8 @@ class AccountInvoice(models.Model):
                       pwc."date" + 30 readNext,
                       pwc.last_read,
                       pwc.current_read,
-                      pwc.consumption
+                      pwc.consumption,
+                      anomes(ail.date_due) anomes_invoice
                  from account_invoice ail 
                         inner join property_water_consumption pwc 
                                 on pwc.land_id = ail.land_id 
@@ -101,6 +102,9 @@ class AccountInvoice(models.Model):
 
         if len(datas) == 1:
             data = datas[0]
+
+            exibir_mensagem_aumento_agua = data[6] == 202206 # Esta mensagem será exibida apenas para vencimento em 2022/06
+
             readDate = data[1].strftime('%d/%m/%Y')
             readNext = data[2].strftime('%d/%m/%Y')
 
@@ -111,7 +115,8 @@ class AccountInvoice(models.Model):
                 'last_read': data[3],
                 'current_read': data[4],
                 'consumption': data[5],
-                'economias': 'X'
+                'economias': 'X',
+                'exibir_mensagem_aumento_agua': exibir_mensagem_aumento_agua
             })
         else:
             consumptionJson.update({
@@ -120,7 +125,8 @@ class AccountInvoice(models.Model):
                 'readNext': '',
                 'current_read': '',
                 'consumption': '',
-                'economias': ''
+                'economias': '',
+                'exibir_mensagem_aumento_agua': False
             })
 
         query = '''
