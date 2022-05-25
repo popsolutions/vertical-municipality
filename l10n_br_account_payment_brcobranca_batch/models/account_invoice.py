@@ -111,7 +111,7 @@ class AccountInvoice(models.Model):
                 'last_read': data[3],
                 'current_read': data[4],
                 'consumption': data[5],
-                'economias': '?????'
+                'economias': 'X'
             })
         else:
             consumptionJson.update({
