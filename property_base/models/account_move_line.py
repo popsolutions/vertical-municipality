@@ -44,7 +44,8 @@ class AccountMoveLine(models.Model):
 
             boleto_cnab_api_data = {
                 "bank": bank_name_brcobranca[0],
-                "valor": str("%.2f" % move_line.debit),
+                # "valor": str("%.2f" % move_line.debit), # Mateus - esta linha foi comentada pois não estou inserindo ainda registros em account_move_line quando eu efetuo o processo de ACUMULU DE BOLETOS ou (TRAZER MOVIMENTOS DE BOLETOS ATRASADOS) inerente ao processo de Riviera. # rever futuramente esta alteração. Podem surgir impactos em contabilidade/fiscal
+                "valor": str("%.2f" % move_line.invoice_id.amount_total),
                 "cedente": move_line.company_id.partner_id.legal_name,
                 "cedente_endereco": (move_line.company_id.partner_id.street_name or "")
                 + ", "
