@@ -71,6 +71,11 @@ class AccountInvoice(models.Model):
         return pdf_string
 
     def boletoData(self):
+        def formatValue(value, decimais=0):
+            formatMask = '{:,.' + str(decimais) + 'f}'
+            res = formatMask.format(value).replace(',', '.')
+            return res
+
         invoice = self[0]
 
         consumptionJson = {}
@@ -174,8 +179,8 @@ select anomes_text(anomes(pwc."date"), 2) anomes,
         if (qtdeItens > 0):
             mediam3 = somaM3 / qtdeItens
 
-        mesiam3Str = '{:,.0f}'.format(mediam3).replace(',', '.')
-        somaM3Str = '{:,.0f}'.format(somaM3).replace(',', '.')
+        mesiam3Str = formatValue(mediam3)
+        somaM3Str = formatValue(somaM3)
 
         consumptionJson.update({'consumptionJsonHst': consumptionJsonHst,
                            'somam3': str(somaM3Str) + ' m3',
@@ -185,6 +190,33 @@ select anomes_text(anomes(pwc."date"), 2) anomes,
 
         # Resolvendo Histórico de consumo(consumptionJson) [FIM]
 
+
+        #Resolvendo account_invoice_line [INICIO]
+        query = '''
+select ail.name,
+       ail.price_total,
+       ail.anomes_vencimento
+  from account_invoice_line ail  
+ where ail.invoice_id = ''' + str(invoice.id) + '''
+  order by ail.anomes_vencimento desc 
+'''
+
+        self.env.cr.execute(query)
+        account_invoice_lines = self.env.cr.fetchall()
+        current_anomes = account_invoice_lines[0][2]
+        account_invoice_lineJson = []
+
+        for account_invoice_line in account_invoice_lines:
+            if account_invoice_line[2] != current_anomes:
+                account_invoice_lineJson.append({'name': '', 'price_total': ''}) # Criar linha em branco para fazer quebra de linha pois mudou ano/mês
+
+            account_invoice_lineJson.append(
+                {'name': account_invoice_line[0], 'price_total': formatValue(account_invoice_line[1], 2)})
+
+            current_anomes = account_invoice_line[2]
+
+        consumptionJson.update({'account_invoice_line': account_invoice_lineJson})
+        #Resolvendo account_invoice_line [FIM]
 
         res = consumptionJson
         return res

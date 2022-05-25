@@ -126,7 +126,7 @@
                   </tr>
                   <tr>
                     <td>
-                       <t t-esc="boletoData['last_read']"/>
+                      <t t-esc="boletoData['last_read']"/>
                     </td>
                   </tr>
                 </table>
@@ -140,7 +140,7 @@
                   </tr>
                   <tr>
                     <td>
-                        <t t-esc="boletoData['current_read']"/>
+                      <t t-esc="boletoData['current_read']"/>
                     </td>
                   </tr>
                 </table>
@@ -182,7 +182,7 @@
                   </tr>
                   <tr>
                     <td>
-                        <t t-esc="boletoData['economias']"/>
+                      <t t-esc="boletoData['economias']"/>
                     </td>
                   </tr>
                 </table>
@@ -196,7 +196,7 @@
                   </tr>
                   <tr>
                     <td>
-                                            <t t-esc="boletoData['readNext']"/>
+                      <t t-esc="boletoData['readNext']"/>
                     </td>
                   </tr>
                 </table>
@@ -252,81 +252,82 @@
                     </tr>
                   </tfoot>
                 </table>
+                <div>
+                  <img class="img" src="/l10n_br_account_payment_brcobranca_batch/static/img/image_analise.jpg"
+                       style="max-height: auto; max-width: 95%;"/>
+                </div>
               </td>
               <td>
                 <table
-                  style="width:95%; align:right; border: 1pt solid black; border-collapse:separate; border-radius:8pt; font-size: small;">
+                  style="width:100%; align:right; border: 1pt solid black; border-collapse:separate; border-radius:8pt; font-size: small; padding:1px;">
                   <p style="font-size: x-small; margin-bottom: 0px;">Descriminação do Faturamento Valores em R$</p>
                   <thead>
                     <tr>
                       <th>
-                        <br/>
                       </th>
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
-                      <td>Contribuicao Mensal /Mai/2022</td>
-                      <td>12.161,58</td>
-                    </tr>
-                    <tr>
-                      <td>Agua/Esgoto Abr/2022</td>
-                      <td>5.844,96</td>
-                    </tr>
-                    <tr>
-                      <td>Taxa de Captação Abr/2022</td>
-                      <td>13,29</td>
-                    </tr>
-                    <tr>
-                      <td></td>
-                      <td>18.019,83</td>
-                    </tr>
-                    <tr>
-                      <td>Contribuicao Mensal /Abr/2022</td>
-                      <td>11.957,10</td>
-                    </tr>
-                    <tr>
-                      <td>Agua/Esgoto Mar/2022</td>
-                      <td>5.844,96</td>
-                    </tr>
-                    <tr>
-                      <td>Taxa de Captação Mar/2022</td>
-                      <td>28,72</td>
-                    </tr>
-                    <tr>
-                      <td>Multa, Juro e Correção monetária</td>
-                      <td>848,98</td>
-                    </tr>
-                    <tr>
-                      <td></td>
-                      <td>18.019,83</td>
-                    </tr>
+                    <t t-foreach="boletoData['account_invoice_line']" t-as="account_invoice_line">
+                      <tr>
+                        <t t-if="account_invoice_line['name'] == ''">
+                          <td>
+                            <br/>
+                          </td>
+
+<!--                            <t t-set="current_section" t-value="line" />-->
+<!--                            <t t-set="current_subtotal" t-value="0" />-->
+                        </t>
+                        <t t-if="not account_invoice_line['name'] == ''">
+                          <td name="account_invoice_line_name">
+                            <span t-esc="account_invoice_line['name']"/>
+                          </td>
+                          <td class="text-right o_price_total">
+                            <span t-esc="account_invoice_line['price_total']"/>
+                          </td>
+                        </t>
+                      </tr>
+                    </t>
 
                   </tbody>
                   <tfoot>
-
                   </tfoot>
                 </table>
-                <!--
-                <table>
+                <table style="font-size: 12px; text-align:center; width:100%; border: 1pt solid black; border-collapse:separate; border-radius:8pt; margin-top:4px; padding:1px;">
+                  <thead>
                     <tr>
-                        <td>
-                            <p>TOTAL: R$ 36.699,59</p>
-                        </td>
+                      <th>
+                      </th>
                     </tr>
-                    <tr>
-                        <td>
-                            <p>
-                                AVISO: NÃO REGISTRAMOS O RECEBIMENTO DE
-                                COBRANÇA ANTERIOR. SOLICITAMOS VERIFICAR
-                                JUNTO AO NOSSO SETOR DE CONTAS A
-                                RECEBER(TELEFONE: (13) 3319-5012)
-                                (FORNECIMENTO DE ÁGUA SUJEITO À CORTE)
-                            </p>
-                        </td>
-                    </tr>
+                  </thead>
+                  <tr>
+                    <td>
+                      <b style="">TOTAL:  <span t-field="o.amount_total"
+                      t-field-options='{"widget": "monetary", "display_currency": "o.currency_id"}'/></b>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>AVISO: NÃO REGISTRAMOS O RECEBIMENTO DE</td>
+                  </tr>
+                  <tr>
+                    <td>COBRANÇA ANTERIOR. SOLICITAMOS VERIFICAR</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      JUNTO AO NOSSO SETOR DE CONTAS A
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      RECEBER(TELEFONE: (13) 3319-5012)
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      (FORNECIMENTO DE ÁGUA SUJEITO À CORTE)
+                    </td>
+                  </tr>
                 </table>
-                -->
               </td>
             </tr>
 
