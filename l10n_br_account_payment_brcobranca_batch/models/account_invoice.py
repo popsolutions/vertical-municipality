@@ -121,11 +121,12 @@ class AccountInvoice(models.Model):
         else:
             consumptionJson.update({
                 'mesReferencia': '',
-                'dataLeitura': '',
+                'readDate': '',
                 'readNext': '',
+                'last_read': '',
                 'current_read': '',
                 'consumption': '',
-                'economias': '',
+                'economias': 'X',
                 'exibir_mensagem_aumento_agua': False
             })
 
