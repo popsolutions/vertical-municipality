@@ -50,9 +50,8 @@ class AccountInvoice(models.Model):
         property_wc_ids = self.env[modelName].search(property_wc_ids_domain)
 
         inv_ids = self.search([('land_id', '!=', False),
-                               ('state', 'not in', ['in_payment',
-                                                    'paid',
-                                                    'cancel'])])
+                               ('state', 'in', ['draft'])])
+
         inv_land_ids = inv_ids.mapped('land_id').ids
 
         records_len = len(property_wc_ids)
@@ -64,9 +63,8 @@ class AccountInvoice(models.Model):
                 self._create_property_customer_invoice(
                     p_wc, product_id, account_id, price_unitFieldName)
             else:
-                inv_id = self.search([('land_id', '=', p_wc.land_id.id), ('state', 'not in', ['in_payment',
-                                                                                              'paid',
-                                                                                              'cancel'])], limit=1)
+                inv_id = self.search([('land_id', '=', p_wc.land_id.id), ('state', 'in', ['draft'])], limit=1)
+                
                 inv_id.write({'invoice_line_ids': [(0, 0, {
                     'product_id': product_id.id,
                     'name': product_id.name,
