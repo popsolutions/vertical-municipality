@@ -52,14 +52,14 @@ class ReportControllerInherited(ReportController):
             pdfBoleto = account_invoice.gera_boleto_pdf_multi()
 
             #Join PDFs
-            jpdf = join_two_pdf([pdfBoleto, base64.b64encode(pdfVersoBoleto[0])], str(account_invoice.id) + '-' + account_invoice.land_id.display_name + '-' + account_invoice.partner_id.name)
+            jpdf = join_two_pdf([pdfBoleto, base64.b64encode(pdfVersoBoleto[0])], docids)
 
             pdfhttpheaders = [('Content-Type', 'application/pdf'), ('Content-Length', len(jpdf))]
             jpdfres = request.make_response(jpdf, headers=pdfhttpheaders)
 
             return jpdfres
 
-def join_two_pdf(pdf_chunks: List[bytes], pdfFileName) -> bytes:
+def join_two_pdf(pdf_chunks: List[bytes], docids) -> bytes:
     result_pdf = Pdf.new()
 
     stream_boleto = io.BytesIO(initial_bytes=base64.b64decode(pdf_chunks[0]))
@@ -68,9 +68,11 @@ def join_two_pdf(pdf_chunks: List[bytes], pdfFileName) -> bytes:
     stream_verso = io.BytesIO(initial_bytes=base64.b64decode(pdf_chunks[1]))
     pdfVerso = Pdf.open(stream_verso)
 
-
     if len(pdfBoleto.pages) * 2 != len(pdfVerso.pages):
         raise Exception('PDFs(Boleto e verso do boleto) o número de páginas está incompatível.')
+
+    saveFilePdf = False #Opação Padrão
+    # saveFilePdf = True #Apenas para salvar os pdfs localmente
 
     pageNum = 0
     while pageNum < len(pdfBoleto.pages):
@@ -83,20 +85,35 @@ def join_two_pdf(pdf_chunks: List[bytes], pdfFileName) -> bytes:
         page_Boleto.cropbox = [0, 0, 595, 395]
         page_Fatura.add_overlay(page_Boleto, Rectangle(0, 0, 595, 395)) # Do boleto na fatura
 
-        result_pdf.pages.append(page_Fatura)
-        result_pdf.pages.append(page_Verso)
+        if saveFilePdf:
+            account_invoice = request.env['account.invoice'].sudo().search([('id', '=', docids[pageNum])])
+            pdfFileName = str(account_invoice.id) + '-' + account_invoice.land_id.display_name + '-' + account_invoice.partner_id.name
+            pdfFileName = '/tmp/odoo_pdfs_boleto_verso/' + pdfFileName.replace('/', '') + '.pdf'
+
+            pdfToSave = Pdf.new()
+            pdfToSave.pages.append(page_Fatura)
+            pdfToSave.pages.append(page_Verso)
+            pdfToSave.save(pdfFileName)
+
+            logger.info('Arquivo pdf (' + str(pageNum) + '/' + str(len(pdfBoleto.pages)) + ') Criado em "' + pdfFileName + '"')
+
+        else:
+            result_pdf.pages.append(page_Fatura)
+            result_pdf.pages.append(page_Verso)
 
         pageNum += 1
 
-    # Writes all bytes to bytes-stream
-    response_bytes_stream = io.BytesIO()
-    result_pdf.save(response_bytes_stream)
+    if saveFilePdf:
+        logger.info('')
+        logger.info('*** Arquivos Boleto/Verso criados com sucesso.***')
+        logger.info('')
+        return True
+    else:
+        # Writes all bytes to bytes-stream
+        response_bytes_stream = io.BytesIO()
+        result_pdf.save(response_bytes_stream)
 
-    # pdfFileFolderAndName = '/tmp/20220526/' + pdfFileName.replace('/', '') + '.pdf'
-    # result_pdf.save(pdfFileFolderAndName)
-    # logger.info('Criado arquivo "' + pdfFileFolderAndName + '"')
-
-    return response_bytes_stream.getvalue()
+        return response_bytes_stream.getvalue()
 
 #pdfBoleto.resolvedObjects
 
