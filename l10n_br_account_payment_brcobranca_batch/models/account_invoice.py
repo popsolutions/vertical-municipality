@@ -9,6 +9,7 @@ import json
 import tempfile
 import requests
 from ..constants.br_cobranca import get_brcobranca_api_url
+from ..controllers.portal import *
 import datetime
 logger = logging.getLogger(__name__)
 
@@ -227,3 +228,9 @@ select ail.name,
 
         res = consumptionJson
         return res
+
+    @api.model
+    def action_account_invoice_gerar_boleto_servidor(self):
+        for invoice in self.web_progress_iter(self):
+            process_boleto_frente_verso(str(invoice.id), True)
+        return

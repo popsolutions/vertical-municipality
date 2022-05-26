@@ -15,6 +15,7 @@ logger = logging.getLogger(__name__)
 
 
 class ReportControllerInherited(ReportController):
+    _name = 'ReportControllerInherited'
 
     @http.route([
         '/report/<converter>/<reportname>',
@@ -27,39 +28,40 @@ class ReportControllerInherited(ReportController):
         if (reportname != 'l10n_br_account_payment_brcobranca_batch.report_invoice_boleto_verso'):
             return super().report_routes(reportname, docids, converter, **data)
         else:
-            report = request.env['ir.actions.report']._get_report_from_name(reportname)
-            context = dict(request.env.context)
+            res = process_boleto_frente_verso(docids)
+            return res
 
-            if docids:
-                docids = [int(i) for i in docids.split(',')]
-            if data.get('options'):
-                data.update(json.loads(data.pop('options')))
-            if data.get('context'):
-                data['context'] = json.loads(data['context'])
-                if data['context'].get('lang'):
-                    del data['context']['lang']
-                context.update(data['context'])
 
-            pdfVersoBoleto = report.with_context(context).render_qweb_pdf(docids, data=data)
+def process_boleto_frente_verso(docids, saveToLocalServer = False):
+    report = request.env['ir.actions.report']._get_report_from_name('l10n_br_account_payment_brcobranca_batch.report_invoice_boleto_verso')
+    context = dict(request.env.context)
 
-            # pdfhttpheaders = [('Content-Type', 'application/pdf'), ('Content-Length', len(pdfVersoBoleto))]
-            # jpdfres = request.make_response(pdfVersoBoleto, headers=pdfhttpheaders)
-            # return jpdfres
+    if docids:
+        docids = [int(i) for i in docids.split(',')]
 
-            ###################################
-            account_invoice = request.env['account.invoice'].sudo().search([('id', 'in', docids)])
+    pdfVersoBoleto = report.with_context(context).render_qweb_pdf(docids)
 
-            pdfBoleto = account_invoice.gera_boleto_pdf_multi()
+    # pdfhttpheaders = [('Content-Type', 'application/pdf'), ('Content-Length', len(pdfVersoBoleto))]
+    # jpdfres = request.make_response(pdfVersoBoleto, headers=pdfhttpheaders)
+    # return jpdfres
 
-            #Join PDFs
-            jpdf = join_two_pdf([pdfBoleto, base64.b64encode(pdfVersoBoleto[0])], docids)
+    ###################################
+    account_invoice = request.env['account.invoice'].sudo().search([('id', 'in', docids)])
 
-            pdfhttpheaders = [('Content-Type', 'application/pdf'), ('Content-Length', len(jpdf))]
-            jpdfres = request.make_response(jpdf, headers=pdfhttpheaders)
+    pdfBoleto = account_invoice.gera_boleto_pdf_multi()
 
-            return jpdfres
+    # Join PDFs
+    jpdf = join_two_pdf([pdfBoleto, base64.b64encode(pdfVersoBoleto[0])], docids, saveToLocalServer)
 
-def join_two_pdf(pdf_chunks: List[bytes], docids) -> bytes:
+    if saveToLocalServer:
+        return
+
+    pdfhttpheaders = [('Content-Type', 'application/pdf'), ('Content-Length', len(jpdf))]
+    jpdfres = request.make_response(jpdf, headers=pdfhttpheaders)
+
+    return jpdfres
+
+def join_two_pdf(pdf_chunks: List[bytes], docids, saveToLocalServer) -> bytes:
     result_pdf = Pdf.new()
 
     stream_boleto = io.BytesIO(initial_bytes=base64.b64decode(pdf_chunks[0]))
@@ -70,9 +72,6 @@ def join_two_pdf(pdf_chunks: List[bytes], docids) -> bytes:
 
     if len(pdfBoleto.pages) * 2 != len(pdfVerso.pages):
         raise Exception('PDFs(Boleto e verso do boleto) o número de páginas está incompatível.')
-
-    saveFilePdf = False #Opação Padrão
-    # saveFilePdf = True #Apenas para salvar os pdfs localmente
 
     pageNum = 0
     while pageNum < len(pdfBoleto.pages):
@@ -85,7 +84,7 @@ def join_two_pdf(pdf_chunks: List[bytes], docids) -> bytes:
         page_Boleto.cropbox = [0, 0, 595, 395]
         page_Fatura.add_overlay(page_Boleto, Rectangle(0, 0, 595, 395)) # Do boleto na fatura
 
-        if saveFilePdf:
+        if saveToLocalServer:
             account_invoice = request.env['account.invoice'].sudo().search([('id', '=', docids[pageNum])])
             pdfFileName = str(account_invoice.id) + '-' + account_invoice.land_id.display_name + '-' + account_invoice.partner_id.name
             pdfFileName = '/tmp/odoo_pdfs_boleto_verso/' + pdfFileName.replace('/', '') + '.pdf'
@@ -103,7 +102,7 @@ def join_two_pdf(pdf_chunks: List[bytes], docids) -> bytes:
 
         pageNum += 1
 
-    if saveFilePdf:
+    if saveToLocalServer:
         logger.info('')
         logger.info('*** Arquivos Boleto/Verso criados com sucesso.***')
         logger.info('')

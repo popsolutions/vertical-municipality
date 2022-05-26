@@ -129,5 +129,13 @@
       groups="account.group_account_invoice"
       paperformat="l10n_br_account_payment_brcobranca_batch.invoice_paper"/>
     />
+
+    <record id="action_account_invoice_gerar_boleto_servidor" model="ir.actions.server">
+        <field name="name">Gerar Boletos no Servidor</field>
+        <field name="model_id" ref="account.model_account_invoice"/>
+        <field name="binding_model_id" ref="account.model_account_invoice"/>
+        <field name="state">code</field>
+        <field name="code">action = records.action_account_invoice_gerar_boleto_servidor()</field>
+    </record>
   </data>
 </odoo>
