@@ -21,9 +21,8 @@ class ReportControllerInherited(ReportController):
         '/report/<converter>/<reportname>/<docids>',
     ], type='http', auth='user', website=True)
     def report_routes(self, reportname, docids=None, converter=None, **data):
-        logger.info('xxxx')
-        account_invoice = request.env['account.invoice'].sudo().search([('id', '=', docids)])
-        return super().report_routes(reportname, docids, converter, **data)
+        # account_invoice = request.env['account.invoice'].sudo().search([('id', '=', docids)])
+        # return super().report_routes(reportname, docids, converter, **data)
 
         if (reportname != 'l10n_br_account_payment_brcobranca_batch.report_invoice_boleto_verso'):
             return super().report_routes(reportname, docids, converter, **data)
@@ -53,14 +52,14 @@ class ReportControllerInherited(ReportController):
             pdfBoleto = account_invoice.gera_boleto_pdf_multi()
 
             #Join PDFs
-            jpdf = join_two_pdf([pdfBoleto, base64.b64encode(pdfVersoBoleto[0])])
+            jpdf = join_two_pdf([pdfBoleto, base64.b64encode(pdfVersoBoleto[0])], str(account_invoice.id) + '-' + account_invoice.land_id.display_name + '-' + account_invoice.partner_id.name)
 
             pdfhttpheaders = [('Content-Type', 'application/pdf'), ('Content-Length', len(jpdf))]
             jpdfres = request.make_response(jpdf, headers=pdfhttpheaders)
 
             return jpdfres
 
-def join_two_pdf(pdf_chunks: List[bytes]) -> bytes:
+def join_two_pdf(pdf_chunks: List[bytes], pdfFileName) -> bytes:
     result_pdf = Pdf.new()
 
     stream_boleto = io.BytesIO(initial_bytes=base64.b64decode(pdf_chunks[0]))
@@ -92,6 +91,12 @@ def join_two_pdf(pdf_chunks: List[bytes]) -> bytes:
     # Writes all bytes to bytes-stream
     response_bytes_stream = io.BytesIO()
     result_pdf.save(response_bytes_stream)
+
+    pdfFileFolderAndName = '/tmp/20220526/' + pdfFileName + '.pdf'
+
+    result_pdf.save(pdfFileFolderAndName)
+    logger.info('Criado arquivo "' + pdfFileFolderAndName + '"')
+
     return response_bytes_stream.getvalue()
 
 #pdfBoleto.resolvedObjects
