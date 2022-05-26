@@ -92,10 +92,9 @@ def join_two_pdf(pdf_chunks: List[bytes], pdfFileName) -> bytes:
     response_bytes_stream = io.BytesIO()
     result_pdf.save(response_bytes_stream)
 
-    pdfFileFolderAndName = '/tmp/20220526/' + pdfFileName + '.pdf'
-
-    result_pdf.save(pdfFileFolderAndName)
-    logger.info('Criado arquivo "' + pdfFileFolderAndName + '"')
+    # pdfFileFolderAndName = '/tmp/20220526/' + pdfFileName.replace('/', '') + '.pdf'
+    # result_pdf.save(pdfFileFolderAndName)
+    # logger.info('Criado arquivo "' + pdfFileFolderAndName + '"')
 
     return response_bytes_stream.getvalue()
 
