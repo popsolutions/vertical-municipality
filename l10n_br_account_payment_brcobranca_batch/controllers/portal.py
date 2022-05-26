@@ -103,9 +103,6 @@ def join_two_pdf(pdf_chunks: List[bytes], docids, saveToLocalServer) -> bytes:
         pageNum += 1
 
     if saveToLocalServer:
-        logger.info('')
-        logger.info('*** Arquivos Boleto/Verso criados com sucesso.***')
-        logger.info('')
         return True
     else:
         # Writes all bytes to bytes-stream
