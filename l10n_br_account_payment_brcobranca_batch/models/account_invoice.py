@@ -59,7 +59,7 @@ class AccountInvoice(models.Model):
         brcobranca_api_url = get_brcobranca_api_url()
         brcobranca_service_url = brcobranca_api_url + "/api/boleto/multi"
         logger.info(
-            "Connecting to %s to get Boleto of invoice %s",
+            "Connecting to %s to get Boletos",
             brcobranca_service_url,
         )
         res = requests.post(brcobranca_service_url, data={"type": "pdf"}, files=files)
@@ -231,6 +231,19 @@ select ail.name,
 
     @api.model
     def action_account_invoice_gerar_boleto_servidor(self):
+        idsErro = []
         for invoice in self.web_progress_iter(self):
-            process_boleto_frente_verso(str(invoice.id), True)
+            try:
+                process_boleto_frente_verso(str(invoice.id), True)
+            except Exception as e:
+                msgErro = str(invoice.id) + '-' + str(e.name) + '\n'
+                idsErro.append(msgErro)
+                logger.info('')
+                logger.info('Falha ao gerar pdf de Boleto/Verso para id:"' + msgErro)
+                logger.info('Continuando processamento...')
+
+        if idsErro != '':
+            idsErro.insert(0, 'Os seguintes ids não foram processados:\n\n')
+            raise UserError(tuple(idsErro))
+
         return

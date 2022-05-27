@@ -36,7 +36,7 @@ def process_boleto_frente_verso(docids, saveToLocalServer = False):
     report = request.env['ir.actions.report']._get_report_from_name('l10n_br_account_payment_brcobranca_batch.report_invoice_boleto_verso')
     context = dict(request.env.context)
 
-    if docids:
+    if docids and (not isinstance(docids, list)):
         docids = [int(i) for i in docids.split(',')]
 
     pdfVersoBoleto = report.with_context(context).render_qweb_pdf(docids)
