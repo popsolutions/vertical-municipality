@@ -52,17 +52,18 @@ class PropertyGaTax(models.Model):
 
         # This query inserts in the current month the green area calculation (property_ga_tax) based on the values of the previous month
         insert_property_ga_tax_From_Old_Month = """
-insert into property_ga_tax(id,land_id,"date",tax_index,last_tax,current_tax,create_uid,create_date,write_uid,write_date)
+insert into property_ga_tax(id,land_id,"date",tax_index,last_tax,current_tax,create_uid,create_date,write_uid,write_date,state)
 select nextval('property_ga_tax_id_seq') id,
        pl.id land_id,
        '""" + date + """' "date",
        rcs.property_ga_tax_index tax_index,
        coalesce(pgt_old.current_tax, pl.tax_ga_initial_value) last_tax,
-       round((coalesce(pgt_old.current_tax, pl.tax_ga_initial_value) * trunc(rcs.property_ga_tax_index::numeric, 2))::numeric, 2),
+       round( perc_sum(coalesce(pgt_old.current_tax, pl.tax_ga_initial_value)::numeric, rcs.property_ga_tax_index::numeric)::numeric, 2) current_tax,
        1 create_uid,
        current_timestamp  create_date,
        1 write_uid,
-       current_timestamp write_date
+       current_timestamp write_date,
+       'draft' state
   from property_land pl 
          left join property_ga_tax pgt_old on pgt_old.land_id = pl.id and TO_CHAR(pgt_old.date, 'yyyymm') = '""" + old_year_month + """',         
        (select rcs.property_ga_tax_index  from res_config_settings rcs order by id desc limit 1) rcs
