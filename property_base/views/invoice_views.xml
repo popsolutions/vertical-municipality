@@ -24,6 +24,11 @@
                 </page>
             </xpath>
         </field>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook[@colspan='4']//field[@name='invoice_line_ids']//field[@name='name']" position="after">
+                <field name="anomes_vencimento"/>
+            </xpath>
+        </field>
     </record>
 
 </odoo>
