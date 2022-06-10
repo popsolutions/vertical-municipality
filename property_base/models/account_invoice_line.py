@@ -16,7 +16,6 @@ class AccountMoveLine(models.Model):
         # if vals['product_id'] in [1, 10, 7, 9, 12]
         query = '''
 select anomes(ai.date_due) anomes,
-       anomes_inc(anomes(ai.date_due), -1) anomes_anterior,
        anomes_text(anomes(ai.date_due)) anomes_text,
        anomes_text(anomes_inc(anomes(ai.date_due), -1)) anomes_anterior_text,
        (select pt."name"  from product_template pt where pt.id = ''' + str(vals['product_id']) + ''') product_template_name
@@ -29,23 +28,25 @@ select anomes(ai.date_due) anomes,
         # if vals['account_invoice_line_id_accumulated_ref'] == 0:
         #     vals['account_invoice_line_id_accumulated_ref'] = None
 
-        if vals['anomes_vencimento_original'] == 0:
+        if 'anomes_vencimento_original' in vals and vals['anomes_vencimento_original'] == 0:
             vals['anomes_vencimento_original'] = None
 
-        if vals['anomes_vencimento'] == 0 and res[0] != None:
-            # se o anomes_vencimento não esta em vals, certamente ele não e uma copia (duplicação de invoice)
-            if vals['product_id'] in (1, 10):
-                anomes = res[0] # anomes
-                anomes_text = res[2] # anomes_anterior
-            else:
-                anomes = res[1] # anomes_anterior
-                anomes_text = res[3] # anomes_anterior_text
+        if 'anomes_vencimento' in vals:
+            if vals['anomes_vencimento'] == 0 and res[0] != None:
+                # se o anomes_vencimento não esta em vals, certamente ele não e uma copia (duplicação de invoice)
 
-            vals['name'] = res[4] + ' ' + anomes_text
-            vals.update({'anomes_vencimento': anomes})
+                if vals['product_id'] in (1, 10, 12): ### 1-Contribuição mensal, 10-Manutenção de Area verde, 12-Multas
+                    # Na fatura o texto fica como Ano/mês ATUAL
+                    anomes_text = res[1] # anomes_text
+                else: ### 7-Agua/esgoto, 9-Taxa de captação
+                    #Na fatura o texto fica como Ano/mês ANTERIOR
+                    anomes_text = res[2] # anomes_anterior_text
 
-        if vals['anomes_vencimento'] == 0:
-            vals['anomes_vencimento'] = None
+                vals['name'] = res[3] + ' ' + anomes_text
+                vals.update({'anomes_vencimento': res[0]})
+
+            if vals['anomes_vencimento'] == 0:
+                vals['anomes_vencimento'] = None
 
         res = super().create(vals)
         return res
