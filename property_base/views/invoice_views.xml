@@ -6,6 +6,9 @@
         <field name="model">account.invoice</field>
         <field name="inherit_id" ref="account.invoice_form"/>
         <field name="arch" type="xml">
+            <xpath expr="//notebook[@colspan='4']//field[@name='invoice_line_ids']//field[@name='name']" position="after">
+                <field name="anomes_vencimento"/>
+            </xpath>
             <xpath expr="//page[@name='other_info']" position="after">
                 <page name="name" string="Property">
                     <group col="2">
@@ -22,11 +25,6 @@
                         <field name="state"/>
                     </group>
                 </page>
-            </xpath>
-        </field>
-        <field name="arch" type="xml">
-            <xpath expr="//notebook[@colspan='4']//field[@name='invoice_line_ids']//field[@name='name']" position="after">
-                <field name="anomes_vencimento"/>
             </xpath>
         </field>
     </record>
