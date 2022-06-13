@@ -42,5 +42,12 @@
             <field name="state">code</field>
             <field name="code">action = records.remover_cnab()</field>
         </record>
+        <record id="action_property_base_model_property_land" model="ir.actions.server">
+            <field name="name">Invoice Process</field>
+            <field name="model_id" ref="property_base.model_property_land"/>
+            <field name="binding_model_id" ref="property_base.model_property_land"/>
+            <field name="state">code</field>
+            <field name="code">action = records.invoice_process()</field>
+        </record>
     </data>
 </odoo>

@@ -31,22 +31,24 @@ select anomes(ai.date_due) anomes,
         if 'anomes_vencimento_original' in vals and vals['anomes_vencimento_original'] == 0:
             vals['anomes_vencimento_original'] = None
 
-        if 'anomes_vencimento' in vals:
-            if vals['anomes_vencimento'] == 0 and res[0] != None:
-                # se o anomes_vencimento não esta em vals, certamente ele não e uma copia (duplicação de invoice)
+        if 'anomes_vencimento' not in 'vals':
+            vals.update({'anomes_vencimento': 0})
 
-                if vals['product_id'] in (1, 10, 12): ### 1-Contribuição mensal, 10-Manutenção de Area verde, 12-Multas
-                    # Na fatura o texto fica como Ano/mês ATUAL
-                    anomes_text = res[1] # anomes_text
-                else: ### 7-Agua/esgoto, 9-Taxa de captação
-                    #Na fatura o texto fica como Ano/mês ANTERIOR
-                    anomes_text = res[2] # anomes_anterior_text
+        if vals['anomes_vencimento'] == 0 and res[0] != None:
+            # se o anomes_vencimento não esta em vals, certamente ele não e uma copia (duplicação de invoice)
 
-                vals['name'] = res[3] + ' ' + anomes_text
-                vals.update({'anomes_vencimento': res[0]})
+            if vals['product_id'] in (1, 10, 12): ### 1-Contribuição mensal, 10-Manutenção de Area verde, 12-Multas
+                # Na fatura o texto fica como Ano/mês ATUAL
+                anomes_text = res[1] # anomes_text
+            else: ### 7-Agua/esgoto, 9-Taxa de captação
+                #Na fatura o texto fica como Ano/mês ANTERIOR
+                anomes_text = res[2] # anomes_anterior_text
 
-            if vals['anomes_vencimento'] == 0:
-                vals['anomes_vencimento'] = None
+            vals['name'] = res[3] + ' ' + anomes_text
+            vals.update({'anomes_vencimento': res[0]})
+
+        if vals['anomes_vencimento'] == 0:
+            vals['anomes_vencimento'] = None
 
         res = super().create(vals)
         return res

@@ -81,6 +81,10 @@ class AccountInvoice(models.Model):
     def _create_property_customer_invoice(self, p_wc, product_id, account_id, price_unitFieldName):
         invoice_owner_id = p_wc.land_id.getInvoiceOwner_id()
 
+        self.env.cr.execute('select invoice_date_due from vw_property_settings_monthly_last')
+        dts = self.env.cr.fetchall()[0]
+        date_due = dts[0]
+
         inv_line_vals = {
             'product_id': product_id.id,
             'name': product_id.name,
@@ -93,7 +97,8 @@ class AccountInvoice(models.Model):
             'account_id': invoice_owner_id.property_account_receivable_id.id,
             'partner_id': invoice_owner_id.id,
             'origin': p_wc.display_name,
-            'date_invoice': fields.Date.today(),
+            'date_due': date_due,
+            'date_invoice': date_due,
             'land_id': p_wc.land_id.id,
             'invoice_line_ids': [(0, 0, inv_line_vals)],
         }

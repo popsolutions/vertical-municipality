@@ -168,3 +168,31 @@ class PropertyLand(models.Model):
 
     def getInvoiceOwner_id(self):
         return self.owner_invoice_id or self.owner_id
+
+    @api.model
+    def invoice_process(self):
+        #esta rotina vai reprocessar as invoices de property_land
+        def process(productIdName, modelName, modelLabel, price_unitFieldName, domain_id):
+            self.env['account.invoice'].process_property_invoice(productIdName, modelName, modelLabel, price_unitFieldName, [('id', '=', domain_id)])
+
+        for land in self:
+
+            query = '''            
+                select property_tax_id, property_ga_tax_id, property_water_consumption_id, property_water_catchment_id
+                  from vw_property_land_lasts_ids
+                 where land_id = ''' + str(land.id)
+
+            self.env.cr.execute(query)
+            last_ids = self.env.cr.fetchall()[0]
+
+            process('property_tax.product_property_tax', 'property.tax', 'Property taxes', 'amount_total', last_ids[0])
+
+            process('property_ga_maintenance.property_ga_maintenance', 'property.ga.tax', 'Green Area Tax', 'current_tax', last_ids[1])
+            process('property_water_consumption.product_property_water_consumption',
+                                          'property.water.consumption',
+                                          'Water Consumption', 'total', last_ids[2])
+
+            process('property_water_catchment.product_property_water_catchment',
+                                          'property.water.catchment',
+                                          ' Water Catchment', 'rate_catchment', last_ids[3])
+
