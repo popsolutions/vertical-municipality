@@ -184,7 +184,8 @@ class PropertyLand(models.Model):
     def invoice_process(self):
         #esta rotina vai reprocessar as invoices de property_land
         def process(productIdName, modelName, modelLabel, price_unitFieldName, domain_id):
-            self.env['account.invoice'].process_property_invoice(productIdName, modelName, modelLabel, price_unitFieldName, [('id', '=', domain_id)])
+            if domain_id:
+                self.env['account.invoice'].process_property_invoice(productIdName, modelName, modelLabel, price_unitFieldName, [('id', '=', domain_id)])
 
         for land in self:
 
@@ -196,7 +197,23 @@ class PropertyLand(models.Model):
             self.env.cr.execute(query)
             last_ids = self.env.cr.fetchall()[0]
 
-            process('property_tax.product_property_tax', 'property.tax', 'Property taxes', 'amount_total', last_ids[0])
+            product_property_tax_id = last_ids[0]
+
+            if product_property_tax_id:
+                #Se existe um product_property vou cancelar o que ja existe e gerar um novo
+                product_property_tax = self.env['property.tax'].search([('id', '=', product_property_tax_id)])
+                product_property_tax.write({'state': 'cancel'})
+
+            #criar um novo product.property.tax
+            self.action_create_batch_taxes()
+
+            # Atualizar o id do novo product.property.tax
+            self.env.cr.execute(query)
+            last_ids = self.env.cr.fetchall()[0]
+
+            product_property_tax_id = last_ids[0]
+
+            process('property_tax.product_property_tax', 'property.tax', 'Property taxes', 'amount_total', product_property_tax_id)
 
             process('property_ga_maintenance.property_ga_maintenance', 'property.ga.tax', 'Green Area Tax', 'current_tax', last_ids[1])
             process('property_water_consumption.product_property_water_consumption',
@@ -206,4 +223,3 @@ class PropertyLand(models.Model):
             process('property_water_catchment.product_property_water_catchment',
                                           'property.water.catchment',
                                           ' Water Catchment', 'rate_catchment', last_ids[3])
-

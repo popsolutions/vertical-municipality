@@ -18,7 +18,9 @@ class PropertyTax(models.Model):
     tax_line_ids = fields.One2many('property.tax.line', 'tax_id', 'Tax Details')
     state = fields.Selection([('draft', 'Draft'),
                               ('pending', 'Pending'),
-                              ('processed', 'Processed')], default='draft')
+                              ('processed', 'Processed'),
+                              ('cancel', 'Cancelled')
+                              ], default='draft')
     invoice_id = fields.Many2one('account.invoice', 'Invoice', help="Invoice where this tax was processed")
     formula = fields.Text(help="Formula used to compute the tax. For reference only")
 

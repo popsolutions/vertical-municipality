@@ -58,18 +58,22 @@ class AccountInvoice(models.Model):
         records_index = 0
 
         for p_wc in self.web_progress_iter(property_wc_ids, msg="Process " + modelLabel):
+            if p_wc[price_unitFieldName] == 0:
+                p_wc.state = 'processed'
+                continue
 
-            if p_wc.land_id.id not in inv_land_ids:
+            if p_wc.land_id.land_id_invoice().id not in inv_land_ids:
                 self._create_property_customer_invoice(
                     p_wc, product_id, account_id, price_unitFieldName)
             else:
-                inv_id = self.search([('land_id', '=', p_wc.land_id.id), ('state', 'in', ['draft'])], limit=1)
+                inv_id = self.search([('land_id', '=', p_wc.land_id.land_id_invoice().id), ('state', 'in', ['draft'])], limit=1)
                 
                 inv_id.write({'invoice_line_ids': [(0, 0, {
                     'product_id': product_id.id,
                     'name': product_id.name,
                     'price_unit': p_wc[price_unitFieldName],
                     'account_id': account_id.id,
+                    'land_id': p_wc.land_id.id,
                     'invoice_line_tax_ids': [(6, 0, product_id.taxes_id.ids)],
                 })]})
             p_wc.state = 'processed'
@@ -90,6 +94,7 @@ class AccountInvoice(models.Model):
             'name': product_id.name,
             'price_unit': p_wc[price_unitFieldName],
             'account_id': account_id.id,
+            'land_id': p_wc.land_id.id,
             'invoice_line_tax_ids': [(6, 0, product_id.taxes_id.ids)],
         }
         inv_data = {
@@ -99,7 +104,7 @@ class AccountInvoice(models.Model):
             'origin': p_wc.display_name,
             'date_due': date_due,
             'date_invoice': date_due,
-            'land_id': p_wc.land_id.id,
+            'land_id': p_wc.land_id.land_id_invoice().id,
             'invoice_line_ids': [(0, 0, inv_line_vals)],
         }
         self.sudo().create(inv_data)
