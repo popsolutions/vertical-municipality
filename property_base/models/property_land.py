@@ -50,6 +50,11 @@ class PropertyLand(models.Model):
         'Owner Invoice',
         track_visibility='onchange'
     )
+    unified_property_id = fields.Many2one(
+        'property.land',
+        'Unified property',
+        track_visibility='onchange'
+    )
     module_id = fields.Many2one(
         'property.land.module',
         'Module',
@@ -168,6 +173,12 @@ class PropertyLand(models.Model):
 
     def getInvoiceOwner_id(self):
         return self.owner_invoice_id or self.owner_id
+
+    def land_id_invoice(self):
+        if self.unified_property_id:
+            return self.unified_property_id
+        else:
+            return self
 
     @api.model
     def invoice_process(self):

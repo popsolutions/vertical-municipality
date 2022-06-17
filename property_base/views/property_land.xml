@@ -34,6 +34,7 @@
                             <group col="4" colspan="4">
                                 <field name="owner_id" colspan="4"/>
                                 <field name="owner_invoice_id" colspan="4"/>
+                                <field name="unified_property_id" colspan="4"/>
                             </group>
                             <group string="Basic Information" col="2" colspan="2">
                                 <field name="module_id"/>
@@ -83,6 +84,7 @@
                     <field name="name"/>
                     <field name="owner_id"/>
                     <field name="owner_invoice_id"/>
+                    <field name="unified_property_id"/>
                     <field name="module_id"/>
                     <field name="block_id"/>
                     <field name="lot_id"/>
@@ -107,6 +109,7 @@
                     <field name="name"/>
                     <field name="owner_id"/>
                     <field name="owner_invoice_id"/>
+                    <field name="unified_property_id"/>
                     <field name="module_id"/>
                     <field name="block_id"/>
                     <field name="lot_id"/>

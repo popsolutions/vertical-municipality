@@ -10,6 +10,11 @@ class AccountMoveLine(models.Model):
     # account_invoice_line_id_accumulated_ref = fields.Integer()
     anomes_vencimento_original = fields.Integer('Ano/Mês Vencimento')
     name_original = fields.Text
+    land_id = fields.Many2one(
+        'property.land',
+        'Property',
+        track_visibility='onchange'
+    )
 
     @api.model
     def create(self, vals):
