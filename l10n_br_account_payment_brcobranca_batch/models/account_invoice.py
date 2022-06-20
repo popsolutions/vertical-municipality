@@ -202,11 +202,13 @@ select anomes_text(anomes(pwc."date"), 2) anomes,
         #Resolvendo account_invoice_line [INICIO]
         query = '''
 select ail.name,
-       ail.price_total,
-       ail.anomes_vencimento
+       sum(ail.price_total) price_total,
+       ail.anomes_vencimento,
+       ail.product_id
   from account_invoice_line ail  
  where ail.invoice_id = ''' + str(invoice.id) + '''
-  order by ail.anomes_vencimento desc 
+ group by ail.name, ail.product_id, ail.anomes_vencimento
+ order by ail.anomes_vencimento desc 
 '''
 
         self.env.cr.execute(query)
@@ -244,6 +246,7 @@ select ail.name,
 
         if idsErro != '':
             idsErro.insert(0, 'Os seguintes ids não foram processados:\n\n')
+            # print id erros em arquivo texto
             raise UserError(tuple(idsErro))
 
         return
