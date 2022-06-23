@@ -21,6 +21,19 @@ class PropertyGaTax(models.Model):
         ('processed', 'Processed')
         ], default='draft')
 
+    @api.multi
+    def name_get(self):
+        res = []
+        for rec in self:
+            custom_name = "{} ({})".format(rec.land_id.name, rec.date)
+            print(custom_name)
+            res.append((rec.id, custom_name))
+        return res
+
+    def name_get_unifiedy(self):
+        res = "{}/{}".format(self.date.strftime('%m-%Y'), self.land_id.land_id_invoice().name)
+        return res
+
     @api.depends('date', 'land_id')
     def _compute_name(self):
         for rec in self:

@@ -32,6 +32,10 @@ class PropertyGaTax(models.Model):
                 rec.date.strftime('%m-%Y'),
                 rec.land_id.name)
 
+    def name_get_unifiedy(self):
+        res = "{}/{}".format(self.date.strftime('%m-%Y'), self.land_id.land_id_invoice().name)
+        return res
+
     def process_batch_property_ga_maintenance(self):
         self.env.cr.execute("select to_char(t.maxdate, 'yyyy') old_year, to_char(t.maxdate, 'mm') old_month from (select max(date) maxdate from property_ga_tax) t")
         res = self.env.cr.fetchall()

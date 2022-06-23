@@ -31,6 +31,10 @@ class PropertyTax(models.Model):
                 rec.date.strftime('%m-%Y'),
                 rec.land_id.name)
 
+    def name_get_unifiedy(self):
+        res = "{}/{}".format(self.date.strftime('%m-%Y'), self.land_id.land_id_invoice().name)
+        return res
+
     def _get_formula(self):
         return self.env['ir.config_parameter'].sudo().get_param('property_tax.formula')
 

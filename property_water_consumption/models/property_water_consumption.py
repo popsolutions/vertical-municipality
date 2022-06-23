@@ -33,6 +33,10 @@ class PropertyWaterConsumption(models.Model):
             res.append((rec.id, custom_name))
         return res
 
+    def name_get_unifiedy(self):
+        res = "{}/{}".format(self.date.strftime('%m-%Y'), self.land_id.land_id_invoice().name)
+        return res
+
     @api.depends('last_read', 'current_read')
     def _compute_consumption(self):
         for rec in self:
