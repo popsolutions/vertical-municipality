@@ -291,6 +291,27 @@
                   <tfoot>
                   </tfoot>
                 </table>
+
+                <!--Lotes unificados neste boleto-->
+                <t t-if="boletoData['unified_lots'][0]['unified_amount'] > 1">
+                    <table
+                      style="width:100%; align:right; border: 1pt solid black; border-collapse:separate; border-radius:8pt; font-size: small; padding:1px;">
+                      <thead>
+                        <tr>
+                          <th>
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                          <td name="unified_lots_unified_lots">
+                            <span t-esc="boletoData['unified_lots'][0]['unified_lots']"/>
+                          </td>
+                      </tbody>
+                      <tfoot>
+                      </tfoot>
+                    </table>
+                </t>
+
                 <table style="font-size: 12px; text-align:center; width:100%; border: 1pt solid black; border-collapse:separate; border-radius:8pt; margin-top:4px; padding:1px;">
                   <thead>
                     <tr>

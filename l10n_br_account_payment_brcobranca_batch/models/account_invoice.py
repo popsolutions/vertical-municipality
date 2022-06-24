@@ -199,7 +199,7 @@ select anomes_text(anomes(pwc."date"), 2) anomes,
         # Resolvendo Histórico de consumo(consumptionJson) [FIM]
 
 
-        #Resolvendo account_invoice_line [INICIO]
+        #Resolvendo account_invoice_line (Agrupado) [INICIO]
         query = '''
 select ail.name,
        sum(ail.price_total) price_total,
@@ -226,7 +226,26 @@ select ail.name,
             current_anomes = account_invoice_line[2]
 
         consumptionJson.update({'account_invoice_line': account_invoice_lineJson})
-        #Resolvendo account_invoice_line [FIM]
+        #Resolvendo account_invoice_line (Agrupado) [FIM]
+
+
+        # Resolvendo lotes que compoeem a fatura [INICIO]
+        query = '''
+select string_agg(sumary_text1, ', ') unified_lots, sum(amount) amount
+  from account_invoice_land_uni_summary(''' + str(invoice.id) + ''')  
+        '''
+
+        self.env.cr.execute(query)
+        unified_lotsRows = self.env.cr.fetchall()
+        unified_lots = unified_lotsRows[0][0]
+        unified_amount = unified_lotsRows[0][1]
+
+        unified_lotsRows = []
+        unified_lotsRows.append(
+            {'unified_lots': unified_lots, 'unified_amount': unified_amount})
+
+        consumptionJson.update({'unified_lots': unified_lotsRows})
+        # Resolvendo lotes que compoeem a fatura [INICIO]
 
         res = consumptionJson
         return res
