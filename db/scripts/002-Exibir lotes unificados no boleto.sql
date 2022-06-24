@@ -1,18 +1,57 @@
 --Atualizar modulo l10n_br_account_payment_brcobranca_batch
 
 CREATE OR REPLACE FUNCTION public.func_lot_inc(lot_ text)
- RETURNS varchar(10)
+ RETURNS character varying
  LANGUAGE plpgsql
 AS $function$
 declare char_part varchar(10);
-declare number_part int;
+declare number_part varchar(3);
+declare char_inc varchar(1);
 begin
---versao:2022/0/24
+--versao:2022/06/24
   char_part = regexp_replace(lot_, '\d', '', 'g');
-  number_part = regexp_replace(lot_, '\D','','g')::int;
+  number_part = regexp_replace(lot_, '\D','','g');
 
-  return char_part || (number_part + 1)::varchar;
+  if (number_part <> '' ) then
+    return char_part || (number_part::int + 1)::varchar;
+  else
+    --se o lot_ e formado apenas por caracteres, vou incrementar o ultimo caracter. Por Exempplo, "AA" vai ficar "AB"
+    char_inc = char_inc(right(char_part, 1));
+    return SUBSTRING(char_part, 1, length(char_part) - 1) || char_inc;
+  end if;
 --  return char_part;
+END
+$function$
+;
+
+
+CREATE OR REPLACE FUNCTION public.char_inc(char_ varchar(1))
+ RETURNS character varying
+ LANGUAGE plpgsql
+AS $function$
+declare charSeqUpper varchar(26) = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+declare charSeqLower varchar(26) = 'abcdefghijklmnopqrstuvwxyz';
+declare posStr int;
+begin
+--versao:2022/06/24
+  posStr = strpos(charSeqUpper, char_);
+
+  if (posStr <>  0) then
+    if (posStr = 26) then
+      return null;
+    end if;
+    return substring(charSeqUpper, posStr + 1, 1) ;
+  end if;
+
+  posStr = strpos(charSeqLower, char_);
+  if (posStr <>  0) then
+    if (posStr = 26) then
+      return null;
+    end if;
+
+    return substring(charSeqLower, posStr + 1, 1) ;
+  end if;
+
 END
 $function$
 ;
