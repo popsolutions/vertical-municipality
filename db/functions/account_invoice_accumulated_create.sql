@@ -5,13 +5,13 @@ AS $function$
   declare _invoice_id int;
   declare _reseted_count int = 0;
 begin
-/*versao:2022.05.31
+/*versao:2022.07.07
  Parâmetros:
    _anomes_destino => Ano/Mês onde serão acumuladas as faturas anteriores que estão em aberto.
    _fixed_invoice_id => usado para processar um invoice individualmente
 */
 
- insert into account_invoice_line (id, create_uid, create_date, write_uid, write_date, "name", origin, "sequence", invoice_id, uom_id, product_id, account_id, price_unit, price_subtotal, price_total, price_subtotal_signed, quantity, discount, account_analytic_id, company_id, partner_id, currency_id, is_rounding_line, display_type, account_invoice_line_id_accumulated_ref, anomes_vencimento)
+ insert into account_invoice_line (id, create_uid, create_date, write_uid, write_date, "name", origin, "sequence", invoice_id, uom_id, product_id, account_id, price_unit, price_subtotal, price_total, price_subtotal_signed, quantity, discount, account_analytic_id, company_id, partner_id, currency_id, is_rounding_line, display_type, account_invoice_line_id_accumulated_ref, anomes_vencimento, land_id)
  select nextval('account_invoice_line_id_seq') id,
         1 create_uid,
         current_timestamp create_date,
@@ -37,7 +37,8 @@ begin
         false is_rounding_line,
         null display_type,
         ail_origem.id account_invoice_line_id_accumulated_ref,
-        ail_origem.anomes_vencimento
+        ail_origem.anomes_vencimento,
+        ail_origem.land_id
    from (select invoice_line_origem_id,
                 invoice_destino_id
            from (select t1.invoice_destino_id,
@@ -84,16 +85,16 @@ begin
                            order by invoice_destino.land_id, invoice_line_origem.product_id, invoice_line_origem.anomes_vencimento, invoice_origem.id desc
                         ) t1
                  ) t
-          where 0 = 0 
+          where 0 = 0
             and t.rownumber = 1 /*eliminar repetidos*/
-          order by t.invoice_line_origem_anomes_vencimento, t.invoice_origem_id  
-        ) t 
+          order by t.invoice_line_origem_anomes_vencimento, t.invoice_origem_id
+        ) t
         join account_invoice_line ail_origem on ail_origem.id = t.invoice_line_origem_id
         join account_invoice invoice_origem on invoice_origem.id = ail_origem.invoice_id;
-             
-     
-  --Inserir Juros   
-  insert into account_invoice_line (id, create_uid, create_date, write_uid, write_date, "name", origin, "sequence", invoice_id, uom_id, product_id, account_id, price_unit, price_subtotal, price_total, price_subtotal_signed, quantity, discount, account_analytic_id, company_id, partner_id, currency_id, is_rounding_line, display_type, account_invoice_line_id_accumulated_ref, anomes_vencimento) 
+
+
+  --Inserir Juros
+  insert into account_invoice_line (id, create_uid, create_date, write_uid, write_date, "name", origin, "sequence", invoice_id, uom_id, product_id, account_id, price_unit, price_subtotal, price_total, price_subtotal_signed, quantity, discount, account_analytic_id, company_id, partner_id, currency_id, is_rounding_line, display_type, account_invoice_line_id_accumulated_ref, anomes_vencimento, land_id)
   select nextval('account_invoice_line_id_seq') id,
          1 create_uid,
          current_timestamp create_date,
@@ -119,7 +120,8 @@ begin
          false is_rounding_line,
          null display_type,
          null account_invoice_line_id_accumulated_ref,
-         mlt.anomes_vencimento 
+         mlt.anomes_vencimento,
+         aci.land_id /*obs: O ideal e que o land_id venha do account_invoice_line*/
     from account_invoice aci,
          account_invoice_accumulated_calc_multa_lines(aci.id) mlt,
          (select id, name from product_template where default_code = 'PROPMJ') pdt
