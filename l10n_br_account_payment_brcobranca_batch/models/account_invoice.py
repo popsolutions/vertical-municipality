@@ -10,6 +10,7 @@ import tempfile
 import requests
 from ..constants.br_cobranca import get_brcobranca_api_url
 from ..controllers.portal import *
+import os
 import datetime
 logger = logging.getLogger(__name__)
 
@@ -255,6 +256,10 @@ select string_agg(sumary_text1, ', ') unified_lots, sum(amount) amount
         if not os.path.isdir(pdfDirName):
             raise Exception('Salvar pdf no servidor - Diretório "' + pdfDirName + '" inacesssivel ou não encontrado.')
 
+        fileErros = pdfDirName + '/erros ao gerar PDFs.txt'
+        text_file = open(fileErros, 'w')
+        text_file.close()
+
         idsErro = []
 
         for invoice in self.web_progress_iter(self):
@@ -267,19 +272,18 @@ select string_agg(sumary_text1, ', ') unified_lots, sum(amount) amount
                     msgErro = str(e)
 
                 msgErro = str(invoice.id) + '-' + msgErro + '\n'
+
+                #Salvar erro no arquivo de log
+                text_file = open(fileErros, 'a')
+                text_file.write("%s\n" % msgErro)
+                text_file.close()
+
                 idsErro.append(msgErro)
                 logger.info('')
                 logger.info('Falha ao gerar pdf de Boleto/Verso para id:"' + msgErro)
                 logger.info('Continuando processamento...')
 
         if len(idsErro) > 0:
-            text_file = open(pdfDirName + '/erros ao gerar PDFs.txt', 'w')
-            for erro in idsErro:
-                # write each item on a new line
-                text_file.write("%s\n" % erro)
-
-            text_file.close()
-
             idsErro.insert(0, 'Os seguintes ids não foram processados:\n\n')
             raise UserError(tuple(idsErro))
 
