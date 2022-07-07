@@ -13,6 +13,8 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+# pdfDirName = '/tmp/odoo_pdfs_boleto_verso/'
+pdfDirName = '/var/lib/odoo/.local/share/Odoo/boleto_verso/'
 
 class ReportControllerInherited(ReportController):
     _name = 'ReportControllerInherited'
@@ -87,8 +89,8 @@ def join_two_pdf(pdf_chunks: List[bytes], docids, saveToLocalServer) -> bytes:
         if saveToLocalServer:
             account_invoice = request.env['account.invoice'].sudo().search([('id', '=', docids[pageNum])])
             pdfFileName = str(account_invoice.id) + '-' + account_invoice.land_id.display_name + '-' + account_invoice.partner_id.name
-            # pdfFileName = '/tmp/odoo_pdfs_boleto_verso/' + pdfFileName.replace('/', '') + '.pdf'
-            pdfFileName = '/var/lib/odoo/.local/share/Odoo/boleto_verso/' + pdfFileName.replace('/', '') + '.pdf'
+
+            pdfFileName = pdfDirName + pdfFileName.replace('/', '') + '.pdf'
 
             pdfToSave = Pdf.new()
             pdfToSave.pages.append(page_Fatura)

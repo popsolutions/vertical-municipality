@@ -252,20 +252,35 @@ select string_agg(sumary_text1, ', ') unified_lots, sum(amount) amount
 
     @api.model
     def action_account_invoice_gerar_boleto_servidor(self):
+        if not os.path.isdir(pdfDirName):
+            raise Exception('Salvar pdf no servidor - Diretório "' + pdfDirName + '" inacesssivel ou não encontrado.')
+
         idsErro = []
+
         for invoice in self.web_progress_iter(self):
             try:
                 process_boleto_frente_verso(str(invoice.id), True)
             except Exception as e:
-                msgErro = str(invoice.id) + '-' + str(e.name) + '\n'
+                try:
+                    msgErro = str(e.name)
+                except:
+                    msgErro = str(e)
+
+                msgErro = str(invoice.id) + '-' + msgErro + '\n'
                 idsErro.append(msgErro)
                 logger.info('')
                 logger.info('Falha ao gerar pdf de Boleto/Verso para id:"' + msgErro)
                 logger.info('Continuando processamento...')
 
-        if idsErro != '':
+        if len(idsErro) > 0:
+            text_file = open(pdfDirName + '/erros ao gerar PDFs.txt', 'w')
+            for erro in idsErro:
+                # write each item on a new line
+                text_file.write("%s\n" % erro)
+
+            text_file.close()
+
             idsErro.insert(0, 'Os seguintes ids não foram processados:\n\n')
-            # print id erros em arquivo texto
             raise UserError(tuple(idsErro))
 
         return
