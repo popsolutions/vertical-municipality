@@ -296,6 +296,7 @@
                 <t t-if="boletoData['unified_lots'][0]['unified_amount'] > 1">
                     <table
                       style="width:100%; align:right; border: 1pt solid black; border-collapse:separate; border-radius:8pt; font-size: small; padding:1px;">
+                      <p style="font-size: x-small; margin-bottom: 0px;">Referere-se a:</p>
                       <thead>
                         <tr>
                           <th>
