@@ -83,21 +83,34 @@ class AccountInvoice(models.Model):
         consumptionJson = {}
 
         sql = '''
-               select anomes_text(anomes(ail.create_date), 3) mesReferencia,
-                      pwc."date" readDate,
-                      pwc."date" + 30 readNext,
-                      pwc.last_read,
-                      pwc.current_read,
-                      pwc.consumption,
-                      anomes(ail.date_due) anomes_invoice
-                 from account_invoice ail 
-                        inner join property_water_consumption pwc 
-                                on pwc.land_id = ail.land_id 
-                               and pwc."date" <= ail.date_due
-                               and pwc.state = 'processed'
-                where ail.id = ''' + str(invoice.id) + ''' 
-                order by pwc."date" desc
-                limit 1'''
+select anomes_text(anomes(pwc."date"), 3) mesReferencia,
+       pwc."date" readDate,
+       pwc."date" + 30 readNext,
+       pwc.last_read,
+       pwc.current_read,
+       (select sum(pwc2.consumption)
+          from account_invoice_line ail,
+               property_water_consumption pwc2 
+         where ail.invoice_id = aci.id 
+           and ail.product_id = 7 /*Consumo de agua*/
+           and pwc2.land_id = ail.land_id 
+           and pwc2."date" between aci.pwc_primeirodia and aci.pwc_ultimodia
+           and pwc2.state = 'processed'
+       ) consumption2,
+       anomes(aci.date_due) anomes_invoice
+  from (select aci.id,
+               aci.land_id,
+               aci.date_due,
+               anomes_primeirodia(anomes_inc(anomes(aci.date_due), -1)) pwc_primeirodia,
+               anomes_ultimodia(anomes_inc(anomes(aci.date_due), -1)) pwc_ultimodia
+          from account_invoice aci
+         where aci.id = ''' + str(invoice.id) + '''  
+       ) aci
+         inner join property_water_consumption pwc 
+                 on pwc.land_id = aci.land_id 
+                and pwc."date" between aci.pwc_primeirodia and aci.pwc_ultimodia
+                and pwc.state = 'processed'
+'''
 
         self.env.cr.execute(sql)
         datas = self.env.cr.fetchall()
@@ -134,12 +147,15 @@ class AccountInvoice(models.Model):
 
         query = '''
 select anomes_text(anomes(pwc."date"), 2) anomes,
-       pwc.consumption
-  from account_invoice ail inner join property_water_consumption pwc on pwc.land_id = ail.land_id
- where ail.id = ''' + str(invoice.id) + '''
-   and anomes(pwc."date") between anomes_inc(anomes(ail.date_due), -13) and anomes_inc(anomes(ail.date_due), -2)
- order by pwc."date" desc        
-        '''
+       sum(pwc.consumption) consumption
+  from account_invoice aci
+       inner join account_invoice_line ail on ail.invoice_id = aci.id and ail.product_id = 7 /*Consumo de agua*/
+       inner join property_water_consumption pwc on pwc.land_id = ail.land_id
+ where aci.id = ''' + str(invoice.id) + '''
+   and anomes(pwc."date") between anomes_inc(anomes(aci.date_due), -13) and anomes_inc(anomes(aci.date_due), -2)
+ group by 1, anomes(pwc."date")
+ order by anomes(pwc."date") desc  
+'''
 
         #Resolvendo Histórico de consumo(consumptionJson) [INICIO]
 
