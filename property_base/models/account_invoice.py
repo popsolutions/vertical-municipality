@@ -28,6 +28,8 @@ class AccountInvoice(models.Model):
         copy=False,
     )
 
+    date_due_initial = fields.Date(string='Due Date Initial')
+
     # Usado para deixar invisivel o botão
     # Imprimir Boleto, quando não for o caso
     payment_method_code = fields.Char(related="payment_mode_id.payment_method_id.code")
