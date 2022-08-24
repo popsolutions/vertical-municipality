@@ -85,15 +85,20 @@ class AccountInvoice(models.Model):
         sql = '''
 select anomes_text(anomes(pwc."date"), 3) mesReferencia,
        pwc."date" readDate,
-       pwc."date" + 30 readNext,
+       (select nextread_date
+          from property_settings_monthly
+         where year_month = anomes(aci.date_due) 
+       ) readNext,       
        pwc.last_read,
        pwc.current_read,
        (select sum(pwc2.consumption)
-          from account_invoice_line ail,
+          from (select distinct land_id 
+                  from account_invoice_line ail
+                 where ail.invoice_id = aci.id 
+                   and ail.product_id = 7 /*Consumo de agua*/
+               ) ail,
                property_water_consumption pwc2 
-         where ail.invoice_id = aci.id 
-           and ail.product_id = 7 /*Consumo de agua*/
-           and pwc2.land_id = ail.land_id 
+         where pwc2.land_id = ail.land_id 
            and pwc2."date" between aci.pwc_primeirodia and aci.pwc_ultimodia
            and pwc2.state = 'processed'
        ) consumption2,
@@ -148,11 +153,15 @@ select anomes_text(anomes(pwc."date"), 3) mesReferencia,
         query = '''
 select anomes_text(anomes(pwc."date"), 2) anomes,
        sum(pwc.consumption) consumption
-  from account_invoice aci
-       inner join account_invoice_line ail on ail.invoice_id = aci.id and ail.product_id = 7 /*Consumo de agua*/
-       inner join property_water_consumption pwc on pwc.land_id = ail.land_id
- where aci.id = ''' + str(invoice.id) + '''
-   and anomes(pwc."date") between anomes_inc(anomes(aci.date_due), -13) and anomes_inc(anomes(aci.date_due), -2)
+  from (select distinct 
+               anomes(aci.date_due) date_due_anomes,
+               ail.land_id 
+          from account_invoice aci
+               inner join account_invoice_line ail on ail.invoice_id = aci.id and ail.product_id = 7 /*Consumo de agua*/
+         where aci.id = ''' + str(invoice.id) + '''
+       ) t
+       inner join property_water_consumption pwc on pwc.land_id = t.land_id
+ where anomes(pwc."date") between anomes_inc(t.date_due_anomes, -13) and anomes_inc(t.date_due_anomes, -2)
  group by 1, anomes(pwc."date")
  order by anomes(pwc."date") desc  
 '''
@@ -166,7 +175,7 @@ select anomes_text(anomes(pwc."date"), 2) anomes,
         consumptionJson_Coluna2 = []
         consumptionJsonHst = []
         somaM3 = 0
-        qtdeItens = 0;
+        qtdeItens = 0
 
         for index, consumption in enumerate(consumptions):
             item = {
