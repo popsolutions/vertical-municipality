@@ -125,7 +125,7 @@ class AccountInvoice(models.Model):
         for invoice in self.web_progress_iter(self):
             date_due = invoice.date_due
 
-            if date_due > datetime.strptime('09/07/2022', '%d/%m/%Y').date():
+            if date_due > datetime.strptime('09/09/2022', '%d/%m/%Y').date():
                 raise UserError('Data de vencimento maior que o permitido')
 
             if invoice.state in ("draft", "open"):
@@ -133,3 +133,63 @@ class AccountInvoice(models.Model):
                 invoice.write({'state': 'draft'})
                 invoice.write({'payment_mode_id': False})
                 invoice.write({'state': 'open', 'date_due': date_due})
+
+    @api.multi
+    def write(self, values):
+        #processar Taxa de permanência
+        for invoice in self:
+            invoice_state = values.get('state') or invoice.state
+
+            if invoice_state == 'draft':
+                if 'date_due_initial' in values:
+                    invoice_date_due_initial = datetime.strptime(values['date_due_initial'], '%Y-%m-%d').date()
+                else:
+                    invoice_date_due_initial = invoice.date_due_initial
+
+                if 'date_due' in values:
+                    if type(values['date_due']) is str:
+                        invoice_date_due = datetime.strptime(values['date_due'], '%Y-%m-%d').date()
+                    else:
+                        invoice_date_due = values['date_due']
+                else:
+                    invoice_date_due = invoice.date_due
+
+                if invoice_date_due_initial and invoice_date_due_initial < invoice_date_due:
+                    invoice_date_due_yearmonth = int(str(invoice_date_due.year) + str(invoice_date_due.month).zfill(2))
+                    invoice_id = values.get('id') or int(invoice.id)
+
+                    invoice_line_TxPermanencia = self.env['account.invoice.line']
+                    product_product = self.env['product.product'].search([('default_code', '=', 'PROPTP')])[0] #PROPTP-Taxa de pemanência
+                    valorBaseJuros = 0
+
+                    for invoice_line in self.invoice_line_ids:
+                        if invoice_line.anomes_vencimento == invoice_date_due_yearmonth:
+                            if invoice_line.product_id.code == 'PROPTP':
+                                invoice_line_TxPermanencia = invoice_line
+
+                            if invoice_line.product_id.default_code in ('PROPTAX', 'PROPGT', 'PROPWC'):
+                                valorBaseJuros += invoice_line.price_total
+
+                    multaDiaria = round(valorBaseJuros * 0.001, 2)
+                    diasTaxaPermanencia = abs((invoice_date_due - invoice_date_due_initial).days)
+                    valTxPermanencia = multaDiaria * diasTaxaPermanencia
+
+                    jsonTxPermanencia = {
+                        'invoice_id': invoice_id,
+                        'product_id': product_product.id,
+                        'name': product_product.name,
+                        'price_unit': valTxPermanencia,
+                        'account_id': product_product.product_tmpl_id.get_product_accounts()['income'].id,
+                        'anomes_vencimento': invoice_date_due_yearmonth,
+                        'land_id': invoice.land_id.id}
+
+                    if len(product_product.taxes_id) > 0:
+                        jsonTxPermanencia.append({'invoice_line_tax_ids': [(6, 0, product_product.taxes_id.ids)]})
+
+                    if invoice_line_TxPermanencia.id:
+                        if (valTxPermanencia != invoice_line_TxPermanencia.price_unit):
+                            invoice_line_TxPermanencia.write(jsonTxPermanencia)
+                    else:
+                        invoice_line_TxPermanencia.create(jsonTxPermanencia)
+
+            return super(AccountInvoice, self).write(values)

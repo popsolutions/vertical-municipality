@@ -4,6 +4,7 @@ import logging
 
 from odoo import api, fields, models
 import logging
+import datetime
 _logger = logging.getLogger(__name__)
 
 class AccountInvoice(models.Model):
@@ -102,7 +103,8 @@ class AccountInvoice(models.Model):
             'account_id': invoice_owner_id.property_account_receivable_id.id,
             'partner_id': invoice_owner_id.id,
             'origin': p_wc.name_get_unifiedy(),
-            'date_due': date_due,
+            'date_due': datetime.date.today(),
+            'initial_date_due': date_due,
             'date_invoice': date_due,
             'land_id': p_wc.land_id.land_id_invoice().id,
             'invoice_line_ids': [(0, 0, inv_line_vals)],
