@@ -30,6 +30,21 @@
         </field>
     </record>
 
+    <record model="ir.ui.view" id="water_consumption_view">
+        <field name="name">property.water.consumption.view</field>
+        <field name="model">property.water.consumption</field>
+        <field name="priority" eval="16"/>
+        <field name="arch" type="xml">
+            <search>
+                <field name="land_id"/>
+                <field name="date"/>
+                <field name="last_read"/>
+                <field name="consumption"/>
+                <field name="property_land_address"/>
+            </search>
+        </field>
+    </record>
+
     <record id="water_consumption_view_tree" model="ir.ui.view">
         <field name="name">property.water.consumption.view.tree</field>
         <field name="model">property.water.consumption</field>
