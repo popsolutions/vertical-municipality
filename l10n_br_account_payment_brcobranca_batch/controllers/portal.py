@@ -34,7 +34,7 @@ class ReportControllerInherited(ReportController):
             return res
 
 
-def process_boleto_frente_verso(docids, saveToLocalServer = False):
+def process_boleto_frente_verso(docids, saveToLocalServer = False, return_ir_attachment = False):
     report = request.env['ir.actions.report']._get_report_from_name('l10n_br_account_payment_brcobranca_batch.report_invoice_boleto_verso')
     context = dict(request.env.context)
 
@@ -57,6 +57,20 @@ def process_boleto_frente_verso(docids, saveToLocalServer = False):
 
     if saveToLocalServer:
         return
+
+    if return_ir_attachment:
+        ir_attachment = request.env["ir.attachment"].create(
+            {
+                "name": 'teste.pdf',
+                "datas_fname": 'teste.pdf',
+                "res_model": account_invoice._name,
+                "res_id": account_invoice.id,
+                "datas": base64.b64encode(jpdf),
+                "mimetype": "application/pdf",
+                "type": "binary",
+            }
+        )
+        return ir_attachment
 
     pdfhttpheaders = [('Content-Type', 'application/pdf'), ('Content-Length', len(jpdf))]
     jpdfres = request.make_response(jpdf, headers=pdfhttpheaders)
