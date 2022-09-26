@@ -50,6 +50,10 @@ class PropertyWaterConsumption(models.Model):
         for rec in self:
             if rec.consumption and rec.land_id and rec.state in ['draft']:
                 consumption = rec.consumption
+
+                if consumption < 22:
+                    consumption = 22
+
                 water_consumption_economy_qty = rec.land_id.water_consumption_economy_qty or 1
                 if consumption <= rec.land_id.type_id.minimum_water_consumption:
                     consumption = rec.land_id.type_id.minimum_water_consumption
@@ -60,7 +64,7 @@ class PropertyWaterConsumption(models.Model):
                         rec.land_id.type_id.water_computation_parameter_id.get_total(
                             consumption)*water_consumption_economy_qty
                 )
-                rec.total += rec.total*0.8
+                rec.total += rec.total*0.8 # 0.8 é o cálculo do Esgoto
 
     @api.multi
     def get_last_read(self, land_id):
