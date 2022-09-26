@@ -48,7 +48,7 @@ class PropertyWaterConsumption(models.Model):
     @api.depends('consumption', 'land_id')
     def _compute_total(self):
         for rec in self:
-            if rec.consumption and rec.land_id and rec.state in ['draft']:
+            if rec.land_id and rec.state in ['draft']:
                 consumption = rec.consumption
 
                 if consumption < 22:

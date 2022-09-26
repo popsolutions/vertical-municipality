@@ -90,6 +90,21 @@ class PropertyTax(models.Model):
         for land in self.web_progress_iter(land_ids, msg='Process Batch Tax'):
             self._process_tax_amount_and_lines(land, formula)
 
+    @api.multi
+    def create_generic_process(self):
+        waters = self.env['property.water.consumption'].search([
+            ('date','>', '2022-09-01')]
+        )
+
+        for water in waters:
+            water.state = 'draft'
+            water._compute_total()
+            water.state = 'pending'
+            water.write({'total': water.total})
+            print('Corrigido "' + water.land_id.name + '" para total: "' + str(water.total) + '"')
+
+        print('x')
+
     def _process_tax_amount_and_lines(self, land, formula):
         amount, lines, formula = self._get_tax_amount_and_lines(land, formula)
         values = {
