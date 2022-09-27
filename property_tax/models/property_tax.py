@@ -93,7 +93,7 @@ class PropertyTax(models.Model):
     @api.multi
     def create_generic_process(self):
         waters = self.env['property.water.consumption'].search([
-            ('date','>', '2022-09-01')]
+            ('date','>', '2022-09-01'), ('id', '=', '534986')]
         )
 
         for water in waters:
