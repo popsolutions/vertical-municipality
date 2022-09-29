@@ -1,0 +1,22 @@
+CREATE OR REPLACE FUNCTION dev.account_invoice_corrigir_date_due_account_move_line()
+ RETURNS bool
+ LANGUAGE plpgsql
+AS $function$
+begin
+  --Atualizar account_move_line.date_maturity de acordo com account_invoice.date_due
+
+  with t as (
+  select ai.id, ail.id account_move_line_id, ai.date_due, ail.date_maturity
+    from account_invoice ai
+           join account_move_line ail on ail.invoice_id = ai.id
+            and ail.account_id = 25
+   where ai.date_due <> ail.date_maturity)
+  update account_move_line
+     set date_maturity = t.date_due
+    from t
+   where account_move_line.id = t.account_move_line_id;
+
+  return true;
+END;
+$function$
+;
