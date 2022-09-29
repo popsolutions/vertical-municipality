@@ -102,10 +102,20 @@ select anomes_text(anomes(pwc."date"), 3) mesReferencia,
            and pwc2."date" between aci.pwc_primeirodia and aci.pwc_ultimodia
            and pwc2.state = 'processed'
        ) consumption2,
-       anomes(aci.date_due) anomes_invoice
+       anomes(aci.date_due) anomes_invoice,
+       coalesce(
+       (select 1
+          from account_invoice ai_venc
+         where ai_venc.land_id = aci.land_id
+           and anomes(ai_venc.date_due) in (anomes_due, anomes_inc(anomes_due, -1), anomes_inc(anomes_due, -2), anomes_inc(anomes_due, -3))
+           and state = 'open'
+           and ai_venc.id <> aci.id
+         limit 1 
+       ), 0) accounts_open_exists              
   from (select aci.id,
                aci.land_id,
                aci.date_due,
+               anomes(aci.date_due) anomes_due,
                anomes_primeirodia(anomes_inc(anomes(aci.date_due), -1)) pwc_primeirodia,
                anomes_ultimodia(anomes_inc(anomes(aci.date_due), -1)) pwc_ultimodia
           from account_invoice aci
@@ -136,7 +146,8 @@ select anomes_text(anomes(pwc."date"), 3) mesReferencia,
                 'current_read': data[4],
                 'consumption': data[5],
                 'economias': 'X',
-                'exibir_mensagem_aumento_agua': exibir_mensagem_aumento_agua
+                'exibir_mensagem_aumento_agua': exibir_mensagem_aumento_agua,
+                'accounts_open_exists': data[7]
             })
         else:
             consumptionJson.update({
@@ -147,7 +158,8 @@ select anomes_text(anomes(pwc."date"), 3) mesReferencia,
                 'current_read': '',
                 'consumption': '',
                 'economias': 'X',
-                'exibir_mensagem_aumento_agua': False
+                'exibir_mensagem_aumento_agua': False,
+                'accounts_open_exists': ''
             })
 
         query = '''
