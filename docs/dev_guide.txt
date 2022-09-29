@@ -1,0 +1,7 @@
+::Gerar boleto
+get_brcobranca_boleto
+api do boleto: http://boleto.popsolutions.co
+Rotina inicial: /vertical-municipality/property_base/models/account_invoice.py.account_invoice._get_brcobranca_boleto
+Rotina que monta o json do boleto: /vertical-municipality/property_base/models/account_move_line.py.send_payment
+
+
