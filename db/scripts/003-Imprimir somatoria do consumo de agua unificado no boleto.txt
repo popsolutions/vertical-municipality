@@ -1,0 +1,44 @@
+CREATE INDEX property_water_consumption_date_idx ON public.property_water_consumption ("date");
+
+CREATE OR REPLACE FUNCTION public.anomes_primeirodia(anomes integer)
+ RETURNS timestamp
+ LANGUAGE plpgsql
+ IMMUTABLE STRICT
+AS $function$
+declare dateTimeStr varchar(18);
+declare ano varchar(4);
+declare mes varchar(2);
+begin
+  /*
+  Exemplos de uso:
+    anomes_inc(202201) ==> '2022-01-01'
+    anomes_inc(202201) ==> '2022-02-01'
+  */
+
+  ano = substring(anomes::varchar, 1, 4);
+  mes = substring(anomes::varchar, 5, 2);
+  dateTimeStr = ano || mes || '01 00:00:00';
+
+  return to_timestamp(dateTimeStr, 'YYYYMMDD hh24:mi:ss')::timestamp;
+END
+$function$
+;
+
+CREATE OR REPLACE FUNCTION public.anomes_ultimodia(anomes integer)
+ RETURNS timestamp
+ LANGUAGE plpgsql
+ IMMUTABLE STRICT
+AS $function$
+declare dateTimeStr varchar(18);
+declare ano varchar(4);
+declare mes varchar(2);
+begin
+  /*
+  Exemplos de uso:
+    anomes_inc(202201) ==> '2022-01-01'
+    anomes_inc(202201) ==> '2022-02-01'
+  */
+ return anomes_primeirodia(anomes_inc(anomes, 1)) - (1 * interval '1 second');
+END
+$function$
+;
