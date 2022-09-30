@@ -208,7 +208,7 @@
             <tr>
               <td name="tabela historico consumo e qualidade da água" style="width:50%; vertical-align: text-top">
                 <table
-                  style="width:95%; align:left; border: 1pt solid black; border-collapse:separate; border-radius:8pt; font-size: small;">
+                  style="width:95%; align:left; border: 1pt solid black; border-collapse:separate; border-radius:8pt; font-size: 4;">
                   <p style="font-size: x-small; margin-bottom: 0px;">Histórico de Consumo (m3)</p>
                   <thead>
                     <tr>
