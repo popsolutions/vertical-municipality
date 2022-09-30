@@ -208,27 +208,27 @@
             <tr>
               <td name="tabela historico consumo e qualidade da água" style="width:50%; vertical-align: text-top">
                 <table
-                  style="width:95%; align:left; border: 1pt solid black; border-collapse:separate; border-radius:8pt; font-size: 4;">
-                  <p style="font-size: x-small; margin-bottom: 0px;">Histórico de Consumo (m3)</p>
+                  style="width:95%; align:left; border: 1pt solid black; border-collapse:separate; border-radius:8pt; font-size: small;">
+                  <p style="font-size: x-small; margin-bottom: 0px;">Histórico de Consumo (m3..X)</p>
                   <thead>
                     <tr>
                       <th>
                       </th>
                     </tr>
                   </thead>
-                  <tbody>
+                  <tbody style="width:50%">
                     <t t-foreach="boletoData['consumptionJsonHst']" t-as="consumption">
                       <tr>
-                        <td>
+                        <td style="text-align:left; width:10%">
                           <t t-esc="consumption['anomes_coluna1']"/>
                         </td>
-                        <td style="border-right: 1px solid;">
+                        <td style="border-right: 1px solid; text-align:left;width:20%">
                           <t t-esc="consumption['consumption_coluna1']"/>
                         </td>
-                        <td>
+                        <td style="text-align:left;width:10%">
                           <t t-esc="consumption['anomes_coluna2']"/>
                         </td>
-                        <td style="border-right: 1px solid;">
+                        <td style="border-right: 1px solid; text-align:left;width:20%">
                           <t t-esc="consumption['consumption_coluna2']"/>
                         </td>
                       </tr>
@@ -326,29 +326,27 @@
                       t-field-options='{"widget": "monetary", "display_currency": "o.currency_id"}'/></b>
                     </td>
                   </tr>
-                  <t t-if="boletoData['accounts_open_exists'] == 1">
-                    <tr>
-                      <td>AVISO: NÃO REGISTRAMOS O RECEBIMENTO DE</td>
-                    </tr>
-                    <tr>
-                      <td>COBRANÇA ANTERIOR. SOLICITAMOS VERIFICAR</td>
-                    </tr>
-                    <tr>
-                      <td>
-                        JUNTO AO NOSSO SETOR DE CONTAS A
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        RECEBER(TELEFONE: (13) 3319-5012)
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        (FORNECIMENTO DE ÁGUA SUJEITO À CORTE)
-                      </td>
-                    </tr>
-                  </t>
+                  <tr>
+                    <td>AVISO: NÃO REGISTRAMOS O RECEBIMENTO DE--</td>
+                  </tr>
+                  <tr>
+                    <td>COBRANÇA ANTERIOR. SOLICITAMOS VERIFICAR</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      JUNTO AO NOSSO SETOR DE CONTAS A
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      RECEBER(TELEFONE: (13) 3319-5012)
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      (FORNECIMENTO DE ÁGUA SUJEITO À CORTE)
+                    </td>
+                  </tr>
                 </table>
               </td>
             </tr>
