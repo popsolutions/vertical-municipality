@@ -6,6 +6,8 @@ declare sum_price_total numeric;
 declare _residual numeric;
 declare _state varchar(30);
 begin
+  --versão:2022.09.30
+
   select aci.state,
          account_invoice_calc_amount_total(aci.id)
     from account_invoice aci
@@ -28,6 +30,14 @@ begin
          residual_company_signed = _residual,
          residual = _residual
     where ai.id = _invoice_id;
+
+  update account_move_line
+     set amount_residual = sum_price_total,
+         debit = sum_price_total,
+         balance = sum_price_total
+   where invoice_id = _invoice_id
+     and product_id is null;
+
 END;
 $function$
 ;
