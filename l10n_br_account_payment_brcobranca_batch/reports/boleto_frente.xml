@@ -326,27 +326,29 @@
                       t-field-options='{"widget": "monetary", "display_currency": "o.currency_id"}'/></b>
                     </td>
                   </tr>
-                  <tr>
-                    <td>AVISO: NÃO REGISTRAMOS O RECEBIMENTO DE--</td>
-                  </tr>
-                  <tr>
-                    <td>COBRANÇA ANTERIOR. SOLICITAMOS VERIFICAR</td>
-                  </tr>
-                  <tr>
-                    <td>
-                      JUNTO AO NOSSO SETOR DE CONTAS A
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      RECEBER(TELEFONE: (13) 3319-5012)
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      (FORNECIMENTO DE ÁGUA SUJEITO À CORTE)
-                    </td>
-                  </tr>
+                  <t t-if="boletoData['accounts_open_exists'] == 1">
+                    <tr>
+                      <td>AVISO: NÃO REGISTRAMOS O RECEBIMENTO DE</td>
+                    </tr>
+                    <tr>
+                      <td>COBRANÇA ANTERIOR. SOLICITAMOS VERIFICAR</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        JUNTO AO NOSSO SETOR DE CONTAS A
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        RECEBER(TELEFONE: (13) 3319-5012)
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        (FORNECIMENTO DE ÁGUA SUJEITO À CORTE)
+                      </td>
+                    </tr>
+                  </t>
                 </table>
               </td>
             </tr>
