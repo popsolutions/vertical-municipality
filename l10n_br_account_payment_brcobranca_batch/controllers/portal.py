@@ -41,7 +41,7 @@ def process_boleto_frente_verso(docids, saveToLocalServer = False, return_ir_att
     if docids and (not isinstance(docids, list)):
         docids = [int(i) for i in docids.split(',')]
 
-    pdfVersoBoleto = report.with_context(context).render_qweb_pdf(docids)
+    pdfVersoBoleto = report.with_context(context).sudo().render_qweb_pdf(docids)
 
     # pdfhttpheaders = [('Content-Type', 'application/pdf'), ('Content-Length', len(pdfVersoBoleto))]
     # jpdfres = request.make_response(pdfVersoBoleto, headers=pdfhttpheaders)
