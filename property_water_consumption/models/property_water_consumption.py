@@ -51,9 +51,6 @@ class PropertyWaterConsumption(models.Model):
             if rec.land_id and rec.state in ['draft']:
                 consumption = rec.consumption
 
-                if consumption < 22:
-                    consumption = 22
-
                 water_consumption_economy_qty = rec.land_id.water_consumption_economy_qty or 1
                 if consumption <= rec.land_id.type_id.minimum_water_consumption:
                     consumption = rec.land_id.type_id.minimum_water_consumption
