@@ -118,6 +118,9 @@ class PropertyLand(models.Model):
         default=False,
         track_visibility='onchange'
     )
+    hydrometer_number = fields.Char(
+        'hydrometer Number'
+    )
     alternative_contribution_water_amount = fields.Float(
         track_visibility='onchange'
     )

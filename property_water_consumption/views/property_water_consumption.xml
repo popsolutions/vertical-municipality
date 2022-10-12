@@ -24,6 +24,7 @@
                     </group>
                     <group col="4">
                         <field name="photo" widget="image" class="oe_avatar"/>
+                        <field name="hydrometer_number"/>
                     </group>
                 </sheet>
             </form>

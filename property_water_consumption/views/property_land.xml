@@ -25,6 +25,7 @@
                     <group>
                         <group>
                             <field name="is_not_waterpayer"/>
+                            <field name="hydrometer_number"/>
                             <field name="alternative_contribution_water_amount"
                                    attrs="{'invisible': [('is_not_waterpayer', '=', False)]}"/>
                             <field name="water_connection_date"/>

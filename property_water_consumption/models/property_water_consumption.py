@@ -24,6 +24,14 @@ class PropertyWaterConsumption(models.Model):
         ('processed', 'Processed')
         ], default='draft')
     photo = fields.Binary('Photo')
+    hydrometer_number = fields.Char(
+        'hydrometer Number'
+    )
+
+    @api.multi
+    def create(self, vals):
+        for rec in self:
+            rec.hydrometer_number = rec.land_id.hydrometer_number
 
     @api.multi
     def name_get(self):
@@ -70,12 +78,9 @@ class PropertyWaterConsumption(models.Model):
 
     @api.multi
     def create_batch_water_consumptions(self):
-        current_year_month = datetime.today().strftime("%Y%m")
-        old_year_month = (datetime.today() - relativedelta(months=1)).strftime("%Y%m")
-
         #O Sql abaixo vai criar em property_water_consumption os registros existentes no mẽs anterior.
         insert_property_water_consumption = """
-insert into property_water_consumption(id, land_id, last_read, current_read, consumption, total, state, "date", create_date, write_date, create_uid, write_uid)
+insert into property_water_consumption(id, land_id, last_read, current_read, consumption, total, state, hydrometer_number, "date", create_date, write_date, create_uid, write_uid)
 select nextval('property_water_consumption_id_seq') id,
        pwc_old.land_id land_id,
        pwc_old.current_read last_read,
@@ -83,18 +88,20 @@ select nextval('property_water_consumption_id_seq') id,
        null consumption,
        null total,
        'draft' state,
+       pl.hydrometer_number,
        current_date "date",
        current_timestamp create_date,
        current_timestamp write_date,
        1 create_uid,
        1 write_uid
   from property_water_consumption pwc_old
+         join vw_property_settings_monthly_last sml on (0 = 0)
          left join property_water_consumption pwc_current 
                 on (     pwc_current.land_id = pwc_old.land_id 
-                    and  TO_CHAR(pwc_current."date", 'yyyymm') = '""" + current_year_month + """'
+                    and  anomes(pwc_current."date") = sml.year_month_property_water_consumption
                    ),
        property_land pl
- where TO_CHAR(pwc_old."date", 'yyyymm') = '""" + old_year_month + """'
+ where anomes(pwc_old."date") = anomes_inc(sml.year_month_property_water_consumption, -1)
    and pwc_current.id is null
    and pl.id = pwc_old.land_id 
    and pl.state = 'done'
