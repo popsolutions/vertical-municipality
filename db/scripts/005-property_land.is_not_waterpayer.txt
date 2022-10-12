@@ -1,0 +1,11 @@
+--Atualizar is_not_waterpayer de acordo com property_water_consumption.
+-- Executado em produção em 12/10/2022 por Mateus.
+
+update property_land pl
+   set is_not_waterpayer = not exists
+                           (select 1
+                              from property_water_consumption pwc
+                             where pwc.land_id = pl.id
+                               and anomes(pwc."date") = 202209
+                           );
+

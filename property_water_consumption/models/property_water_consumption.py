@@ -84,9 +84,9 @@ insert into property_water_consumption(id, land_id, last_read, current_read, con
 select nextval('property_water_consumption_id_seq') id,
        pwc_old.land_id land_id,
        pwc_old.current_read last_read,
-       null current_read,
-       null consumption,
-       null total,
+       null::int current_read,
+       null::int consumption,
+       null::double precision total,
        'draft' state,
        pl.hydrometer_number,
        current_date "date",
@@ -105,6 +105,31 @@ select nextval('property_water_consumption_id_seq') id,
    and pwc_current.id is null
    and pl.id = pwc_old.land_id 
    and pl.state = 'done'
-        """
+ union all   
+--Propriedades que não existem property_water_consumption porém estão marcadas como "not is_not_waterpayer"    
+--São as propriedades que foram ativadas o consumo de água recentemente e ainda não houve nenhuma movimentação
+select nextval('property_water_consumption_id_seq') id,
+       pl.id land_id,
+       0 last_read,
+       null current_read,
+       null consumption,
+       null total,
+       'draft' state,
+       pl.hydrometer_number,
+       current_date "date",
+       current_timestamp create_date,
+       current_timestamp write_date,
+       1 create_uid,
+       1 write_uid
+  from property_land pl,
+       vw_property_settings_monthly_last sml
+ where not pl.is_not_waterpayer
+   and not exists
+       (select 1
+          from property_water_consumption pwc
+         where pwc.land_id = pl.id  
+           and anomes(pwc."date") = anomes_inc(sml.year_month_property_water_consumption, -1)
+         limit 1
+       ) """
 
         self.env.cr.execute(insert_property_water_consumption)
