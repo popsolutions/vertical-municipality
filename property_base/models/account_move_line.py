@@ -46,7 +46,7 @@ class AccountMoveLine(models.Model):
                 "bank": bank_name_brcobranca[0],
                 # "valor": str("%.2f" % move_line.debit), # Mateus - esta linha foi comentada pois não estou inserindo ainda registros em account_move_line quando eu efetuo o processo de ACUMULU DE BOLETOS ou (TRAZER MOVIMENTOS DE BOLETOS ATRASADOS) inerente ao processo de Riviera. # rever futuramente esta alteração. Podem surgir impactos em contabilidade/fiscal
                 "valor": str("%.2f" % move_line.invoice_id.amount_total),
-                "cedente": move_line.company_id.partner_id.legal_name,
+                "cedente": move_line.company_id.partner_id.legal_name + ' CNPJ: ' + move_line.company_id.cnpj_cpf,
                 "cedente_endereco": (move_line.company_id.partner_id.street_name or "")
                 + ", "
                 + (move_line.company_id.partner_id.street_number or "")
