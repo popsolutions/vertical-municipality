@@ -6,10 +6,10 @@ declare sum_price_total numeric;
 declare _residual numeric;
 declare _state varchar(30);
 begin
-  --versão:2022.09.30
+  --versão:2022.10.13
 
   select aci.state,
-         account_invoice_calc_amount_total(aci.id)
+         coalesce(account_invoice_calc_amount_total(aci.id), 0)
     from account_invoice aci
    where aci.id = _invoice_id
     into _state, sum_price_total;
@@ -32,7 +32,7 @@ begin
     where ai.id = _invoice_id;
 
   update account_move_line
-     set amount_residual = sum_price_total,
+     set amount_residual = _residual,
          debit = sum_price_total,
          balance = sum_price_total
    where invoice_id = _invoice_id
