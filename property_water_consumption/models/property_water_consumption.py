@@ -88,56 +88,49 @@ class PropertyWaterConsumption(models.Model):
     def create_batch_water_consumptions(self):
         #O Sql abaixo vai criar em property_water_consumption os registros existentes no mẽs anterior.
         insert_property_water_consumption = """
-insert into property_water_consumption(id, land_id, last_read, current_read, consumption, total, state, hydrometer_number, "date", create_date, write_date, create_uid, write_uid)
 select nextval('property_water_consumption_id_seq') id,
-       pwc_old.land_id land_id,
-       pwc_old.current_read last_read,
+       t.land_id land_id,
+       t.last_read,
        null::int current_read,
        null::int consumption,
        null::double precision total,
        'draft' state,
-       pl.hydrometer_number,
+       t.hydrometer_number,
        current_date "date",
        current_timestamp create_date,
        current_timestamp write_date,
        1 create_uid,
        1 write_uid
-  from property_water_consumption pwc_old
-         join vw_property_settings_monthly_last sml on (0 = 0)
-         left join property_water_consumption pwc_current 
-                on (     pwc_current.land_id = pwc_old.land_id 
-                    and  anomes(pwc_current."date") = sml.year_month_property_water_consumption
-                   ),
-       property_land pl
- where anomes(pwc_old."date") = anomes_inc(sml.year_month_property_water_consumption, -1)
-   and pwc_current.id is null
-   and pl.id = pwc_old.land_id 
-   and pl.state = 'done'
- union all   
---Propriedades que não existem property_water_consumption porém estão marcadas como "not is_not_waterpayer"    
---São as propriedades que foram ativadas o consumo de água recentemente e ainda não houve nenhuma movimentação
-select nextval('property_water_consumption_id_seq') id,
-       pl.id land_id,
-       0 last_read,
-       null current_read,
-       null consumption,
-       null total,
-       'draft' state,
-       pl.hydrometer_number,
-       current_date "date",
-       current_timestamp create_date,
-       current_timestamp write_date,
-       1 create_uid,
-       1 write_uid
-  from property_land pl,
-       vw_property_settings_monthly_last sml
- where not pl.is_not_waterpayer
-   and not exists
-       (select 1
-          from property_water_consumption pwc
-         where pwc.land_id = pl.id  
-           and anomes(pwc."date") = anomes_inc(sml.year_month_property_water_consumption, -1)
-         limit 1
-       ) """
+  from (select pwc_old.land_id land_id,
+               pwc_old.current_read last_read,
+               pl.hydrometer_number
+          from property_water_consumption pwc_old
+                 join vw_property_settings_monthly_last sml on (0 = 0)
+                 left join property_water_consumption pwc_current 
+                        on (     pwc_current.land_id = pwc_old.land_id 
+                            and  anomes(pwc_current."date") = sml.year_month_property_water_consumption
+                           ),
+               property_land pl
+         where anomes(pwc_old."date") = anomes_inc(sml.year_month_property_water_consumption, -1)
+           and pwc_current.id is null
+           and pl.id = pwc_old.land_id 
+           and pl.state = 'done'
+         union all   
+        --Propriedades que não existem property_water_consumption porém estão marcadas como "not is_not_waterpayer"    
+        --São as propriedades que foram ativadas o consumo de água recentemente e ainda não houve nenhuma movimentação
+        select pl.id land_id,
+               0 last_read,
+               pl.hydrometer_number
+          from property_land pl,
+               vw_property_settings_monthly_last sml
+         where not pl.is_not_waterpayer
+           and not exists
+               (select 1
+                  from property_water_consumption pwc
+                 where pwc.land_id = pl.id  
+                   and anomes(pwc."date") = anomes_inc(sml.year_month_property_water_consumption, -1)
+                 limit 1
+               )
+       ) t"""
 
         self.env.cr.execute(insert_property_water_consumption)
