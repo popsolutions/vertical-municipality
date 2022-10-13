@@ -86,8 +86,10 @@ class PropertyWaterConsumption(models.Model):
 
     @api.multi
     def create_batch_water_consumptions(self):
+        # Menu "Imóveis/Ajudante/Criar Consumo de água em lote"
         #O Sql abaixo vai criar em property_water_consumption os registros existentes no mẽs anterior.
         insert_property_water_consumption = """
+insert into property_water_consumption(id, land_id, last_read, current_read, consumption, total, state, hydrometer_number, "date", create_date, write_date, create_uid, write_uid)        
 select nextval('property_water_consumption_id_seq') id,
        t.land_id land_id,
        t.last_read,
@@ -117,20 +119,27 @@ select nextval('property_water_consumption_id_seq') id,
            and pl.state = 'done'
          union all   
         --Propriedades que não existem property_water_consumption porém estão marcadas como "not is_not_waterpayer"    
-        --São as propriedades que foram ativadas o consumo de água recentemente e ainda não houve nenhuma movimentação
+        --São as propriedades que foram ativadas o consumo de água recentemente e ainda não houve nenhuma movimentação (Não existem nenhum registro property_water_consumption no período anterior)
         select pl.id land_id,
                0 last_read,
                pl.hydrometer_number
           from property_land pl,
                vw_property_settings_monthly_last sml
          where not pl.is_not_waterpayer
-           and not exists
+           and not exists --Não existe registro em property_water_consumption no período anterior
                (select 1
                   from property_water_consumption pwc
                  where pwc.land_id = pl.id  
                    and anomes(pwc."date") = anomes_inc(sml.year_month_property_water_consumption, -1)
                  limit 1
                )
+           and not exists --Não existe registro em property_water_consumption no período atual
+               (select 1
+                  from property_water_consumption pwc
+                 where pwc.land_id = pl.id  
+                   and anomes(pwc."date") = sml.year_month_property_water_consumption --período atual
+                 limit 1
+               )               
        ) t"""
 
         self.env.cr.execute(insert_property_water_consumption)
