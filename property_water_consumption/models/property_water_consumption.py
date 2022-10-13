@@ -28,10 +28,18 @@ class PropertyWaterConsumption(models.Model):
         'hydrometer Number'
     )
 
-    @api.multi
+    @api.model
     def create(self, vals):
-        for rec in self:
-            rec.hydrometer_number = rec.land_id.hydrometer_number
+        if 'hydrometer_number' in vals:
+            if not vals['hydrometer_number']:
+                land_id = self.env['property.land'].search([('id', '=', vals['land_id'])])
+                if land_id:
+                    vals.update({'hydrometer_number': land_id.hydrometer_number})
+
+        res = super(PropertyWaterConsumption, self).create(vals)
+
+        return res
+
 
     @api.multi
     def name_get(self):
