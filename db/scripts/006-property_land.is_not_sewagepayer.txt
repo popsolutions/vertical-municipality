@@ -1,0 +1,4 @@
+--Atualizar is_not_sewagepayer de acordo com property_water_consumption.
+-- Executado em produção em ??/10/2022 por Mateus.
+
+update property_land pl  set is_not_sewagepayer = false;

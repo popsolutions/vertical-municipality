@@ -118,6 +118,10 @@ class PropertyLand(models.Model):
         default=False,
         track_visibility='onchange'
     )
+    is_not_sewagepayer = fields.Boolean(
+        'Is Not Water Sewage',
+        default=False
+    )
     hydrometer_number = fields.Char(
         'hydrometer Number'
     )

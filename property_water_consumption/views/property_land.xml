@@ -30,6 +30,7 @@
                                    attrs="{'invisible': [('is_not_waterpayer', '=', False)]}"/>
                             <field name="water_connection_date"/>
                             <field name="water_charging_date"/>
+                            <field name="is_not_sewagepayer"/>
                             <field name="sewage_connection_date"/>
                             <field name="sewage_charging_date"/>
                         </group>
