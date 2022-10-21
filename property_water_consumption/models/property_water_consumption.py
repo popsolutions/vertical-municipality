@@ -59,7 +59,17 @@ class PropertyWaterConsumption(models.Model):
             if not rec.current_read:
                 rec.consumption = 0
             else:
-                rec.consumption = rec.current_read - rec.last_read
+                if rec.current_read >= rec.last_read:
+                    rec.consumption = rec.current_read - rec.last_read
+                else:
+                    #O Hidrômetro zerou
+                    hydrometer_maxvalue = 9999
+
+                    if rec.last_read > hydrometer_maxvalue:
+                        hydrometer_maxvalue = 99999
+
+                    rec.consumption = (hydrometer_maxvalue - rec.last_read) + rec.current_read
+
 
     @api.depends('consumption', 'land_id')
     def _compute_total(self):
