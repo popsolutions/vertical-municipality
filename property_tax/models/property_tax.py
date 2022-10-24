@@ -4,7 +4,9 @@
 import re
 from odoo import api, fields, models
 from odoo.exceptions import UserError
+import logging
 
+logger = logging.getLogger(__name__)
 
 class PropertyTax(models.Model):
 
@@ -106,7 +108,7 @@ class PropertyTax(models.Model):
             water._compute_total()
             water.state = 'pending'
             water.write({'total': water.total})
-            print(str(i) + '/' + str(length) + ' - Corrigido "' + water.land_id.name + '" para total: "' + str(water.total) + '"')
+            logger.info(str(i) + '/' + str(length) + ' - Corrigido "' + water.land_id.name + '" para total: "' + str(water.total) + '"')
 
         print('x')
 
