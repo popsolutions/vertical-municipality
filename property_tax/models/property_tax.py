@@ -93,15 +93,20 @@ class PropertyTax(models.Model):
     @api.multi
     def create_generic_process(self):
         waters = self.env['property.water.consumption'].search([
-            ('date','>', '2022-09-01'), ('id', '=', '534986')]
+            ('date','>', '2022-10-01'), ('state', '=', 'pending')]
         )
 
+        length = len(waters)
+        i = 0
+
         for water in waters:
+            i += 1
             water.state = 'draft'
+            water._compute_consumption()
             water._compute_total()
             water.state = 'pending'
             water.write({'total': water.total})
-            print('Corrigido "' + water.land_id.name + '" para total: "' + str(water.total) + '"')
+            print(str(i) + '/' + str(length) + ' - Corrigido "' + water.land_id.name + '" para total: "' + str(water.total) + '"')
 
         print('x')
 
