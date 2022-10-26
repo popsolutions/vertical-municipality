@@ -75,20 +75,23 @@ class PropertyWaterConsumption(models.Model):
     def _compute_total(self):
         for rec in self:
             if rec.land_id and rec.state in ['draft']:
-                consumption = rec.consumption
-                water_consumption_economy_qty = rec.land_id.water_consumption_economy_qty or 1
-                consumption = float(consumption / water_consumption_economy_qty)
+                if (not rec.land_id.water_consumption_economy_qty) or (rec.land_id.water_consumption_economy_qty == 0):
+                    rec.total = 0
+                else:
+                    consumption = rec.consumption
+                    water_consumption_economy_qty = rec.land_id.water_consumption_economy_qty
+                    consumption = float(consumption / water_consumption_economy_qty)
 
-                if consumption <= rec.land_id.type_id.minimum_water_consumption:
-                    consumption = rec.land_id.type_id.minimum_water_consumption
+                    if consumption <= rec.land_id.type_id.minimum_water_consumption:
+                        consumption = rec.land_id.type_id.minimum_water_consumption
 
-                rec.total = (
-                        rec.land_id.type_id.water_computation_parameter_id.get_total(
-                            consumption, rec.land_id.display_name)*water_consumption_economy_qty
-                )
+                    rec.total = (
+                            rec.land_id.type_id.water_computation_parameter_id.get_total(
+                                consumption, rec.land_id.display_name)*water_consumption_economy_qty
+                    )
 
-                if not rec.land_id.is_not_sewagepayer:
-                    rec.total += rec.total*0.8 # 0.8 é o cálculo do Esgoto
+                    if not rec.land_id.is_not_sewagepayer:
+                        rec.total += rec.total*0.8 # 0.8 é o cálculo do Esgoto
 
     @api.multi
     def get_last_read(self, land_id):
