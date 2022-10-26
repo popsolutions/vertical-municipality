@@ -76,16 +76,15 @@ class PropertyWaterConsumption(models.Model):
         for rec in self:
             if rec.land_id and rec.state in ['draft']:
                 consumption = rec.consumption
-
                 water_consumption_economy_qty = rec.land_id.water_consumption_economy_qty or 1
+                consumption = float(consumption / water_consumption_economy_qty)
+
                 if consumption <= rec.land_id.type_id.minimum_water_consumption:
                     consumption = rec.land_id.type_id.minimum_water_consumption
-                    water_consumption_economy_qty = 1
-                else:
-                    consumption = float(consumption / water_consumption_economy_qty)
+
                 rec.total = (
                         rec.land_id.type_id.water_computation_parameter_id.get_total(
-                            consumption)*water_consumption_economy_qty
+                            consumption, rec.land_id.display_name)*water_consumption_economy_qty
                 )
 
                 if not rec.land_id.is_not_sewagepayer:
