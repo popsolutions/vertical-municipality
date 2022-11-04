@@ -125,7 +125,7 @@ class AccountInvoice(models.Model):
         for invoice in self.web_progress_iter(self):
             date_due = invoice.date_due
 
-            if date_due > datetime.strptime('09/09/2022', '%d/%m/%Y').date():
+            if date_due > datetime.strptime('09/11/2022', '%d/%m/%Y').date():
                 raise UserError('Data de vencimento maior que o permitido')
 
             if invoice.state in ("draft", "open"):
