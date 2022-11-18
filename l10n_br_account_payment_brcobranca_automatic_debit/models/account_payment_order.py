@@ -14,6 +14,8 @@ class PaymentOrder(models.Model):
     _inherit = "account.payment.order"
 
     def _get_brcobranca_remessa(self, bank_brcobranca, remessa_values, cnab_type):
+        #Esta rotina basicamente insere na linha do arquivo de remessa as informações de débito automático para o banco bradesco
+
         remessa = super(PaymentOrder, self)._get_brcobranca_remessa(bank_brcobranca, remessa_values, cnab_type)
         index = 1
         fileStr = ''
