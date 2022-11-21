@@ -23,6 +23,11 @@ class PaymentOrder(models.Model):
         remessaLen = len(remessaLines)
 
         for line in remessaLines:
+
+            def lineSubst(strSubst: str, startCol: int, endCol: int):
+                nonlocal line
+                line = line[0:startCol - 1] + strSubst + line[endCol:]
+
             if index == 1:
                 fileStr = line + '\n'
             elif index + 1 == remessaLen:
@@ -33,18 +38,18 @@ class PaymentOrder(models.Model):
                 nossoNumero = line[71:81]
 
                 query = """
-SELECT b.bra_number agencia_numero,
-       b.bra_number_dig agencia_digito,
-       b.acc_number conta_numero,
-       b.acc_number_dig conta_digito,
-       b.bank_account_type       
-  FROM res_partner_bank b
- WHERE partner_id = (select apl.partner_id  
-                       from account_payment_line apl
-                      where apl.own_number = '""" + str(int(nossoNumero)) + """'
-                        and apl.order_id = """ + str(self.id) + """)
- order by id desc
- limit 1"""
+                SELECT b.bra_number agencia_numero,
+                       b.bra_number_dig agencia_digito,
+                       b.acc_number conta_numero,
+                       b.acc_number_dig conta_digito,
+                       b.bank_account_type       
+                  FROM res_partner_bank b
+                 WHERE partner_id = (select apl.partner_id  
+                                       from account_payment_line apl
+                                      where apl.own_number = '""" + str(int(nossoNumero)) + """'
+                                        and apl.order_id = """ + str(self.id) + """)
+                 order by id desc
+                 limit 1"""
 
                 self.env.cr.execute(query)
                 bankAccountData = self.env.cr.fetchall()
@@ -70,7 +75,9 @@ SELECT b.bra_number agencia_numero,
                     checkingAccount += razaoContaCorrente # posição 08 a 12 - Razão da Conta corrente
                     checkingAccount += getValue(2, 7) # posição 13 a 19 - Conta corrente
                     checkingAccount += getValue(3, 1) # posição 20 a 20 - Dígito da Conta corrente
-                    line = line[0:1] + checkingAccount + line[20:]
+
+                    lineSubst(checkingAccount, 2, 20)
+                    lineSubst(' ', 94, 94) # posição 94 à 94 - Ident. se emite Boleto para DébitoAutomático. N= Não registra na cobrança. Diferente de N registra e emite Boleto
 
                 fileStr += line + '\n'
 
