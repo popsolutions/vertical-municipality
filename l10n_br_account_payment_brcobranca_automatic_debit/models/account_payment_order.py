@@ -15,6 +15,7 @@ class PaymentOrder(models.Model):
 
     def _get_brcobranca_remessa(self, bank_brcobranca, remessa_values, cnab_type):
         #Esta rotina basicamente insere na linha do arquivo de remessa as informações de débito automático para o banco bradesco
+        #Manual em https://banco.bradesco/assets/pessoajuridica/pdf/4008-524-0121-layout-cobranca-versao-portugues.pdf
 
         remessa = super(PaymentOrder, self)._get_brcobranca_remessa(bank_brcobranca, remessa_values, cnab_type)
         index = 1
@@ -61,9 +62,9 @@ class PaymentOrder(models.Model):
                     razaoContaCorrente = ''
 
                     if bankAccountDataLine[4] in ('01', '02'): #01 -> Conta corrente individual, 02 -> Conta poupança individual
-                        razaoContaCorrente = '70500'
+                        razaoContaCorrente = '00705'
                     elif bankAccountDataLine[4] in ('11', '12'): #11 -> Conta corrente conjunta, 12 -> Conta poupança conjunta
-                        razaoContaCorrente = '10510'
+                        razaoContaCorrente = '00105'
                     else:
                         raise Exception('Tipo de Conta desconhecida')
 
@@ -77,7 +78,10 @@ class PaymentOrder(models.Model):
                     checkingAccount += getValue(3, 1) # posição 20 a 20 - Dígito da Conta corrente
 
                     lineSubst(checkingAccount, 2, 20)
-                    lineSubst(' ', 94, 94) # posição 94 à 94 - Ident. se emite Boleto para DébitoAutomático. N= Não registra na cobrança. Diferente de N registra e emite Boleto
+                    lineSubst(' ', 94, 94)   # 094 a 094 - Condições de Registro para Débito Automático
+                                             # - Quando igual a “N” e os dados do débito estiverem incorretos, rejeita o registro na cobrança e não
+                                             # emite boleto de cobrança.
+                                             # - Quando diferente de “N” e os dados do débito estiverem incorretos, registra na cobrança e emite boleto de cobrança. Nessa condição, não ocorrerá o agendamento do débito
 
                 fileStr += line + '\n'
 
