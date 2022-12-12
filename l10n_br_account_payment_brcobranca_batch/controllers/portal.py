@@ -8,6 +8,7 @@ from odoo.addons.web.controllers.main import ReportController
 # from PyPDF2 import PdfFileReader, PdfFileWriter
 import PyPDF2.generic as pdf_generic
 from pikepdf import Pdf, Page, Rectangle
+import pikepdf
 
 import logging
 
@@ -109,7 +110,9 @@ def join_two_pdf(pdf_chunks: List[bytes], docids, saveToLocalServer) -> bytes:
             pdfToSave = Pdf.new()
             pdfToSave.pages.append(page_Fatura)
             pdfToSave.pages.append(page_Verso)
-            pdfToSave.save(pdfFileName)
+
+            no_extracting = pikepdf.Permissions(extract=False)
+            pdfToSave.save(pdfFileName, encryption=pikepdf.Encryption(user=account_invoice.partner_id.cnpj_cpf[0:4], owner="user", allow=no_extracting))
 
             logger.info('Arquivo pdf (' + str(pageNum) + '/' + str(len(pdfBoleto.pages)) + ') Criado em "' + pdfFileName + '"')
 
