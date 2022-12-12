@@ -127,7 +127,17 @@ def join_two_pdf(pdf_chunks: List[bytes], docids, saveToLocalServer) -> bytes:
     else:
         # Writes all bytes to bytes-stream
         response_bytes_stream = io.BytesIO()
-        result_pdf.save(response_bytes_stream)
+
+        if len(docids) == 1:
+            #Se o pdf de retorno contém apenas 1 fatura, vou colocar a senha, caso contrário (Contém várias faturas), deixarei sem senha
+            account_invoice = request.env['account.invoice'].sudo().search([('id', '=', docids[0])])
+            no_extracting = pikepdf.Permissions(extract=False)
+            response_bytes_stream = io.BytesIO()
+            result_pdf.save(response_bytes_stream,
+                            encryption=pikepdf.Encryption(user=account_invoice.partner_id.cnpj_cpf[0:4], owner="user",
+                                                          allow=no_extracting))
+        else:
+            result_pdf.save(response_bytes_stream)
 
         return response_bytes_stream.getvalue()
 
