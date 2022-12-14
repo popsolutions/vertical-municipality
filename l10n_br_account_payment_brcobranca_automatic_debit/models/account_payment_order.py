@@ -82,7 +82,7 @@ class PaymentOrder(models.Model):
                                              # - Quando igual a “N” e os dados do débito estiverem incorretos, rejeita o registro na cobrança e não
                                              # emite boleto de cobrança.
                                              # - Quando diferente de “N” e os dados do débito estiverem incorretos, registra na cobrança e emite boleto de cobrança. Nessa condição, não ocorrerá o agendamento do débito
-
+                lineSubst('237', 63, 65)  # #63, 65 - Código do Banco a ser debitado na Câmara de Compensação
                 fileStr += line + '\n'
 
             index += 1
