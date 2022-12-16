@@ -197,6 +197,9 @@ class AccountInvoice(models.Model):
             return super(AccountInvoice, self).write(values)
     @api.model
     def _get_payments_vals(self):
+        """
+            Método Sobrescrevido para trazer a data de pagamento para arquivos de cnab como sendo a data que foi pago no banco, e não a data que foi importado o arquivo.
+        """
         if not self.payment_move_line_ids:
             return []
         payment_vals = []
@@ -235,6 +238,11 @@ class AccountInvoice(models.Model):
             if payment.invoice_id:
                 invoice_view_id = payment.invoice_id.get_formview_id()
 
+            payment_date = payment.date
+
+            if self.state == 'in_payment':
+                payment_date = self.cnab_payment_occurrence_date()
+
             payment_vals.append({
                 'name': payment.name,
                 'journal_name': payment.journal_id.name,
@@ -242,7 +250,7 @@ class AccountInvoice(models.Model):
                 'currency': currency_id.symbol,
                 'digits': [69, currency_id.decimal_places],
                 'position': currency_id.position,
-                'date': payment.date,
+                'date': payment_date,
                 'payment_id': payment.id,
                 'account_payment_id': payment.payment_id.id,
                 'invoice_id': payment.invoice_id.id,
