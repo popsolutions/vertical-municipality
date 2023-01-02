@@ -112,7 +112,7 @@ def join_two_pdf(pdf_chunks: List[bytes], docids, saveToLocalServer) -> bytes:
             pdfToSave.pages.append(page_Verso)
 
             no_extracting = pikepdf.Permissions(extract=False)
-            pdfToSave.save(pdfFileName, encryption=pikepdf.Encryption(user=account_invoice.partner_id.cnpj_cpf.replace('.', '').replace('-', '').replace('/', '')[0:4], owner="user", allow=no_extracting))
+            pdfToSave.save(pdfFileName, encryption=pikepdf.Encryption(user=account_invoice.partner_id.cnpj_cpf.replace('.', '').replace('-', '').replace('/', '')[0:5], owner="user", allow=no_extracting))
 
             logger.info('Arquivo pdf (' + str(pageNum) + '/' + str(len(pdfBoleto.pages)) + ') Criado em "' + pdfFileName + '"')
 
@@ -134,7 +134,7 @@ def join_two_pdf(pdf_chunks: List[bytes], docids, saveToLocalServer) -> bytes:
             no_extracting = pikepdf.Permissions(extract=False)
             response_bytes_stream = io.BytesIO()
             result_pdf.save(response_bytes_stream,
-                            encryption=pikepdf.Encryption(user=account_invoice.partner_id.cnpj_cpf.replace('.', '').replace('-', '').replace('/', '')[0:4], owner="user",
+                            encryption=pikepdf.Encryption(user=account_invoice.partner_id.cnpj_cpf.replace('.', '').replace('-', '').replace('/', '')[0:5], owner="user",
                                                           allow=no_extracting))
         else:
             result_pdf.save(response_bytes_stream)
