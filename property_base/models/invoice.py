@@ -108,6 +108,7 @@ class AccountInvoice(models.Model):
             'date_invoice': datetime.date.today(),
             'land_id': p_wc.land_id.land_id_invoice().id,
             'invoice_line_ids': [(0, 0, inv_line_vals)],
+            'payment_term_id': None
         }
         self.sudo().create(inv_data)
 
