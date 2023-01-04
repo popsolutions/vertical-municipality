@@ -79,10 +79,12 @@ class AccountMoveLine(models.Model):
                 "sacado_endereco": (move_line.partner_id.street_name or "")
                 + ", "
                 + (move_line.partner_id.street_number or "")
-                + " "
+                + ", "
+                + (move_line.partner_id.district or "")
+                + ", "
                 + (move_line.partner_id.city_id.name or "")
                 + " - "
-                + (move_line.partner_id.state_id.name or ""),
+                + (move_line.partner_id.state_id.code or ""),
                 "data_processamento": move_line.invoice_id.date_invoice.strftime(
                     "%Y/%m/%d"
                 ),
