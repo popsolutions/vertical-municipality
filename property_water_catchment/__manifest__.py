@@ -10,7 +10,7 @@
     'author': "PopSolutions",
     'website': "https://www.popsolutions.co",
     'category': 'Uncategorized',
-    'version': '12.0.0.1.0',
+    'version': '12.0.0.1.1',
     'depends': ['property_base', 'property_water_consumption'],
     'data': [
         'data/products.xml',

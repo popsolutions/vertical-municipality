@@ -15,3 +15,20 @@ class PropertyWaterConsumption(models.Model):
         ], default='draft')
     rate_catchment = fields.Float('Rate Catchment')
 
+    #ra - Analytic Result Fields - Campos exibidos no quadro de Resultado analítico da fatura do cliente
+    ar_period = fields.Char('Period')
+    ar_ph = fields.Char('PH')
+    ar_ph_limit = fields.Char('PH Limit')
+    ar_uh_color = fields.Char('Color U.H.')
+    ar_uh_color_limit = fields.Char('Color U.H. Limit')
+    ar_ut_turbidity = fields.Char('Turbity')
+    ar_ut_turbidity_limit = fields.Char('Turbity Limit')
+    ar_chlorine_residual = fields.Char('Chlorine Residual')
+    ar_chlorine_residual_limit = fields.Char('Chlorine Residual Limit')
+    ar_fluorides = fields.Char('Fluorides')
+    ar_fluorides_limit = fields.Char('Fluorides Limit')
+    ar_ecoli = fields.Char('E Coli')
+    ar_ecoli_limit = fields.Char('E Coli Limit')
+
+    index_coin = fields.Float('Index Coin', digits=(12, 5))
+    nextread_date = fields.Date('Next Read Date')

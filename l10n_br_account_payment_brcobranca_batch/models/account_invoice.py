@@ -85,12 +85,9 @@ class AccountInvoice(models.Model):
         sql = '''
 select anomes_text(anomes(pwc."date"), 3) mesReferencia,
        pwc."date" readDate,
-       (select nextread_date
-          from property_settings_monthly
-         where year_month = anomes(aci.date_due) 
-       ) readNext,       
+       psm.nextread_date,
        pwc.last_read,
-       pwc.current_read,
+       pwc.current_read, --index 4
        (select sum(pwc2.consumption)
           from (select distinct land_id 
                   from account_invoice_line ail
@@ -101,7 +98,7 @@ select anomes_text(anomes(pwc."date"), 3) mesReferencia,
          where pwc2.land_id = ail.land_id 
            and pwc2."date" between aci.pwc_primeirodia and aci.pwc_ultimodia
            and pwc2.state = 'processed'
-       ) consumption2,
+       ) consumption2,--index 5
        anomes(aci.date_due) anomes_invoice,
        coalesce(
        (select 1
@@ -111,7 +108,22 @@ select anomes_text(anomes(pwc."date"), 3) mesReferencia,
            and state = 'open'
            and ai_venc.id <> aci.id
          limit 1 
-       ), 0) accounts_open_exists              
+       ), 0) accounts_open_exists,--index 7
+       psm.rate_catchment,--index 8
+       psm.ar_period,
+       psm.ar_ph,
+       psm.ar_ph_limit,
+       psm.ar_uh_color,
+       psm.ar_uh_color_limit,
+       psm.ar_ut_turbidity,--index 14
+       psm.ar_ut_turbidity_limit,
+       psm.ar_chlorine_residual,
+       psm.ar_chlorine_residual_limit,
+       psm.ar_fluorides,
+       psm.ar_fluorides_limit, --index 19
+       psm.ar_ecoli,
+       psm.ar_ecoli_limit,
+       pl.water_consumption_economy_qty             
   from (select aci.id,
                aci.land_id,
                aci.date_due,
@@ -125,6 +137,9 @@ select anomes_text(anomes(pwc."date"), 3) mesReferencia,
                  on pwc.land_id = aci.land_id 
                 and pwc."date" between aci.pwc_primeirodia and aci.pwc_ultimodia
                 and pwc.state = 'processed'
+         inner join property_land pl
+                 on pl.id = aci.land_id,
+      vw_property_settings_monthly_last psm
 '''
 
         self.env.cr.execute(sql)
@@ -140,14 +155,28 @@ select anomes_text(anomes(pwc."date"), 3) mesReferencia,
 
             consumptionJson.update({
                 'mesReferencia': data[0],
-                'readDate': readDate,
+                'nextread_date': readDate,
                 'readNext': readNext,
                 'last_read': data[3],
                 'current_read': data[4],
                 'consumption': data[5],
-                'economias': 'X',
+                'economias': data[22],
                 'exibir_mensagem_aumento_agua': exibir_mensagem_aumento_agua,
-                'accounts_open_exists': data[7]
+                'accounts_open_exists': data[7],
+                'rate_catchment': data[8],
+                'ar_period': data[9],
+                'ar_ph': data[10],
+                'ar_ph_limit': data[11],
+                'ar_uh_color': data[12],
+                'ar_uh_color_limit': data[13],
+                'ar_ut_turbidity': data[14],
+                'ar_ut_turbidity_limit': data[15],
+                'ar_chlorine_residual': data[16],
+                'ar_chlorine_residual_limit': data[17],
+                'ar_fluorides': data[18],
+                'ar_fluorides_limit': data[19],
+                'ar_ecoli': data[20],
+                'ar_ecoli_limit': data[21]
             })
         else:
             consumptionJson.update({

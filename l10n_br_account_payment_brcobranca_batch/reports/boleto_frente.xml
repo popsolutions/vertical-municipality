@@ -112,7 +112,7 @@
                   </tr>
                   <tr>
                     <td>
-                      <t t-esc="boletoData['readDate']"/>
+                      <t t-esc="boletoData['nextread_date']"/>
                     </td>
                   </tr>
                 </table>
@@ -250,10 +250,122 @@
                     </tr>
                   </tfoot>
                 </table>
-                <div>
-                  <img class="img" src="/l10n_br_account_payment_brcobranca_batch/static/img/image_analise.jpeg"
-                       style="max-height: auto; max-width: 95%;"/>
-                </div>
+
+                <table
+                  style="width:95%; margin-top:4px; align:left; border: 1pt solid black; border-radius:8pt; border-collapse:separate; font-size: small;">
+                  <thead>
+                    <tr>
+                      <th>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody style="width:50%">
+                    <tr>
+                      <td style="font-size: 9px;">
+                        *Conforme Decreto Federal nº 5440/05
+                      </td>
+                      <td style="text-align: center; font-size:14px">
+                        <t t-esc="boletoData['ar_period']"/>
+                      </td>
+                    </tr>
+                    <tr height="1px" bgcolor="silver">
+                      <td colspan="100%"></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <div style="text-align:center">
+                          <img class="img" src="/l10n_br_account_payment_brcobranca_batch/static/img/image_analise.jpeg"
+                          style="max-width: 190; max-height: auto;"/>
+                        </div>
+                      </td>
+                      <td>
+                        <table cellpadding="2" style="width:100%; border: 0pt; border-spacing:0px; margin: 0px; text-align: center">
+                          <thead style="font-size: 12px;">
+                            <tr>
+                              <th>Parâmetro</th>
+                              <th>Médias</th>
+                              <th>Valor Limite</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr style="background-color: silver; margin: 0px">
+                              <td style="font-size: 10px;">
+                                pH
+                              </td>
+                              <td style="font-size: 10px;">
+                                <t t-esc="boletoData['ar_ph']"/>
+                              </td>
+                              <td style="font-size: 10px;">
+                                <t t-esc="boletoData['ar_ph_limit']"/>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td style="font-size: 10px;">
+                                Cor(U.H.)
+                              </td>
+                              <td style="font-size: 10px;">
+                                <t t-esc="boletoData['ar_uh_color']"/>
+                              </td>
+                              <td style="font-size: 10px;">
+                                <t t-esc="boletoData['ar_uh_color_limit']"/>
+                              </td>
+                            </tr>
+                            <tr style="background-color: silver">
+                              <td style="font-size: 10px;">
+                                Turbidez(U.T.)
+                              </td>
+                              <td style="font-size: 10px;">
+                                <t t-esc="boletoData['ar_ut_turbidity']"/>
+                              </td>
+                              <td style="font-size: 10px;">
+                                <t t-esc="boletoData['ar_ut_turbidity_limit']"/>
+                              </td>
+                            </tr>
+
+                            <tr>
+                              <td style="font-size: 10px;">
+                                Cloro Residual(mg/L)
+                              </td>
+                              <td style="font-size: 10px;">
+                                <t t-esc="boletoData['ar_chlorine_residual']"/>
+                              </td>
+                              <td style="font-size: 10px;">
+                                <t t-esc="boletoData['ar_chlorine_residual_limit']"/>
+                              </td>
+                            </tr>
+
+                            <tr style="background-color: silver">
+                              <td style="font-size: 10px;">
+                                Fluoretos (mg/L)
+                              </td>
+                              <td style="font-size: 10px;">
+                                <t t-esc="boletoData['ar_fluorides']"/>
+                              </td>
+                              <td style="font-size: 10px;">
+                                <t t-esc="boletoData['ar_fluorides_limit']"/>
+                              </td>
+                            </tr>
+
+                            <tr>
+                              <td style="font-size: 10px;">
+                                E Coli(NMP/100 ml)
+                              </td>
+                              <td style="font-size: 10px;">
+                                <t t-esc="boletoData['ar_ecoli']"/>
+                              </td>
+                              <td style="font-size: 10px;">
+                                <t t-esc="boletoData['ar_ecoli_limit']"/>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </td>
+                    </tr>
+
+                  </tbody>
+                  <tfoot>
+                  </tfoot>
+                </table>
               </td>
               <td name="tabela da descrição do faturamento" style="vertical-align: text-top" >
                 <table
