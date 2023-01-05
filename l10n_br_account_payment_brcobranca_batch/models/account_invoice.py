@@ -123,7 +123,11 @@ select anomes_text(anomes(pwc."date"), 3) mesReferencia,
        psm.ar_fluorides_limit, --index 19
        psm.ar_ecoli,
        psm.ar_ecoli_limit,
-       pl.water_consumption_economy_qty             
+       pl.water_consumption_economy_qty,
+       aci.date_due,--index 23
+       aci.date_due + 10 date_due_max,
+       jurosdiario.multa_diaria,
+       jurosdiario.juros_diario               
   from (select aci.id,
                aci.land_id,
                aci.date_due,
@@ -139,7 +143,8 @@ select anomes_text(anomes(pwc."date"), 3) mesReferencia,
                 and pwc.state = 'processed'
          inner join property_land pl
                  on pl.id = aci.land_id,
-      vw_property_settings_monthly_last psm
+      vw_property_settings_monthly_last psm,
+      func_account_invoice_JurosDiario(aci.id) jurosdiario
 '''
 
         self.env.cr.execute(sql)
@@ -176,7 +181,11 @@ select anomes_text(anomes(pwc."date"), 3) mesReferencia,
                 'ar_fluorides': data[18],
                 'ar_fluorides_limit': data[19],
                 'ar_ecoli': data[20],
-                'ar_ecoli_limit': data[21]
+                'ar_ecoli_limit': data[21],
+                'date_due': data[23].strftime('%d/%m/%Y'),
+                'date_due_max': data[24].strftime('%d/%m/%Y'),
+                'multa_diaria': data[25],
+                'juros_diario': data[26]
             })
         else:
             consumptionJson.update({

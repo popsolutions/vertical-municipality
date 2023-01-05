@@ -366,6 +366,45 @@
                   <tfoot>
                   </tfoot>
                 </table>
+
+                <table
+                  style="width:95%; margin-top:4px; align:left; border: 1pt solid black; border-radius:8pt; border-collapse:separate; font-size: small;">
+                  <thead>
+                    <tr>
+                      <th>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody style="width:50%">
+                    <tr>
+                      <td style="font-size: xx-small;">
+                        Instruções
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td style="font-size: 14px;">
+                        PAGAVEL EM QUALQUER BANCO ATÉ
+                        <span t-esc="boletoData['date_due']"/>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style="font-size: 14px;">
+                        BANCO NÃO RECEBER APÓS
+                        <t t-esc="boletoData['date_due_max']"/>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style="font-size: 14px;">
+                        MULTA DIÁRIA - COBRAR R$
+                        <t t-esc="boletoData['multa_diaria']"/>
+                        por dia de atraso
+                      </td>
+                    </tr>
+                  </tbody>
+                  <tfoot>
+                  </tfoot>
+                </table>
               </td>
               <td name="tabela da descrição do faturamento" style="vertical-align: text-top" >
                 <table
