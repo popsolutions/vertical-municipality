@@ -261,10 +261,10 @@
                   </thead>
                   <tbody style="width:50%">
                     <tr>
-                      <td style="font-size: 9px;">
+                      <td style="font-size: 8px;">
                         *Conforme Decreto Federal nº 5440/05
                       </td>
-                      <td style="text-align: center; font-size:14px">
+                      <td style="text-align: center; font-size:12px">
                         <t t-esc="boletoData['ar_period']"/>
                       </td>
                     </tr>
@@ -272,10 +272,10 @@
                       <td colspan="100%"></td>
                     </tr>
                     <tr>
-                      <td>
+                      <td style="vertical-align: middle">
                         <div style="text-align:center">
                           <img class="img" src="/l10n_br_account_payment_brcobranca_batch/static/img/image_analise.jpeg"
-                          style="max-width: 190; max-height: auto;"/>
+                          style="max-width: 145px; max-height: auto;"/>
                         </div>
                       </td>
                       <td>
