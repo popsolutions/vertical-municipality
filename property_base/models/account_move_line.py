@@ -99,15 +99,12 @@ class AccountMoveLine(models.Model):
                     precision_account,
                 )
                 instrucao_juros = (
-                    "APÓS VENCIMENTO COBRAR PERCENTUAL"
-                    + " DE %s %% AO MÊS ( R$ %s AO DIA )"
+                    "APÓS VENCIMENTO COBRAR R$ %s AO DIA "
                     % (
-                        (
-                            "%.2f" % move_line.payment_mode_id.boleto_interest_perc
-                        ).replace(".", ","),
                         ("%.2f" % valor_juros).replace(".", ","),
                     )
                 )
+
                 boleto_cnab_api_data.update(
                     {
                         "instrucao3": instrucao_juros,
