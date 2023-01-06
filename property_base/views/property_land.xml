@@ -24,7 +24,7 @@
                                     options='{"terminology": "archive"}'/>
                             </button>
                         </div>
-                        <field name="image" widget='image' class="oe_avatar" options='{"preview_image": "image_medium", "size": [90, 90]}'/>
+                        <!-- <field name="image" widget='image' class="oe_avatar" options='{"preview_image": "image_medium", "size": [90, 90]}'/> -->
                         <div class="oe_title">
                             <h1 class="ml-5">
                                 Property: <field name="name" readonly="1"/>
@@ -60,6 +60,18 @@
                                     <field name="exclusive_area"/>
                                     <field name="building_area"/>
                                     <field name="discount"/>
+                                </group>
+                            </page>
+                            <page name="images" string="Images">
+                                <group>
+                                    <field
+                                        name="image_ids"
+                                        nolabel="1"
+                                        context="{
+                                            'default_owner_model': 'property.land',
+                                            'default_owner_id': id,
+                                        }"
+                                        mode="kanban"/>
                                 </group>
                             </page>
                         </notebook>

@@ -7,7 +7,7 @@ from odoo import api, fields, models, tools
 class PropertyLand(models.Model):
     _name = 'property.land'
     _description = 'Property Land'
-    _inherit = ['mail.thread', 'mail.activity.mixin']
+    _inherit = ['mail.thread', 'mail.activity.mixin', 'base_multi_image.owner']
 
     active = fields.Boolean(
         default=True
