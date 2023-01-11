@@ -24,26 +24,31 @@
         </div>
 
         <div>
-          <div>
+          <div style="margin-top: 58px;">
             <br></br>
 
             <t t-set="data_report_margin_top" t-value="10"/>
-            <div><span>Remetende: ASSOCIACAO DOS AMIGOS DA RIVIERA DE SAO LOURENCO</span></div>
-            <div><span>Endereço: Caixa Posta n. 01</span></div>
-
-            <div><span>Cep: 11261-318</span></div>
+            <div style="margin-top: 16px;"><span>Remetende: ASSOCIACAO DOS AMIGOS DA RIVIERA DE SAO LOURENCO</span></div>
+            <div style="margin-top: 16px;"><span>Endereço: Caixa Posta n. 01</span></div>
+            <div style="margin-top: 16px;"><span>Cep: 11261-318</span></div>
           </div>
 
-          <img class="img" src="/l10n_br_account_payment_brcobranca_batch/static/img/img carta.png" style= "max-height: auto; max-width: 100%;"/>
+          <img class="img" src="/l10n_br_account_payment_brcobranca_batch/static/img/img carta.png" style= "margin-top: 76px; max-height: auto; max-width: 100%;"/>
           <p>
 
             <div class="text-center">
-              <span t-field="o.partner_id.name"/>
-              <span t-field="o.land_id.module_id.code"/>
-              <span>/</span>
-              <span t-field="o.land_id.block_id.code"/>
-              <span> / </span>
-              <span t-field="o.land_id.lot_id.code"/>
+              <table style= "width:100%">
+                <tr>
+                  <td><span t-field="o.partner_id.name"/></td>
+                  <td style="text-align: right;">
+                    <span t-field="o.land_id.module_id.code"/>
+                    <span>/</span>
+                    <span t-field="o.land_id.block_id.code"/>
+                    <span> / </span>
+                    <span t-field="o.land_id.lot_id.code"/>
+                  </td>
+                </tr>
+              </table>
             </div>
 
             <div class="text-center">
@@ -59,11 +64,18 @@
               <span t-field="o.partner_id.zip"/>
             </div>
             <div class="text-center">
-              <span>Tel.: Contas à Receber (13) 3319-5012 - e-mail: dcr@rivierasl.com.br Entregue aos correios em</span>
-              <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d/%m/%Y')"/>
+              <table style="width:100%">
+                <tr>
+                  <td><span>Tel.: Contas à Receber (13) 3319-5012 - e-mail: dcr@rivierasl.com.br</span></td>
+                  <td style="text-align: right;">
+                    <span>Entregue aos correios em:</span>
+                    <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d/%m/%Y')"/>
+                  </td>
+                </tr>
+              </table>
             </div>
           </p>
-            <div style="position:absolute;top:750px; page-break-inside: avoid; font-size: 18px; max-width: 100%;" class="text-center">
+            <div style="margin-top: 165px;font-size: 18px; max-width: 100%; text-align: center;" class="text-center">
               <b><div><span>O PAGAMENTO DESTA CONTA NÃO QUITA DÉBITOS ANTERIORES.</span></div></b>
               <br></br>
               <br></br>
@@ -75,6 +87,7 @@
                 <b><div><span>reajustou a tarifa de água/esgoto em 12,8%.</span></div></b>
                 <br></br>
               </t>
+              <br/>
               <div><span>AS INFORMAÇÕES DA QUALIDADE DA ÁGUA PRODUZIDA PELA AARSL, ESTÃO DISPONÍVEIS</span></div>
               <div><span>NO SITE DA RIVIERA www.rivieradesaolourenco.com.br NO LINK DA AARSL. CONFORME</span></div>
               <div><span>DECRETO No 5440 DE 04/05/2005.</span></div>
