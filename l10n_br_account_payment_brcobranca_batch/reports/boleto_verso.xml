@@ -36,7 +36,7 @@
           <img class="img" src="/l10n_br_account_payment_brcobranca_batch/static/img/img carta.png" style= "margin-top: 76px; max-height: auto; max-width: 100%;"/>
           <p>
 
-            <div class="text-center">
+            <div class="text-align:left">
               <table style= "width:100%">
                 <tr>
                   <td><span t-field="o.partner_id.name"/></td>
@@ -51,7 +51,7 @@
               </table>
             </div>
 
-            <div class="text-center">
+            <div class="text-align:left">
               <span t-field="o.partner_id.street_name"/>
               <span t-field="o.partner_id.street_number"/>
               <span> </span>
@@ -60,10 +60,11 @@
               <span t-field="o.partner_id.city"/>
               <span t-field="o.partner_id.city_id.state_id.code"/>
             </div>
-            <div class="text-center">
+            <div class="text-align:left">
+              <span>Cep:</span>
               <span t-field="o.partner_id.zip"/>
             </div>
-            <div class="text-center">
+            <div style="text-align:left; font-size: 13px">
               <table style="width:100%">
                 <tr>
                   <td><span>Tel.: Contas à Receber (13) 3319-5012 - e-mail: dcr@rivierasl.com.br</span></td>
