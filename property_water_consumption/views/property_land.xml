@@ -37,7 +37,7 @@
                         <group>
 <!--                            <field name="water_computation_parameter_id"/>-->
                             <field name="water_consumption_route_id"/>
-                            <field name="water_consumption_meter_code"/>
+<!--                            <field name="water_consumption_meter_code"/>-->
                             <field name="water_consumption_economy_qty"/>
                             <field name="water_consumption_unit_qty"/>
                         </group>

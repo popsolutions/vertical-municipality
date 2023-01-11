@@ -26,7 +26,7 @@ class PropertyLand(models.Model):
     # )
     water_consumption_meter_code = fields.Char(
         string="Consumption Meter Code"
-    )
+    )# Campo inativado em 2022-jan-11
     water_consumption_economy_qty = fields.Integer(
         string="Consumption Economy Qty"
     )
