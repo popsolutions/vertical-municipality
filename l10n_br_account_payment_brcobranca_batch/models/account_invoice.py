@@ -137,7 +137,7 @@ select anomes_text(anomes(pwc."date"), 3) mesReferencia,
           from account_invoice aci
          where aci.id = ''' + str(invoice.id) + '''  
        ) aci
-         inner join property_water_consumption pwc 
+         left join property_water_consumption pwc 
                  on pwc.land_id = aci.land_id 
                 and pwc."date" between aci.pwc_primeirodia and aci.pwc_ultimodia
                 and pwc.state = 'processed'
@@ -155,7 +155,11 @@ select anomes_text(anomes(pwc."date"), 3) mesReferencia,
 
             exibir_mensagem_aumento_agua = data[6] == 202206 # Esta mensagem será exibida apenas para vencimento em 2022/06
 
-            readDate = data[1].strftime('%d/%m/%Y')
+            readDate = ''
+
+            if data[1]:
+                readDate = data[1].strftime('%d/%m/%Y')
+
             readNext = data[2].strftime('%d/%m/%Y')
 
             consumptionJson.update({
@@ -195,9 +199,27 @@ select anomes_text(anomes(pwc."date"), 3) mesReferencia,
                 'last_read': '',
                 'current_read': '',
                 'consumption': '',
-                'economias': 'X',
+                'economias': '',
                 'exibir_mensagem_aumento_agua': False,
-                'accounts_open_exists': ''
+                'accounts_open_exists': '',
+                'rate_catchment': '',
+                'ar_period': '',
+                'ar_ph': '',
+                'ar_ph_limit': '',
+                'ar_uh_color': '',
+                'ar_uh_color_limit': '',
+                'ar_ut_turbidity': '',
+                'ar_ut_turbidity_limit': '',
+                'ar_chlorine_residual': '',
+                'ar_chlorine_residual_limit': '',
+                'ar_fluorides': '',
+                'ar_fluorides_limit': '',
+                'ar_ecoli': '',
+                'ar_ecoli_limit': '',
+                'date_due': '',
+                'date_due_max': '',
+                'multa_diaria': '',
+                'juros_diario': ''
             })
 
         query = '''
