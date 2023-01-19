@@ -5,9 +5,7 @@ AS $function$
 begin
   raise notice '%', 'yearmonth_proc';
   select year_month
-    from property_settings_monthly psm
-   order by year_month desc
-   limit 1
+    from vw_property_settings_monthly_last psm
     into due_yearmonth;
 
   ref_yearmonth = anomes_inc(due_yearmonth, -1);

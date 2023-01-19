@@ -37,45 +37,30 @@ class PropertyGaTax(models.Model):
         return res
 
     def process_batch_property_ga_maintenance(self):
-        self.env.cr.execute("select to_char(t.maxdate, 'yyyy') old_year, to_char(t.maxdate, 'mm') old_month from (select max(date) maxdate from property_ga_tax) t")
-        res = self.env.cr.fetchall()
-        old_year = int(res[0][0])
-        old_month = int(res[0][1])
-
-        current_month = old_month + 1
-        current_year = old_year
-
-        if current_month > 12:
-            current_year = current_year + 1
-            current_month = 1
-
-        old_year_month = str(old_year) + str(old_month).zfill(2)
-        current_year_month = str(current_year) + str(current_month).zfill(2)
-
-        date = str(current_year) + '-' + str(current_month).zfill(2) + '-01 23:00:00'
-
         # This query inserts in the current month the green area calculation (property_ga_tax) based on the values of the previous month
         insert_property_ga_tax_From_Old_Month = """
-insert into property_ga_tax(id,land_id,"date",tax_index,last_tax,current_tax,create_uid,create_date,write_uid,write_date,state)
+insert into property_ga_tax(id,land_id,"date",tax_index,last_tax,current_tax,create_uid,create_date,write_uid,write_date,state)        
 select nextval('property_ga_tax_id_seq') id,
        pl.id land_id,
-       '""" + date + """' "date",
-       rcs.property_ga_tax_index tax_index,
+       psml.invoice_date_due "date",
+       psml.inpc tax_index,
        coalesce(pgt_old.current_tax, pl.tax_ga_initial_value) last_tax,
-       round( perc_sum(coalesce(pgt_old.current_tax, pl.tax_ga_initial_value)::numeric, rcs.property_ga_tax_index::numeric)::numeric, 2) current_tax,
+       round( perc_sum(coalesce(pgt_old.current_tax, pl.tax_ga_initial_value)::numeric, psml.inpc::numeric)::numeric, 2) current_tax,
        1 create_uid,
        current_timestamp  create_date,
        1 write_uid,
        current_timestamp write_date,
        'draft' state
   from property_land pl 
-         left join property_ga_tax pgt_old on pgt_old.land_id = pl.id and TO_CHAR(pgt_old.date, 'yyyymm') = '""" + old_year_month + """',         
-       (select rcs.property_ga_tax_index  from res_config_settings rcs order by id desc limit 1) rcs
+         left join property_ga_tax pgt_old join (select yearmonth_proc_ref() ref_yearmonth) ymp1 on 0 = 0
+                on pgt_old.land_id = pl.id 
+               and anomes(pgt_old.date) = ymp1.ref_yearmonth /*Anomes Referencia*/,
+       vw_property_settings_monthly_last psml
  where not pl.is_not_tax_ga
    and not exists (select id 
                      from property_ga_tax pgt_cur 
                     where pgt_cur.land_id = pl.id 
-                      and TO_CHAR(pgt_cur.date, 'yyyymm') = '""" + current_year_month + """'
-                  )   
+                      and anomes(pgt_cur.date) = psml.year_month  /*AnoMes Vencimento*/
+                  ) 
         """
         self.env.cr.execute(insert_property_ga_tax_From_Old_Month)

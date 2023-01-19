@@ -14,7 +14,6 @@
     ],
     'data': [
         'views/property_ga_tax.xml',
-        'views/res_config_settings_views.xml',
         'views/wizard_views.xml',
         'views/property_land.xml',
         'data/products.xml',
