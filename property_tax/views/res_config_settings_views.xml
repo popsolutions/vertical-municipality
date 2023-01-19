@@ -20,34 +20,34 @@
 <!--                        </div>-->
 <!--                    </div>-->
                     <div class="row mt16 o_settings_container">
-                        <div class="col-lg-6 o_setting_box">
-                            <div class="o_setting_left_pane"/>
-                            <div class="o_setting_right_pane">
-                                <div class="content-group ml16">
-                                    <div class="row mt16">
-                                        <label for="property_tax_fixed_value"/>
-                                        <div class="text-muted" id="property_tax_fixed_value">
-                                            Set HERE an explanation about what Fixed Value means
-                                        </div>
-                                        <field name="property_tax_fixed_value"/>
-                                    </div>
-                                    <div class="row mt8">
-                                        <label for="property_tax_minimal_contribution"/>
-                                        <div class="text-muted" id="property_tax_minimal_contribution">
-                                            Set HERE an explanation about what Minimal Contribution means
-                                        </div>
-                                        <field name="property_tax_minimal_contribution"/>
-                                    </div>
-                                    <div class="row mt8">
-                                        <label for="property_tax_monthly_index"/>
-                                        <div class="text-muted" id="property_tax_monthly_index">
-                                            Set HERE an explanation about what Monthly Index means
-                                        </div>
-                                        <field name="property_tax_monthly_index"/>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+<!--                        <div class="col-lg-6 o_setting_box">-->
+<!--                            <div class="o_setting_left_pane"/>-->
+<!--                            <div class="o_setting_right_pane">-->
+<!--                                <div class="content-group ml16">-->
+<!--                                    <div class="row mt16">-->
+<!--                                        <label for="property_tax_fixed_value"/>-->
+<!--                                        <div class="text-muted" id="property_tax_fixed_value">-->
+<!--                                            Set HERE an explanation about what Fixed Value means-->
+<!--                                        </div>-->
+<!--                                        <field name="property_tax_fixed_value"/>-->
+<!--                                    </div>-->
+<!--                                    <div class="row mt8">-->
+<!--                                        <label for="property_tax_minimal_contribution"/>-->
+<!--                                        <div class="text-muted" id="property_tax_minimal_contribution">-->
+<!--                                            Set HERE an explanation about what Minimal Contribution means-->
+<!--                                        </div>-->
+<!--                                        <field name="property_tax_minimal_contribution"/>-->
+<!--                                    </div>-->
+<!--                                    <div class="row mt8">-->
+<!--                                        <label for="property_tax_monthly_index"/>-->
+<!--                                        <div class="text-muted" id="property_tax_monthly_index">-->
+<!--                                            Set HERE an explanation about what Monthly Index means-->
+<!--                                        </div>-->
+<!--                                        <field name="property_tax_monthly_index"/>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
                         <div class="col-lg-6 o_setting_box">
                             <div class="o_setting_left_pane"/>
                             <div class="o_setting_right_pane">

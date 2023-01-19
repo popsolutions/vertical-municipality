@@ -42,7 +42,6 @@ class PropertyTax(models.Model):
 
     def _get_tax_amount_and_lines(self, land_id, formula):
 
-        get_param = self.env['ir.config_parameter'].sudo().get_param
         lines = []
 
         if land_id.is_not_taxpayer:
@@ -63,12 +62,16 @@ class PropertyTax(models.Model):
             if (formula.find('building_area') != -1):
                 building_area = land_id.building_area
 
-            fixed_value = float(get_param('property_tax.fixed_value'))
-            monthly_index = float(get_param('property_tax.monthly_index'))
+            sql = """select v.property_tax_fixed_value, v.property_tax_monthly_index, property_tax_minimal_contribution from vw_property_settings_monthly_last v"""
+            self.env.cr.execute(sql)
+            property_settings_monthly_last = self.env.cr.fetchone()
+
+            fixed_value = property_settings_monthly_last[0]
+            monthly_index = property_settings_monthly_last[1]
             pavement_qty = land_id.pavement_qty_calc
             occupation_rate = land_id.occupation_rate / 100
             discount = land_id.discount
-            minimal_contribution = float(get_param('property_tax.minimal_contribution'))
+            minimal_contribution = property_settings_monthly_last[2]
 
             if not (fixed_value and minimal_contribution):
                 raise UserError('You must configure settings values for Property Taxes')
