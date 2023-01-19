@@ -21,7 +21,11 @@ AS SELECT psm.year_month,
     psm.ar_fluorides_limit,
     psm.ar_ecoli,
     psm.ar_ecoli_limit,
-    psm.rate_catchment
+    psm.rate_catchment,
+    psm.property_tax_fixed_value,
+    psm.property_tax_minimal_contribution,
+    psm.property_tax_monthly_index,
+    psm.inpc
    FROM property_water_catchment_monthly_rate psm,
     vw_product_template_yearmonth_dec_from_invoice yfi
   ORDER BY psm.year_month DESC;

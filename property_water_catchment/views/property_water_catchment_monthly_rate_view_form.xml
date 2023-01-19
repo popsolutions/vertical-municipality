@@ -13,6 +13,10 @@
                         <field name="date"/>
                         <field name="state"/>
                         <field name="year_month" widget="mask" data-inputmask-mask="9999/99"/>
+                        <field name="property_tax_fixed_value"/>
+                        <field name="property_tax_minimal_contribution"/>
+                        <field name="property_tax_monthly_index"/>
+                        <field name="inpc"/>
                     </group>
                     <group string="Property Rates" col="4">
                         <field name="rate_catchment"/>
@@ -46,6 +50,10 @@
             <tree string="Water Catchment List">
                 <field name="date"/>
                 <field name="year_month"/>
+                <field name="property_tax_fixed_value"/>
+                <field name="property_tax_minimal_contribution"/>
+                <field name="property_tax_monthly_index"/>
+                <field name="inpc"/>
                 <field name="rate_catchment"/>
                 <field name="index_coin"/>
                 <field name="nextread_date"/>

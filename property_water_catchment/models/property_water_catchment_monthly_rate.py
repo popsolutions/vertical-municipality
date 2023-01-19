@@ -32,3 +32,8 @@ class PropertyWaterConsumption(models.Model):
 
     index_coin = fields.Float('Index Coin', digits=(12, 5))
     nextread_date = fields.Date('Next Read Date')
+
+    property_tax_fixed_value = fields.Float('Fixed Value', digits=(12,4))
+    property_tax_minimal_contribution = fields.Float('Minimal Contribution')
+    property_tax_monthly_index = fields.Float('Monthly Index', digits=(12,5))
+    inpc = fields.Float('INPC', digits=(12, 4))
