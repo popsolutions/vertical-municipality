@@ -15,5 +15,8 @@ Cada linha de fatura é gerada no arquivo "odoo/custom-addons/riviera/l10n-brazi
         for line in self.bank_line_ids:
             pagamentos.append(line.prepare_bank_payment_line(bank_brcobranca))
 
-  - gerar arquivo para banco(line): odoo/custom-addons/riviera/l10n-brazil/l10n_br_account_payment_order/models/bank_payment_line.py._prepare_boleto_bank_line_vals
--
+  - * O Json de cada linha é gerado aqui:odoo/custom-addons/riviera/l10n-brazil/l10n_br_account_payment_brcobranca/models/bank_payment_line.py.prepare_bank_payment_line
+
+- gerar arquivo para banco(line): odoo/custom-addons/riviera/l10n-brazil/l10n_br_account_payment_order/models/bank_payment_line.py._prepare_boleto_bank_line_vals
+
+
