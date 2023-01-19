@@ -42,25 +42,13 @@ class PropertyGaTax(models.Model):
                 rec.land_id.name)
     @api.multi
     def _compute_catchment_rate_current_month(self):
-        self.env.cr.execute("select to_char(t.maxdate, 'yyyy') old_year, to_char(t.maxdate, 'mm') old_month from (select max(date) maxdate from property_water_catchment pwc) t")
-        res = self.env.cr.fetchall()
-        current_year = int(res[0][0])
-        current_month = int(res[0][1]) + 1
-
-        if current_month > 12:
-            current_year = current_year + 1
-            current_month = 1
-
-        current_year_month = str(current_year) + str(current_month).zfill(2)
-        date = str(current_year) + '-' + str(current_month).zfill(2) + '-01'
-
         #this sql calculate  set property_water_consumption.rate_catchment values
         sql = """
 insert into property_water_catchment (id, land_id,"date",rate_catchment,state,create_uid,create_date,write_uid,write_date)
 select nextval('property_water_catchment_id_seq') id,
        w.land_id,
-       '""" + date + """' "date",
-       round((w.consumption * t.factor_rate_catchment_monthy)::numeric, 2) rate_catchment,
+       to_date(psml.year_month_property_water_catchment || '01', 'YYYYMMDD') "date",
+       round((coalesce(w.consumption, 0) * t.factor_rate_catchment_monthy)::numeric, 2) rate_catchment,
        'draft' state,
        1 create_uid,
        current_timestamp  create_date,
@@ -71,24 +59,24 @@ select nextval('property_water_catchment_id_seq') id,
        (select t.rate_catchment_monthy / coalesce(nullif(t.water_consumption_sum, 0), 1) factor_rate_catchment_monthy, rate_catchment_monthy, water_consumption_sum
           from (select coalesce(
                        (select p.rate_catchment  
-                         from property_water_catchment_monthly_rate p
-                        where year_month = '""" + current_year_month + """'
+                         from vw_property_settings_monthly_last p
                        ), 0) rate_catchment_monthy,
                        coalesce(
                        (
                        select sum(coalesce(w.consumption, 0))  
                          from property_water_consumption w
-                        where TO_CHAR(w.date, 'yyyymm') = '""" + current_year_month + """'
+                        where anomes(w.date) = (select v.year_month_property_water_consumption from vw_property_settings_monthly_last v)
                        ), 0) water_consumption_sum
                ) t       
-       ) t
- where TO_CHAR(w.date, 'yyyymm') = '""" + current_year_month + """'
+       ) t,
+       vw_property_settings_monthly_last psml
+ where anomes(w.date) = psml.year_month_property_water_consumption
     and not exists
        (select pwc.id
           from property_water_catchment pwc
          where pwc.land_id = w.land_id
-           and TO_CHAR(pwc.date, 'yyyymm') = '""" + current_year_month + """'
+           and anomes(pwc.date) = psml.year_month_property_water_catchment
          limit 1 
-       ) 
+       )
 """
         self.env.cr.execute(sql)
