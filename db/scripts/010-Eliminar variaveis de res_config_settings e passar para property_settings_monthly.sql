@@ -132,3 +132,10 @@ begin
 end
 $function$
 ;
+
+UPDATE public.property_water_catchment_monthly_rate
+   SET property_tax_fixed_value=0.2071,
+       property_tax_minimal_contribution=342.37,
+       property_tax_monthly_index=6.38647,
+       inpc=0.6900
+ where year_month=202302;
