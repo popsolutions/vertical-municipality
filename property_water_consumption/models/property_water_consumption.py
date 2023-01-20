@@ -74,7 +74,7 @@ class PropertyWaterConsumption(models.Model):
     @api.depends('consumption', 'land_id')
     def _compute_total(self):
         for rec in self:
-            if rec.land_id and rec.state in ['draft']:
+            if rec.land_id and rec.state in ['draft', 'pending']:
                 if (not rec.land_id.water_consumption_economy_qty) or (rec.land_id.water_consumption_economy_qty == 0):
                     rec.total = 0
                 else:
