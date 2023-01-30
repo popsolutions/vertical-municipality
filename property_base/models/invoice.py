@@ -66,6 +66,8 @@ class AccountInvoice(models.Model):
             if p_wc.land_id.land_id_invoice().id not in inv_land_ids:
                 self._create_property_customer_invoice(
                     p_wc, product_id, account_id, price_unitFieldName)
+
+                inv_land_ids.append(p_wc.land_id.land_id_invoice().id)
             else:
                 inv_id = self.search([('land_id', '=', p_wc.land_id.land_id_invoice().id), ('state', 'in', ['draft'])], limit=1)
                 
