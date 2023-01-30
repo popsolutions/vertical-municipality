@@ -92,8 +92,14 @@ class PropertyTax(models.Model):
             ('active','=', True), ('state', '=', 'done')]
         )
         formula = self._get_formula()
+
+        sql = """select to_timestamp(year_month_property_tax || '10 23', 'yyyymmdd h24') from vw_property_settings_monthly_last sml"""
+        self.env.cr.execute(sql)
+        lines = self.env.cr.fetchone()
+        property_tax_date = lines[0]
+
         for land in self.web_progress_iter(land_ids, msg='Process Batch Tax'):
-            self._process_tax_amount_and_lines(land, formula)
+            self._process_tax_amount_and_lines(land, formula, property_tax_date)
 
     @api.multi
     def create_generic_process(self):
@@ -146,12 +152,13 @@ select pl.id,
 
         logger.info('CONCLUÍDO - # task103 - Importação das fotografias dos produtos')
 
-    def _process_tax_amount_and_lines(self, land, formula):
+    def _process_tax_amount_and_lines(self, land, formula, property_tax_date):
         amount, lines, formula = self._get_tax_amount_and_lines(land, formula)
         values = {
             'land_id': land.id,
             'amount_total': amount,
             'tax_line_ids': lines,
             'formula': formula,
+            'date': property_tax_date
         }
         self.create(values)
