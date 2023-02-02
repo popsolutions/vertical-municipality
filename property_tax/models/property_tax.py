@@ -93,13 +93,17 @@ class PropertyTax(models.Model):
         )
         formula = self._get_formula()
 
-        sql = """select to_timestamp(year_month_property_tax || '10 23', 'yyyymmdd h24') from vw_property_settings_monthly_last sml"""
-        self.env.cr.execute(sql)
-        lines = self.env.cr.fetchone()
-        property_tax_date = lines[0]
+        property_tax_date = self.get_next_date_insert()
 
         for land in self.web_progress_iter(land_ids, msg='Process Batch Tax'):
             self._process_tax_amount_and_lines(land, formula, property_tax_date)
+
+    def get_next_date_insert(self):
+        sql = """select to_timestamp(year_month_property_tax || '10 23', 'yyyymmdd h24') from vw_property_settings_monthly_last sml"""
+        self.env.cr.execute(sql)
+        lines = self.env.cr.fetchone()
+        return lines[0]
+
 
     @api.multi
     def create_generic_process(self):
@@ -152,7 +156,10 @@ select pl.id,
 
         logger.info('CONCLUÍDO - # task103 - Importação das fotografias dos produtos')
 
-    def _process_tax_amount_and_lines(self, land, formula, property_tax_date):
+    def _process_tax_amount_and_lines(self, land, formula, property_tax_date=None):
+        if property_tax_date == None:
+            property_tax_date = self.get_next_date_insert()
+
         amount, lines, formula = self._get_tax_amount_and_lines(land, formula)
         values = {
             'land_id': land.id,
