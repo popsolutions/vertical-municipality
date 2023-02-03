@@ -29,7 +29,7 @@
 
             <t t-set="data_report_margin_top" t-value="10"/>
             <div style="margin-top: 16px;"><span>Remetende: ASSOCIACAO DOS AMIGOS DA RIVIERA DE SAO LOURENCO</span></div>
-            <div style="margin-top: 16px;"><span>Endereço: Caixa Posta n. 01</span></div>
+            <div style="margin-top: 16px;"><span>Endereço: Passeio do Ipê, 52 - Riviera - Bertioga - SP</span></div>
             <div style="margin-top: 16px;"><span>Cep: 11261-318</span></div>
           </div>
 
