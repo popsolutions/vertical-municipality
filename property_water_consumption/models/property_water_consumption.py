@@ -131,7 +131,6 @@ select pwc.id
             pwc = self.env['property.water.consumption'].search([('id', '=', pwc_currentyearmonth_owner)])
             pwc.unified_watter_consumption_process()
     def unified_watter_consumption_process(self):
-        #todo.do validar anomes
         date_yearmonth = self.date.strftime("%Y%m")
 
         sql = "select v.year_month_property_water_consumption from vw_property_settings_monthly_last v"
