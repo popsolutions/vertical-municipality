@@ -119,7 +119,7 @@ select anomes_text(anomes(pwc.owner_readDate), 3) mesReferencia,
        psm.ar_fluorides_limit, --index 19
        psm.ar_ecoli,
        psm.ar_ecoli_limit,
-       pl.water_consumption_economy_qty,
+       pwc.water_consumption_economy_qty,
        aci.date_due,--index 23
        aci.date_due + 10 date_due_max,
        jurosdiario.multa_diaria,
