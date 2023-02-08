@@ -12,7 +12,7 @@
     'author': "PopSolutions",
     'website': "https://www.popsolutions.co",
     'category': 'Uncategorized',
-    'version': '12.0.0.1.3',
+    'version': '12.0.0.1.4',
     'depends': ['property_base'],
     'data': [
         'data/products.xml',

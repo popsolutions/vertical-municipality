@@ -12,5 +12,12 @@
               action="property_water_consumption_computation_parameter_action" sequence="10"/>
     <menuitem name="Issues" id="property_water_consumption_issues_menu" parent="property_water_consumption_settings_menu"
               action="property_water_consumption_issue_action" sequence="20"/>
+    <record id="action_unified_watter_consumption_process" model="ir.actions.server">
+        <field name="name">Process Unifiedy Water Consumption</field>
+        <field name="model_id" ref="property_water_consumption.model_property_water_consumption"/>
+        <field name="binding_model_id" ref="property_water_consumption.model_property_water_consumption"/>
+        <field name="state">code</field>
+        <field name="code">action = records.unified_watter_consumption_process()</field>
+    </record>
 
 </odoo>

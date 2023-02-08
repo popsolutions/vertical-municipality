@@ -82,23 +82,19 @@ class AccountInvoice(models.Model):
 
         consumptionJson = {}
 
+        sql = 'select anomes_inc(anomes(aci.date_due), -1) anomes_ref from account_invoice aci where aci.id = ' + str(invoice.id)
+        self.env.cr.execute(sql)
+        res = self.env.cr.fetchone()
+        anomesRef = res[0]
+
+
         sql = '''
-select anomes_text(anomes(pwc."date"), 3) mesReferencia,
-       pwc."date" readDate,
+select anomes_text(anomes(pwc.owner_readDate), 3) mesReferencia,
+       pwc.owner_readDate readDate,
        psm.nextread_date,
        pwc.last_read,
        pwc.current_read, --index 4
-       (select sum(pwc2.consumption)
-          from (select distinct land_id 
-                  from account_invoice_line ail
-                 where ail.invoice_id = aci.id 
-                   and ail.product_id = 7 /*Consumo de agua*/
-               ) ail,
-               property_water_consumption pwc2 
-         where pwc2.land_id = ail.land_id 
-           and pwc2."date" between aci.pwc_primeirodia and aci.pwc_ultimodia
-           and pwc2.state = 'processed'
-       ) consumption2,--index 5
+       pwc.consumption,--index 5
        anomes(aci.date_due) anomes_invoice,
        coalesce(
        (select 1
@@ -127,7 +123,9 @@ select anomes_text(anomes(pwc."date"), 3) mesReferencia,
        aci.date_due,--index 23
        aci.date_due + 10 date_due_max,
        jurosdiario.multa_diaria,
-       jurosdiario.juros_diario               
+       jurosdiario.juros_diario,
+       anomes_inc(anomes_due, -2) anomes_due_2, --index 27
+       anomes_inc(anomes_due, -13) anomes_due_13
   from (select aci.id,
                aci.land_id,
                aci.date_due,
@@ -137,10 +135,9 @@ select anomes_text(anomes(pwc."date"), 3) mesReferencia,
           from account_invoice aci
          where aci.id = ''' + str(invoice.id) + '''  
        ) aci
-         left join property_water_consumption pwc 
-                 on pwc.land_id = aci.land_id 
-                and pwc."date" between aci.pwc_primeirodia and aci.pwc_ultimodia
-                and pwc.state = 'processed'
+         left join vw_property_water_consumption_unified_group pwc 
+                 on pwc.unified_property_id_orid = aci.land_id 
+                and pwc.anomes = ''' + str(anomesRef) + '''
          inner join property_land pl
                  on pl.id = aci.land_id,
       vw_property_settings_monthly_last psm,
@@ -152,6 +149,8 @@ select anomes_text(anomes(pwc."date"), 3) mesReferencia,
 
         if len(datas) == 1:
             data = datas[0]
+            anomes_due_2 = data[27]
+            anomes_due_13 = data[28]
 
             exibir_mensagem_aumento_agua = data[6] == 202206 # Esta mensagem será exibida apenas para vencimento em 2022/06
 
@@ -223,21 +222,14 @@ select anomes_text(anomes(pwc."date"), 3) mesReferencia,
             })
 
         query = '''
-select anomes_text(anomes(pwc."date"), 2) anomes,
-       sum(pwc.consumption) consumption
-  from (select distinct 
-               anomes(aci.date_due) date_due_anomes,
-               ail.land_id 
-          from account_invoice aci
-               inner join account_invoice_line ail on ail.invoice_id = aci.id and ail.product_id = 7 /*Consumo de agua*/
-         where aci.id = ''' + str(invoice.id) + '''
-       ) t
-       inner join property_water_consumption pwc on pwc.land_id = t.land_id
- where anomes(pwc."date") between anomes_inc(t.date_due_anomes, -13) and anomes_inc(t.date_due_anomes, -2)
- group by 1, anomes(pwc."date")
- order by anomes(pwc."date") desc  
+select anomes_text(pwc.anomes, 2) anomes,
+       sum(pwc.consumption)::integer consumption
+  from vw_property_water_consumption_unified_group pwc
+ where pwc.unified_property_id_orid = ''' + str(invoice.land_id.id) + '''
+   and pwc.anomes between ''' + str(anomes_due_13) + ''' and ''' + str(anomes_due_2) + '''
+ group by 1, pwc.anomes
+ order by pwc.anomes desc
 '''
-
         #Resolvendo Histórico de consumo(consumptionJson) [INICIO]
 
         self.env.cr.execute(query)

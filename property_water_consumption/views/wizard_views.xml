@@ -24,9 +24,34 @@
         </field>
     </record>
 
+    <record model="ir.ui.view" id="property_water_consumption_wizard_unifiedy_form_view">
+        <field name="name">property.water.consumption.wizard.unifiedy.form</field>
+        <field name="model">property.water.consumption.wizard.unifiedy</field>
+        <field name="arch" type="xml">
+            <form string="Process Water Consumptions Unifiedy">
+                <group>
+                    <div>Click on <strong>Process </strong> to process Unifiedy Water Consumptions</div>
+                </group>
+                <footer>
+                    <button name="process_batch_unifiedy_water_consumptions" type="object"
+                            string="Process" class="oe_highlight"/>
+                    or
+                    <button special="cancel" string="Cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
     <record id="property_water_consumption_wizard" model="ir.actions.act_window">
         <field name="name">Create Batch Water Consumptions</field>
         <field name="res_model">property.water.consumption.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <record id="property_water_consumption_wizard_unifiedy" model="ir.actions.act_window">
+        <field name="name">Process Water Consumptions Unifiedy</field>
+        <field name="res_model">property.water.consumption.wizard.unifiedy</field>
         <field name="view_mode">form</field>
         <field name="target">new</field>
     </record>
@@ -37,5 +62,12 @@
             action="property_water_consumption_wizard"
             parent="property_base.property_wizards_menu"
             sequence="30"/>
+
+    <menuitem
+            id="property_water_consumption_wizard_menu_unifiedy"
+            name="Process Water Consumptions Unifiedy"
+            action="property_water_consumption_wizard_unifiedy"
+            parent="property_base.property_wizards_menu"
+            sequence="35"/>
 
 </odoo>
