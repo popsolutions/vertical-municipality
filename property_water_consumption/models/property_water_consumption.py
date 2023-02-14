@@ -222,14 +222,14 @@ select nextval('property_water_consumption_id_seq') id,
   from (select pwc_old.land_id land_id,
                pwc_old.current_read last_read,
                pl.hydrometer_number
-          from property_water_consumption pwc_old
+          from vw_property_water_consumption_last_month pwc_old
                  join vw_property_settings_monthly_last sml on (0 = 0)
                  left join property_water_consumption pwc_current 
                         on (     pwc_current.land_id = pwc_old.land_id 
                             and  anomes(pwc_current."date") = sml.year_month_property_water_consumption
                            ),
                property_land pl
-         where anomes(pwc_old."date") = anomes_inc(sml.year_month_property_water_consumption, -1)
+         where pwc_old.anomes = (select anomes_inc(year_month_property_water_consumption, -1) from vw_property_settings_monthly_last)
            and pwc_current.id is null
            and pl.id = pwc_old.land_id 
            and pl.state = 'done'
