@@ -34,8 +34,5 @@
         'security/ir.model.access.csv',
         'data/ir_cron.xml',
         'demo/demo.xml',
-    ],
-    'qweb': [
-        "static/src/xml/account_payment.xml",
-    ],
+    ]
 }
