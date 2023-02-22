@@ -131,73 +131,73 @@ select pwc.id
             pwc = self.env['property.water.consumption'].search([('id', '=', pwc_currentyearmonth_owner)])
             pwc.unified_watter_consumption_process()
     def unified_watter_consumption_process(self):
-        date_yearmonth = self.date.strftime("%Y%m")
+        for rec_self in self.web_progress_iter(self):
+            date_yearmonth = rec_self.date.strftime("%Y%m")
 
-        sql = "select v.year_month_property_water_consumption from vw_property_settings_monthly_last v"
-        self.env.cr.execute(sql)
-        res = self.env.cr.fetchone()
-
-        if date_yearmonth != str(res[0]):
-            raise UserError('Para ser processado o consumo de água precisa estar no Ano/Mês "' + str(res[0]) + '"')
-
-        for pwc in self:
-            sql = """
-select l.unified_property_id,
-       (select count(0) 
-          from property_land pl
-         where pl.unified_property_id = l.id
-       ) qtde_filhos
-  from (select pl1.id,
-               pl1.unified_property_id
-          from property_land pl1
-         where id = """ + str(pwc.land_id.id) + """ 
-       ) l        
-        """
+            sql = "select v.year_month_property_water_consumption from vw_property_settings_monthly_last v"
             self.env.cr.execute(sql)
             res = self.env.cr.fetchone()
 
-            if res[0] != None:
-                # unified_property_id preenchido indicando que este lote é "um filho"
-                # Neste caso vou solicitar o processamento do Lote pai.
+            if date_yearmonth != str(res[0]):
+                raise UserError('Para ser processado o consumo de água precisa estar no Ano/Mês "' + str(res[0]) + '"')
 
-                sql = "select id from vw_property_water_consumption_unified_cym w where land_id = " + str(res[0])
-                self.env.cr.execute(sql)
-                pwc_owner_id = self.env.cr.fetchone()
-                pwc = self.env['property.water.consumption'].search([('id', '=', pwc_owner_id[0])])
-                pwc.unified_watter_consumption_process()
-            elif res[1] > 0:
-                # qtde_filhos preenchido indicando que este lote é "um pai".
-                # Vou pegar os filhos (incluindo o pai e processar 1 a 1)
+            for pwc in self:
                 sql = """
-select w.id
-  from vw_property_water_consumption_unified_cym w
- where unified_property_id_orid = """ + str(pwc.land_id.id)
-
-                self.env.cr.execute(sql)
-                pwcs_childs_and_owner = self.env.cr.fetchall()
-
-                sql = """
-select w.water_consumption_economy_qty economy_qty_child_and_owner,
-       w.consumption consumption_child_and_owner
-  from vw_property_water_consumption_unified_group_cym w
- where unified_property_id_orid = """ + str(pwc.land_id.id)
-
+    select l.unified_property_id,
+           (select count(0) 
+              from property_land pl
+             where pl.unified_property_id = l.id
+           ) qtde_filhos
+      from (select pl1.id,
+                   pl1.unified_property_id
+              from property_land pl1
+             where id = """ + str(pwc.land_id.id) + """ 
+           ) l        
+            """
                 self.env.cr.execute(sql)
                 res = self.env.cr.fetchone()
 
-                economy_qty_child_and_owner = res[0] #Somatória total da economia dos filhos e do pai
-                consumption_child_and_owner = res[1]
+                if res[0] != None:
+                    # unified_property_id preenchido indicando que este lote é "um filho"
+                    # Neste caso vou solicitar o processamento do Lote pai.
 
-                for pwc_childs_and_owner in pwcs_childs_and_owner:
-                    pwc = self.env['property.water.consumption'].search([('id', '=', pwc_childs_and_owner[0])])
+                    sql = "select id from vw_property_water_consumption_unified_cym w where land_id = " + str(res[0])
+                    self.env.cr.execute(sql)
+                    pwc_owner_id = self.env.cr.fetchone()
+                    pwc = self.env['property.water.consumption'].search([('id', '=', pwc_owner_id[0])])
+                    pwc.unified_watter_consumption_process()
+                elif res[1] > 0:
+                    # qtde_filhos preenchido indicando que este lote é "um pai".
+                    # Vou pegar os filhos (incluindo o pai e processar 1 a 1)
+                    sql = """
+    select w.id
+      from vw_property_water_consumption_unified_cym w
+     where unified_property_id_orid = """ + str(pwc.land_id.id)
 
-                    print('process:' + pwc.land_id.name)
-                    pwc._compute_total_pwd(economy_qty_child_and_owner, consumption_child_and_owner)
-            else:
-                # O Lote nem é filho e nem pai, é uma situação normal, farei o processamento normal
-                self._compute_total()
+                    self.env.cr.execute(sql)
+                    pwcs_childs_and_owner = self.env.cr.fetchall()
 
-            print('x')
+                    sql = """
+    select w.water_consumption_economy_qty economy_qty_child_and_owner,
+           w.consumption consumption_child_and_owner
+      from vw_property_water_consumption_unified_group_cym w
+     where unified_property_id_orid = """ + str(pwc.land_id.id)
+
+                    self.env.cr.execute(sql)
+                    res = self.env.cr.fetchone()
+
+                    economy_qty_child_and_owner = res[0] #Somatória total da economia dos filhos e do pai
+                    consumption_child_and_owner = res[1]
+
+                    for pwc_childs_and_owner in pwcs_childs_and_owner:
+                        pwc = self.env['property.water.consumption'].search([('id', '=', pwc_childs_and_owner[0])])
+
+                        print('process:' + pwc.land_id.name)
+                        pwc._compute_total_pwd(economy_qty_child_and_owner, consumption_child_and_owner)
+                else:
+                    # O Lote nem é filho e nem pai, é uma situação normal, farei o processamento normal
+                    self._compute_total()
+
 
     @api.multi
     def create_batch_water_consumptions(self):
