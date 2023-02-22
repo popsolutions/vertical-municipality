@@ -107,54 +107,26 @@ class PropertyTax(models.Model):
 
     @api.multi
     def create_generic_process(self):
-        #task103 - Importação das fotografias dos produtos
-        sql = """
-select pl.id,
-       ii.caminhoarquivo || ii.nomearquivo filename,
-       encode(anexo, 'base64') anexo,
-       ii.id ii_id,
-       row_number() over(partition by pl.id) sequence_ --index 4
-  from vw_property_land vpl join property_land pl on pl.id = vpl.id,
-       nucleo.imo_imovelanexos ii
- where ii.prop_nucodigo = coalesce(pl.sisa_id, pl.id)
-"""
+        #processar todas as águas
+        waters = self.env['property.water.consumption'].search([
+            ('date', '>', '2023-02-01'), ('state', '=', 'pending')]
+        )
 
-        self.env.cr.execute(sql)
-        lines = self.env.cr.fetchall()
+        length = len(waters)
+        i = 0
 
-        countCommit = 0
-        indexCountCommit = 15
-        linesIndex = 0
-        linexCount = len(lines)
+        for water in waters:
+            i += 1
+            water.state = 'draft'
+            water._compute_consumption()
+            water._compute_total()
+            water.state = 'pending'
+            water.write({'total': water.total})
+            logger.info(
+                str(i) + '/' + str(length) + ' - Corrigido "' + water.land_id.name + '" para total: "' + str(
+                    water.total) + '"')
 
-        for line in lines:
-            try:
-                vals = {
-                    'name': line[3],
-                    'owner_model': 'property.land',
-                    'owner_id': str(line[0]),
-                    'storage': 'db',
-                    'filename': line[1],
-                    'owner_ref_id': 'property.land,' + str(line[0]),
-                    'file_db_store': line[2],
-                    'sequence': str(line[4])
-                }
-
-                self.env['base_multi_image.image'].create(vals)
-            except Exception as e:
-                logger.info('Erro: ii_id:' + str(line[3]) + ' - Erro: ' + str(e))
-
-            countCommit += 1
-            linesIndex += 1
-
-            logger.info('base_multi_image.image - Registro (' + str(linesIndex) + '/' + str(linexCount) + ') ii_str: ' + str(line[3]))
-
-            if countCommit >= indexCountCommit:
-                self.env.cr.commit()
-                logger.info('base_multi_image.image - *** Commit.')
-                countCommit = 0
-
-        logger.info('CONCLUÍDO - # task103 - Importação das fotografias dos produtos')
+        print('x')
 
     def _process_tax_amount_and_lines(self, land, formula, property_tax_date=None):
         if property_tax_date == None:
