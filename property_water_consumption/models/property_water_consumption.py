@@ -57,7 +57,7 @@ class PropertyWaterConsumption(models.Model):
     @api.depends('last_read', 'current_read')
     def _compute_consumption(self):
         for rec in self:
-            if not rec.current_read:
+            if rec.current_read == None:
                 rec.consumption = 0
             else:
                 if rec.current_read >= rec.last_read:
