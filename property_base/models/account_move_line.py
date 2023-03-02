@@ -6,6 +6,7 @@ import logging
 from odoo import models, api
 
 from ..constants.br_cobranca import DICT_BRCOBRANCA_CURRENCY, get_brcobranca_bank
+from odoo.exceptions import Warning as UserError
 
 _logger = logging.getLogger(__name__)
 
@@ -31,6 +32,10 @@ class AccountMoveLine(models.Model):
         for move_line in self:
 
             bank_account_id = move_line.payment_mode_id.fixed_journal_id.bank_account_id
+
+            if not bank_account_id:
+                raise UserError('Informe um mode de pagamento cnab válido.')
+
             bank_name_brcobranca = get_brcobranca_bank(
                 bank_account_id, move_line.payment_mode_id.payment_method_code
             )
