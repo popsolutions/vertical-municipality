@@ -353,7 +353,7 @@ select string_agg(sumary_text1, ', ') unified_lots, sum(amount) amount
 
         for invoice in self.web_progress_iter(self):
             try:
-                process_boleto_frente_verso(str(invoice.id), True)
+                process_boleto_frente_verso(str(invoice.id), True, False, True)
             except Exception as e:
                 try:
                     msgErro = str(e.name)

@@ -35,7 +35,7 @@ class ReportControllerInherited(ReportController):
             return res
 
 
-def process_boleto_frente_verso(docids, saveToLocalServer = False, return_ir_attachment = False):
+def process_boleto_frente_verso(docids, saveToLocalServer = False, return_ir_attachment = False, encryptionPdf = False):
     report = request.env['ir.actions.report']._get_report_from_name('l10n_br_account_payment_brcobranca_batch.report_invoice_boleto_verso')
     context = dict(request.env.context)
 
@@ -54,7 +54,7 @@ def process_boleto_frente_verso(docids, saveToLocalServer = False, return_ir_att
     pdfBoleto = account_invoice.gera_boleto_pdf_multi()
 
     # Join PDFs
-    jpdf = join_two_pdf([pdfBoleto, base64.b64encode(pdfVersoBoleto[0])], docids, saveToLocalServer)
+    jpdf = join_two_pdf([pdfBoleto, base64.b64encode(pdfVersoBoleto[0])], docids, saveToLocalServer, encryptionPdf)
 
     if saveToLocalServer:
         return
@@ -78,7 +78,7 @@ def process_boleto_frente_verso(docids, saveToLocalServer = False, return_ir_att
 
     return jpdfres
 
-def join_two_pdf(pdf_chunks: List[bytes], docids, saveToLocalServer) -> bytes:
+def join_two_pdf(pdf_chunks: List[bytes], docids, saveToLocalServer, encryptionPdf = False) -> bytes:
     result_pdf = Pdf.new()
 
     stream_boleto = io.BytesIO(initial_bytes=base64.b64decode(pdf_chunks[0]))
@@ -111,8 +111,11 @@ def join_two_pdf(pdf_chunks: List[bytes], docids, saveToLocalServer) -> bytes:
             pdfToSave.pages.append(page_Fatura)
             pdfToSave.pages.append(page_Verso)
 
-            no_extracting = pikepdf.Permissions(extract=False)
-            pdfToSave.save(pdfFileName, encryption=pikepdf.Encryption(user=account_invoice.partner_id.cnpj_cpf.replace('.', '').replace('-', '').replace('/', '')[0:5], owner="user", allow=no_extracting))
+            if encryptionPdf:
+                no_extracting = pikepdf.Permissions(extract=False)
+                pdfToSave.save(pdfFileName, encryption=pikepdf.Encryption(user=account_invoice.partner_id.cnpj_cpf.replace('.', '').replace('-', '').replace('/', '')[0:5], owner="user", allow=no_extracting))
+            else:
+                pdfToSave.save(pdfFileName)
 
             logger.info('Arquivo pdf (' + str(pageNum) + '/' + str(len(pdfBoleto.pages)) + ') Criado em "' + pdfFileName + '"')
 
@@ -131,11 +134,15 @@ def join_two_pdf(pdf_chunks: List[bytes], docids, saveToLocalServer) -> bytes:
         if len(docids) == 1:
             #Se o pdf de retorno contém apenas 1 fatura, vou colocar a senha, caso contrário (Contém várias faturas), deixarei sem senha
             account_invoice = request.env['account.invoice'].sudo().search([('id', '=', docids[0])])
-            no_extracting = pikepdf.Permissions(extract=False)
             response_bytes_stream = io.BytesIO()
-            result_pdf.save(response_bytes_stream,
-                            encryption=pikepdf.Encryption(user=account_invoice.partner_id.cnpj_cpf.replace('.', '').replace('-', '').replace('/', '')[0:5], owner="user",
-                                                          allow=no_extracting))
+
+            if encryptionPdf:
+                no_extracting = pikepdf.Permissions(extract=False)
+                result_pdf.save(response_bytes_stream,
+                                encryption=pikepdf.Encryption(user=account_invoice.partner_id.cnpj_cpf.replace('.', '').replace('-', '').replace('/', '')[0:5], owner="user",
+                                                              allow=no_extracting))
+            else:
+                result_pdf.save(response_bytes_stream)
         else:
             result_pdf.save(response_bytes_stream)
 
