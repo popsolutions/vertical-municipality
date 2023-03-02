@@ -16,7 +16,7 @@
         <div class="row clearfix" draggable="false">
           <div class="column full" style="text-align: right;">
             <img class="img" src="/l10n_br_account_payment_brcobranca_batch/static/img/header.png"
-                 style="max-height: 50px; max-width: 100%;"/>
+                 style="margin-top: 10px; max-height: 50px; max-width: 100%;"/>
           </div>
         </div>
 

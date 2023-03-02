@@ -20,7 +20,7 @@
         <!-- <div class="header" t-att-style="report_header_style"> -->
         <div>
           <!-- <img class="img" src="/l10n_br_account_payment_brcobranca_batch/static/img/para uso do correio.png"/> -->
-          <img class="img" src="/l10n_br_account_payment_brcobranca_batch/static/img/para uso do correio.png" style= "max-height: auto; max-width: 100%;"/>
+          <img class="img" src="/l10n_br_account_payment_brcobranca_batch/static/img/para uso do correio.png" style= "margin-top: 10px; max-height: auto; max-width: 100%;"/>
         </div>
 
         <div>
@@ -33,7 +33,7 @@
             <div style="margin-top: 16px;"><span>Cep: 11261-318</span></div>
           </div>
 
-          <img class="img" src="/l10n_br_account_payment_brcobranca_batch/static/img/img carta.png" style= "margin-top: 76px; max-height: auto; max-width: 100%;"/>
+          <img class="img" src="/l10n_br_account_payment_brcobranca_batch/static/img/img carta.png" style= "margin-top: 96px; max-height: auto; max-width: 100%;"/>
           <p>
 
             <div style="text-align:left">
