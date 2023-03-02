@@ -12,7 +12,7 @@ class MailTemplate(models.Model):
 
         # Anexar pdf do boleto ao e-mail
         for res_id, template in self.web_progress_iter(self.get_email_template(res_ids).items(), 'Gerando boletos'):
-            ir_attachment = process_boleto_frente_verso(str(res_id), False, True)
+            ir_attachment = process_boleto_frente_verso(str(res_id), False, True, True)
             attachments = [('Boleto.pdf', ir_attachment.datas)]
             res[res_id]['attachments'] += attachments
 
