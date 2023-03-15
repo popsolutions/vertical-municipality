@@ -29,12 +29,21 @@
                   action="property_land_stage_action" sequence="40"/>
 
         <record id="action_account_invoice_accumulated" model="ir.actions.server">
-            <field name="name">Processar boleto Atrasado</field>
+            <field name="name">Processar boleto Atrasado (Acumular 2 faturas anteriores)</field>
             <field name="model_id" ref="account.model_account_invoice"/>
             <field name="binding_model_id" ref="account.model_account_invoice"/>
             <field name="state">code</field>
             <field name="code">action = records.action_account_invoice_accumulated()</field>
         </record>
+
+        <record id="account_invoice_create_fees_traffic_curcorrection" model="ir.actions.server">
+            <field name="name">Processar Juros, Multa e Correção Monetária</field>
+            <field name="model_id" ref="account.model_account_invoice"/>
+            <field name="binding_model_id" ref="account.model_account_invoice"/>
+            <field name="state">code</field>
+            <field name="code">action = records.account_invoice_create_fees_traffic_curcorrection()</field>
+        </record>
+
         <record id="action_account_invoice_remover_cnab" model="ir.actions.server">
             <field name="name">Remover CNAB e Marcar como PAGO</field>
             <field name="model_id" ref="account.model_account_invoice"/>

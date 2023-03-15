@@ -120,6 +120,13 @@ class AccountInvoice(models.Model):
         for invoice in self.web_progress_iter(self):
             if invoice.state in ("draft", "open"):
                 self.env.cr.execute('select account_invoice_accumulated_create_invoice_id(' + str(invoice.id) + ')')
+                logger.info("Efetuado processo de acúmulo das 2 últimas faturas para a fatura Fatura %s", str(invoice.id))
+
+    def account_invoice_create_fees_traffic_curcorrection(self):
+        for invoice in self.web_progress_iter(self):
+            if invoice.state in ("draft", "open"):
+                self.env.cr.execute('select account_invoice_create_fees_traffic_curcorrection(' + str(invoice.id) + ')')
+                logger.info("Efetuado cálculo de juros da Fatura %s", str(invoice.id))
 
     def remover_cnab(self):
         # Esta rotina é temporária, e serve apenas para corrigir dados da importação.
