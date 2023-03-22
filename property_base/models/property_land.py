@@ -141,6 +141,14 @@ class PropertyLand(models.Model):
              "resized as a 64x64px image, with aspect ratio preserved. "\
              "Use this field anywhere a small image is required.")
 
+    invoicesend_email = fields.Char(string='email Invoice Send')
+    invoicesend_address = fields.Char(string='Address Invoice Send')
+    invoicesend_zip = fields.Char(string='Zip Address Invoice')
+    invoicesend_transmit_method_id = fields.Many2one(
+        'transmit.method', string='Customer Invoice Transmission Method',
+        company_dependant=True, track_visibility='onchange',
+        domain=[('customer_ok', '=', True)], ondelete='restrict')
+
     @api.depends('module_id', 'block_id', 'lot_id')
     def _compute_name(self):
         for rec in self:

@@ -8,6 +8,11 @@ class PropertyWaterConsumption(models.Model):
 
     date = fields.Date(default=fields.Date.context_today)
     year_month = fields.Integer('Ano/Mês')
+
+    # date = datetime.strptime(date_field, DEFAULT_SERVER_DATE_FORMAT)
+    # month = date.month
+    # year = date.year
+
     state = fields.Selection([
         ('draft', 'Draft'),
         ('pending', 'Pending'),

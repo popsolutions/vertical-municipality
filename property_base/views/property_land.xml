@@ -47,10 +47,16 @@
                                 <field name="usage_id"/>
                                 <field name="stage_id"/>
                             </group>
-                            <group string="Other" col="4" colspan="2">
+                            <group string="Other" col="2" colspan="2">
                                 <field name="number"/>
                                 <field name="zip"/>
                                 <field name="address" colspan="4"/>
+                            </group>
+                            <group string="Invoice Send" col="2" colspan="2">
+                                <field name="invoicesend_email"/>
+                                <field name="invoicesend_address" colspan="2"/>
+                                <field name="invoicesend_zip"/>
+                                <field name="invoicesend_transmit_method_id"/>
                             </group>
                         </group>
                         <notebook>
