@@ -29,4 +29,17 @@
             </button>
         </field>
     </record>
+
+    <record id="res_partner_fields_property_base" model="ir.ui.view">
+        <field name="name">res.partner.fields.property.base</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="priority" eval="3"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='email']" position="before">
+                <field name="invoicesend_email"/>
+            </xpath>
+        </field>
+    </record>
+
 </odoo>
