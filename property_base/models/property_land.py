@@ -149,6 +149,21 @@ class PropertyLand(models.Model):
         company_dependant=True, track_visibility='onchange',
         domain=[('customer_ok', '=', True)], ondelete='restrict')
 
+    invoicesend_email_calc = fields.Char(
+        compute="_invoicesend_email_calc",
+        store=True
+    )
+    def _invoicesend_email_calc(self):
+        for rec in self:
+            if rec.invoicesend_email:
+                rec.invoicesend_email_calc = rec.invoicesend_email
+            else:
+                partner = rec.getInvoiceOwner_id()
+                if partner.invoicesend_email:
+                    rec.invoicesend_email_calc = partner.invoicesend_email
+                else:
+                    rec.invoicesend_email_calc = partner.email
+
     @api.depends('module_id', 'block_id', 'lot_id')
     def _compute_name(self):
         for rec in self:

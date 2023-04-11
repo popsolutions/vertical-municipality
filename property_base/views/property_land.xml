@@ -115,6 +115,7 @@
                     <field name="address"/>
                     <field name="number"/>
                     <field name="zip"/>
+                    <field name="invoicesend_email_calc"/>
                 </tree>
             </field>
         </record>
