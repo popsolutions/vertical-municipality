@@ -153,6 +153,7 @@ class PropertyLand(models.Model):
         compute="_invoicesend_email_calc",
         store=True
     )
+    @api.depends('invoicesend_email', 'owner_id.email', 'owner_id.invoicesend_email', 'owner_invoice_id.email', 'owner_invoice_id.invoicesend_email')
     def _invoicesend_email_calc(self):
         for rec in self:
             if rec.invoicesend_email:
