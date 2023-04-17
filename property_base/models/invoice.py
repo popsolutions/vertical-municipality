@@ -114,3 +114,5 @@ class AccountInvoice(models.Model):
         }
         self.sudo().create(inv_data)
 
+    def process_old_invoices_fees(self):
+        self.env.cr.execute('select account_invoice_create_fees_traffic_curcorrection_defproc()')

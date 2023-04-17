@@ -13,3 +13,9 @@ class PropertyInvoiceWizard(models.TransientModel):
         self.env['account.invoice']._cron_process_municipality_services()
 
         return self.env.ref('account.action_invoice_tree1').read()[0]
+
+class PropertyWaterConsumptionWizardOldInvoicesFees(models.TransientModel):
+    _name = 'property.water.consumption.wizard.old.invoices.fees'
+    _description = 'Process fees on Old Invoices'
+    def process_old_invoices_fees(self):
+        self.env['account.invoice'].process_old_invoices_fees()
