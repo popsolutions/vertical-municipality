@@ -148,7 +148,7 @@ begin
          current_timestamp create_date,
          1 write_uid,
          current_timestamp write_date,
-         pdt."name" || ' ' || anomes_text(anomes(aci.date_due)) "name",
+         pdt."name" || ' ' || anomes_text(ym.year_month) "name",
          null origin,
          null "sequence",
          aci.id invoice_id,
