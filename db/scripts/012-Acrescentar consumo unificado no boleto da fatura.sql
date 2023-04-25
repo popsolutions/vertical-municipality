@@ -1,5 +1,5 @@
 insert into property_water_consumption_issue(id, code, "name", create_uid, create_date, write_uid, write_date) VALUES
-(2, 'SH', 'SUBSTITUIÇÃO HIDROMETRO', 17, '2023-01-11 14:34:40.414', 17, '2023-01-11 14:34:40.414')
+(2, 'SH', 'SUBSTITUIÇÃO HIDROMETRO', 17, '2023-01-11 14:34:40.414', 17, '2023-01-11 14:34:40.414');
 
 update property_water_consumption_issue
    set code = 'LT',
@@ -13,8 +13,6 @@ where pwc.issue_id is not null;
 update property_water_consumption pwc
    set issue_id = 1
 where pwc.issue_id is null;
-
-CREATE INDEX property_water_consumption_anomes_idx ON public.property_water_consumption (anomes(date));
 
 create or replace view vw_property_water_consumption_read as
 select *
