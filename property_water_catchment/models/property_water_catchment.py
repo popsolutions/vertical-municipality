@@ -65,12 +65,15 @@ select nextval('property_water_catchment_id_seq') id,
                        (
                        select sum(coalesce(w.consumption, 0))  
                          from property_water_consumption w
+                         join property_land pl on pl.id = w.land_id
                         where anomes(w.date) = (select v.year_month_property_water_consumption from vw_property_settings_monthly_last v)
+                          and not pl.is_not_waterpayer
                        ), 0) water_consumption_sum
                ) t       
        ) t,
        vw_property_settings_monthly_last psml
  where anomes(w.date) = psml.year_month_property_water_consumption
+    and not vpl.is_not_waterpayer
     and not exists
        (select pwc.id
           from property_water_catchment pwc
