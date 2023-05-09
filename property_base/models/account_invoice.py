@@ -142,6 +142,7 @@ class AccountInvoice(models.Model):
                 invoice.write({'state': 'draft'})
                 invoice.write({'payment_mode_id': False})
                 invoice.write({'state': 'open', 'date_due': date_due})
+                invoice.write({'state': 'paid'})
 
     @api.multi
     def write(self, values):
