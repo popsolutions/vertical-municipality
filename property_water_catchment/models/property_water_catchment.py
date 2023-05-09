@@ -55,7 +55,7 @@ select nextval('property_water_catchment_id_seq') id,
        1 write_uid,
        current_timestamp write_date
        --w.total, t.factor_rate_catchment_monthy, rate_catchment_monthy, water_consumption_sum
-  from property_water_consumption w,
+  from property_water_consumption w join property_land pl on pl.id = w.land_id,
        (select t.rate_catchment_monthy / coalesce(nullif(t.water_consumption_sum, 0), 1) factor_rate_catchment_monthy, rate_catchment_monthy, water_consumption_sum
           from (select coalesce(
                        (select p.rate_catchment  
@@ -73,7 +73,7 @@ select nextval('property_water_catchment_id_seq') id,
        ) t,
        vw_property_settings_monthly_last psml
  where anomes(w.date) = psml.year_month_property_water_consumption
-    and not vpl.is_not_waterpayer
+    and not pl.is_not_waterpayer
     and not exists
        (select pwc.id
           from property_water_catchment pwc
