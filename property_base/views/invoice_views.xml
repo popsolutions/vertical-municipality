@@ -1,11 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <template id="assets_backend"
-              name="format_number assets" inherit_id="web.assets_backend">
-        <xpath expr="." position="inside">
-            <script type="text/javascript" src="/property_base/static/src/js/format_anomes.js"></script>
-        </xpath>
-    </template>
 
     <record id="inherit_view_invoice_form_inherit_property_tax" model="ir.ui.view">
         <field name="name">account_invoice.view.form.inherit</field>
@@ -19,7 +13,7 @@
                 <field name="land_id"/>
             </xpath>
             <xpath expr="//notebook[@colspan='4']//field[@name='invoice_line_ids']//field[@name='name']" position="after">
-                <field name="anomes_vencimento" widget="format_anomes"/>
+                <field name="anomes_vencimento"/>
             </xpath>
             <xpath expr="//page[@name='other_info']" position="after">
                 <page name="name" string="Property">
