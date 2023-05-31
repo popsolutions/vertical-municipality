@@ -5,7 +5,7 @@
     'name': 'L10n Br Account Payment Brcobranca Batch',
     'summary': """
         l10n_br_account_payment_brcobranca_batch""",
-    'version': '12.0.1.0.0',
+    'version': '12.0.1.0.1',
     'license': 'AGPL-3',
     'author': 'PopSolutions, mateusonunesc@gmail.com,Odoo Community Association (OCA)',
     'website': 'https://www.popsolutions.co',

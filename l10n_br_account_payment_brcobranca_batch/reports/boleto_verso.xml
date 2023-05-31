@@ -84,8 +84,8 @@
               <b><div><span>junto ao dcr@rivierasl.com.br</span></div></b>
               <t t-if="boletoData['exibir_mensagem_aumento_agua']">
                 <br></br>
-                <b><div><span>Conforme valores divulgados pela SABESP publicados em 07/04/22, a AARSL</span></div></b>
-                <b><div><span>reajustou a tarifa de água/esgoto em 12,8%.</span></div></b>
+                <b><div><span>Conforme valores divulgados pela SABESP publicados em 07/04/23, a AARSL</span></div></b>
+                <b><div><span>reajustou a tarifa de água/esgoto em 9,56%.</span></div></b>
                 <br></br>
               </t>
               <br/>

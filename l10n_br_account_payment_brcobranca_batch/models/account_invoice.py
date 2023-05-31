@@ -125,7 +125,14 @@ select anomes_text(anomes(pwc.owner_readDate), 3) mesReferencia,
        jurosdiario.multa_diaria,
        jurosdiario.juros_diario,
        anomes_inc(anomes_due, -2) anomes_due_2, --index 27
-       anomes_inc(anomes_due, -13) anomes_due_13
+       anomes_inc(anomes_due, -13) anomes_due_13,
+       exists
+       (select 1
+          from account_invoice_line ail
+         where ail.invoice_id = aci.id 
+           and ail.product_id = 7 /*Água e esgoto*/
+         limit 1
+       ) existe_consumo_agua  --index 29
   from (select aci.id,
                aci.land_id,
                aci.date_due,
@@ -152,7 +159,8 @@ select anomes_text(anomes(pwc.owner_readDate), 3) mesReferencia,
             anomes_due_2 = data[27]
             anomes_due_13 = data[28]
 
-            exibir_mensagem_aumento_agua = data[6] == 202206 # Esta mensagem será exibida apenas para vencimento em 2022/06
+            existe_consumo_agua = data[29]
+            exibir_mensagem_aumento_agua = existe_consumo_agua and data[6] == 202306 # Esta mensagem será exibida apenas para vencimento em 2023/06 e exista current_read(Exista consumo de gua)
 
             readDate = ''
 
@@ -170,6 +178,7 @@ select anomes_text(anomes(pwc.owner_readDate), 3) mesReferencia,
                 'consumption': data[5],
                 'economias': data[22],
                 'exibir_mensagem_aumento_agua': exibir_mensagem_aumento_agua,
+                'exibir_mensagem_debito_automatico': len(invoice.partner_id.bank_ids) > 0,
                 'accounts_open_exists': data[7],
                 'rate_catchment': data[8],
                 'ar_period': data[9],
@@ -200,6 +209,7 @@ select anomes_text(anomes(pwc.owner_readDate), 3) mesReferencia,
                 'consumption': '',
                 'economias': '',
                 'exibir_mensagem_aumento_agua': False,
+                'exibir_mensagem_debito_automatico': False,
                 'accounts_open_exists': '',
                 'rate_catchment': '',
                 'ar_period': '',
