@@ -494,7 +494,7 @@
                         RECEBER(TELEFONE: (13) 3319-5012)
                       </td>
                     </tr>
-                    <tr>
+                    <tr t-if="boletoData['existe_consumo_agua']">
                       <td>
                         (FORNECIMENTO DE ÁGUA SUJEITO À CORTE)
                       </td>
