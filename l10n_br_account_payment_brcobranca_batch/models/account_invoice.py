@@ -197,7 +197,8 @@ select anomes_text(anomes(pwc.owner_readDate), 3) mesReferencia,
                 'date_due': data[23].strftime('%d/%m/%Y'),
                 'date_due_max': data[24].strftime('%d/%m/%Y'),
                 'multa_diaria': data[25],
-                'juros_diario': data[26]
+                'juros_diario': data[26],
+                'existe_consumo_agua': existe_consumo_agua
             })
         else:
             consumptionJson.update({
@@ -228,7 +229,8 @@ select anomes_text(anomes(pwc.owner_readDate), 3) mesReferencia,
                 'date_due': '',
                 'date_due_max': '',
                 'multa_diaria': '',
-                'juros_diario': ''
+                'juros_diario': '',
+                'existe_consumo_agua': False
             })
 
         query = '''
