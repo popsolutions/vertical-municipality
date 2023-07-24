@@ -13,7 +13,7 @@
     'author': "PopSolutions",
     'website': "https://www.popsolutions.co",
     'category': 'Uncategorized',
-    'version': '12.0.0.1.2',
+    'version': '12.0.0.1.4',
     'depends': [
         'account', 'l10n_br_account_payment_order', 'mail'
     ],
@@ -27,12 +27,14 @@
         'views/property_land_usage.xml',
         'views/property_land_zone.xml',
         'views/account_portal_templates.xml',
+        'report/paidinvoice_report.xml',
+        'wizard/paidinvoicereport_wizard.xml',
         'views/menu.xml',
         'views/res_partner_views.xml',
         'views/invoice_views.xml',
         'views/wizard_views.xml',
         'security/ir.model.access.csv',
         'data/ir_cron.xml',
-        'demo/demo.xml',
+        'demo/demo.xml'
     ]
 }

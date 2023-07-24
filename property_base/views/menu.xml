@@ -58,5 +58,7 @@
             <field name="state">code</field>
             <field name="code">action = records.invoice_process()</field>
         </record>
+
+        <menuitem name="Paid Invoices" action="action_menu_rel_cont_invoices_paid" id="menu_rel_cont_invoices_paid" parent="account.account_reports_management_menu" sequence="1"/>
     </data>
 </odoo>
