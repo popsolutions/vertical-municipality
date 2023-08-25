@@ -16,6 +16,7 @@ class PaymentOrder(models.Model):
     def _get_brcobranca_remessa(self, bank_brcobranca, remessa_values, cnab_type):
         #Esta rotina basicamente insere na linha do arquivo de remessa as informações de débito automático para o banco bradesco
         #Manual em https://banco.bradesco/assets/pessoajuridica/pdf/4008-524-0121-layout-cobranca-versao-portugues.pdf
+        # => Página 9, seção: "Layout do Arquivo-Remessa - Registro de Transação - Tipo 1"
 
         remessa = super(PaymentOrder, self)._get_brcobranca_remessa(bank_brcobranca, remessa_values, cnab_type)
         index = 1
@@ -28,6 +29,16 @@ class PaymentOrder(models.Model):
             def lineSubst(strSubst: str, startCol: int, endCol: int):
                 nonlocal line
                 line = line[0:startCol - 1] + strSubst + line[endCol:]
+              
+            def floatToStrCnab(val: float, strSize: int):
+                # remove o caracter "." e retorna com 2 casas decimais. 
+                # Exemplos: 
+                #   floatToStrCnab('5'   , 12) => '000000000500'
+                #   floatToStrCnab('5.00', 12) => '000000000500'
+                #   floatToStrCnab('2.44', 12) => '000000000244'
+                #   floatToStrCnab('2.4' , 12) => '000000000240'
+                #   floatToStrCnab('2.4' ,  5) => '00240'
+                return "{:.2f}".format(val).replace('.', '').zfill(strSize)
 
             if index == 1:
                 fileStr = line + '\n'
@@ -83,6 +94,19 @@ class PaymentOrder(models.Model):
                                              # emite boleto de cobrança.
                                              # - Quando diferente de “N” e os dados do débito estiverem incorretos, registra na cobrança e emite boleto de cobrança. Nessa condição, não ocorrerá o agendamento do débito
                     lineSubst('237', 63, 65)  # #63, 65 - Código do Banco a ser debitado na Câmara de Compensação
+
+                # Resolvendo Taxa de permanência conforme task id:232 - INICIO
+                query = """
+select (select multa_diaria from func_account_invoice_jurosdiario(apl.invoice_id)) multa_diaria
+  from account_payment_line apl
+ where apl.own_number = '""" + str(int(nossoNumero)) + """'
+   and apl.order_id = """ + str(self.id) + """"""
+                self.env.cr.execute(query)
+                taxaPermanenciaCur = self.env.cr.fetchall()[0]
+                taxaPermanencia = taxaPermanenciaCur[0]
+                lineSubst(floatToStrCnab(taxaPermanencia, 13), 161, 173) # 161 a 173 Valor a ser Cobrado por Dia de Atraso (Taxa de permanência)
+                # Resolvendo Taxa de permanência conforme task id:232 - FIM
+
                 fileStr += line + '\n'
 
             index += 1

@@ -16,6 +16,19 @@ Cada linha de fatura é gerada no arquivo "odoo/custom-addons/riviera/l10n-brazi
             pagamentos.append(line.prepare_bank_payment_line(bank_brcobranca))
 
   - * O Json de cada linha é gerado aqui:odoo/custom-addons/riviera/l10n-brazil/l10n_br_account_payment_brcobranca/models/bank_payment_line.py.prepare_bank_payment_line
+                 que é enviado para aqui:             odoo/custom-addons/riviera/l10n-brazil/l10n_br_account_payment_order/models/bank_payment_line.py._prepare_boleto_bank_line_vals
+    - * Este Json depois será enviado para a API que gera a linha cnab
+  - * Após gerar o Json (Etapas acima), o json salvo em um arquivo local e enviado a API get_brcobranca_api_url na rotina: /home/mateus/OdooDev/odoo/custom-addons/riviera/l10n-brazil/l10n_br_account_payment_brcobranca/models/account_payment_order.py._get_brcobranca_remessa
+       ...nas linhas abaixo:
+       res = requests.post(
+            brcobranca_service_url,
+            data={
+                "type": DICT_BRCOBRANCA_CNAB_TYPE[cnab_type],
+                "bank": bank_brcobranca.name,
+            },
+            files=files,
+        )
+    - *** A rotina acima é herdadaa para intervenções no módulo da riviera em odoo/custom-addons/riviera/vertical-municipality/l10n_br_account_payment_brcobranca_automatic_debit/models/account_payment_order.py._get_brcobranca_remessa
 
 - gerar arquivo para banco(line): odoo/custom-addons/riviera/l10n-brazil/l10n_br_account_payment_order/models/bank_payment_line.py._prepare_boleto_bank_line_vals
 
