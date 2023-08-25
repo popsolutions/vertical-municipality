@@ -18,33 +18,7 @@ class AppointmentReportWizard(models.TransientModel):
         domain = []
 
         date_from = self.date_from
-        if date_from:
-            domain += [('date_due', '>=', date_from)]
         date_to = self.date_to
-        if date_to:
-            domain += [('date_due', '<=', date_to)]
-        # print("\n\nTest................\n", domain)
-
-        # appointments = self.env['account.invoice'].search_read(domain, limit=10)
-
-        appointments = []
-        appointments_lines = []
-
-        appointments_lines.append({'id':1, 'total': 10})
-        appointments_lines.append({'id':2, 'total': 10})
-        appointments_lines.append({'id':3, 'total': 10})
-
-        appointments.append({'code':'A', 'lines': appointments_lines})
-        appointments_lines = []
-        appointments_lines.append({'id':4, 'total': 10})
-        appointments_lines.append({'id':5, 'total': 20})
-        appointments_lines.append({'id':6, 'total': 30})
-        appointments.append({'code':'B', 'lines': appointments_lines})
-
-        appointments_lines = []
-        appointments_lines.append({'id':8, 'total': 10})
-        appointments_lines.append({'id':9, 'total': 20})
-        appointments.append({'code':'C', 'lines': appointments_lines})
 
         sql = """
 select row_to_json(t)::varchar invoices_sum
