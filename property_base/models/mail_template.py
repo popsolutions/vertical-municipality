@@ -14,6 +14,10 @@ class MailTemplate(models.Model):
         for res_id, template in self.web_progress_iter(self.get_email_template(res_ids).items(), 'Gerando boletos'):
             ir_attachment = process_boleto_frente_verso(str(res_id), False, True, True)
             attachments = [('Boleto.pdf', ir_attachment.datas)]
-            res[res_id]['attachments'] += attachments
+
+            if 'attachments' in res[res_id]:
+                res[res_id]['attachments'] += attachments
+            else:
+                res[res_id].update({'attachments':attachments})
 
         return res
