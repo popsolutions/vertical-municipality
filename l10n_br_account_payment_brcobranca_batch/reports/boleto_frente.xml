@@ -15,7 +15,7 @@
 
         <div class="row clearfix" draggable="false">
           <div class="column full" style="text-align: right;">
-            <img class="img" src="/l10n_br_account_payment_brcobranca_batch/static/img/header.png"
+            <img class="img" src="https://raw.githubusercontent.com/popsolutions/vertical-municipality/12/l10n_br_account_payment_brcobranca_batch/static/img/header.png"
                  style="margin-top: 10px; max-height: 50px; max-width: 100%;"/>
           </div>
         </div>
@@ -274,7 +274,7 @@
                     <tr>
                       <td style="vertical-align: middle">
                         <div style="text-align:center">
-                          <img class="img" src="/l10n_br_account_payment_brcobranca_batch/static/img/image_analise.jpeg"
+                          <img class="img" src="https://raw.githubusercontent.com/popsolutions/vertical-municipality/12/l10n_br_account_payment_brcobranca_batch/static/img/image_analise.jpeg"
                           style="max-width: 145px; max-height: auto;"/>
                         </div>
                       </td>
