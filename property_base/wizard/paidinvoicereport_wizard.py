@@ -76,7 +76,7 @@ select row_to_json(t)::varchar invoices_sum
                       v.product_name,
                       v.price_total) t)) res_lines
                  from vw_report_contab_baixados v
-                where v.real_payment_date between'""" + date_from.strftime('%Y/%m/%d') + """' and '""" + date_to.strftime('%Y/%m/%d') + """'
+                where v.occurrence_date between'""" + date_from.strftime('%Y/%m/%d') + """' and '""" + date_to.strftime('%Y/%m/%d') + """'
                 group by
                       v.res_id,
                       v.res_name
