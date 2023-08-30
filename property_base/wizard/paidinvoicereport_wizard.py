@@ -23,16 +23,16 @@ class AppointmentReportWizard(models.TransientModel):
         sql = """
 select row_to_json(t)::varchar invoices_sum
   from ( 
-        select sum(total_proprietario) total_proprietario_sum,
-               sum(total_agua) total_agua_sum,
-               sum(t.total_contribuicaomensal) total_contribuicaomensal_sum,
-               sum(t.total_taxas) total_taxas_sum,
-               sum(t.jurosproporcional_valor) jurosproporcional_valor_sum,
-               sum(t.total_areaverde) total_areaverde_sum,
-               sum(t.juros_areaverde) juros_areaverde_sum,
-               sum(t.total_taxacaptacao) total_taxacaptacao_sum,
-               sum(t.descontos) descontos_sum,
-               sum(t.price_total) price_total_sum,
+        select coalesce(sum(t.total_proprietario), 0) total_proprietario_sum,
+               coalesce(sum(t.total_agua), 0) total_agua_sum,
+               coalesce(sum(t.total_contribuicaomensal), 0) total_contribuicaomensal_sum,
+               coalesce(sum(t.total_taxas), 0) total_taxas_sum,
+               coalesce(sum(t.jurosproporcional_valor), 0) jurosproporcional_valor_sum,
+               coalesce(sum(t.total_areaverde), 0) total_areaverde_sum,
+               coalesce(sum(t.juros_areaverde), 0) juros_areaverde_sum,
+               coalesce(sum(t.total_taxacaptacao), 0) total_taxacaptacao_sum,
+               coalesce(sum(t.descontos), 0) descontos_sum,
+               coalesce(sum(t.price_total), 0) price_total_sum,
                json_agg(t) invoices
          from (
                select v.res_id,
