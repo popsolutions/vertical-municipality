@@ -176,7 +176,7 @@
                       <t t-esc="appo['descontos']" t-options='{"widget": "float", "precision": 2}'/>
                     </td>
                     <td style="text-align: right">
-                      <t t-esc="appo['price_total']" t-options='{"widget": "float", "precision": 2}'/>
+                      <t t-esc="appo['price_total_juros']" t-options='{"widget": "float", "precision": 2}'/>
 
                       <!--                    <t t-if="counter == a['qtdeitens']">-->
                       <!--                        <br/>-->
@@ -236,7 +236,7 @@
                   <t t-esc="appointments['descontos_sum']" t-options='{"widget": "float", "precision": 2}'/>
                 </td>
                 <td style="text-align: right; font-weight: bold;">
-                  <t t-esc="appointments['price_total_sum']" t-options='{"widget": "float", "precision": 2}'/>
+                  <t t-esc="appointments['price_total_juros_sum']" t-options='{"widget": "float", "precision": 2}'/>
                 </td>
               </div>
             </div>

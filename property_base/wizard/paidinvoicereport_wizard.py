@@ -33,12 +33,13 @@ select row_to_json(t)::varchar invoices_sum
                coalesce(sum(t.total_taxacaptacao), 0) total_taxacaptacao_sum,
                coalesce(sum(t.descontos), 0) descontos_sum,
                coalesce(sum(t.price_total), 0) price_total_sum,
+               coalesce(sum(t.price_total_juros), 0) price_total_juros_sum,
                json_agg(t) invoices
          from (
                select v.res_id,
                       v.res_name,
                       count(0) qtde,
-                      sum(v.price_total) total_proprietario,
+                      sum(v.price_total_juros) total_proprietario,
                       sum(v.total_agua) total_agua,
                       sum(v.total_contribuicaomensal) total_contribuicaomensal,
                       sum(v.total_taxas) total_taxas,
@@ -48,6 +49,7 @@ select row_to_json(t)::varchar invoices_sum
                       sum(v.total_taxacaptacao) total_taxacaptacao,
                       sum(v.descontos) descontos,
                       sum(v.price_total) price_total,
+                      sum(v.price_total_juros) price_total_juros,
                       json_agg((
                       select t from (select
                       v.invoice_id,
@@ -74,7 +76,8 @@ select row_to_json(t)::varchar invoices_sum
                       v.product_id,
                       v.land,
                       v.product_name,
-                      v.price_total) t)) res_lines
+                      v.price_total,
+                      v.price_total_juros) t)) res_lines
                  from vw_report_contab_baixados v
                 where v.occurrence_date between'""" + date_from.strftime('%Y/%m/%d') + """' and '""" + date_to.strftime('%Y/%m/%d') + """'
                 group by

@@ -13,7 +13,7 @@
     'author': "PopSolutions",
     'website': "https://www.popsolutions.co",
     'category': 'Uncategorized',
-    'version': '12.0.0.1.4',
+    'version': '12.0.0.1.6',
     'depends': [
         'account', 'l10n_br_account_payment_order', 'mail'
     ],

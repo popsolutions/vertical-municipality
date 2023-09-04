@@ -27,7 +27,8 @@ select t.invoice_id,
        t.product_name,
        t.price_total_sum,
        t.total_juros,
-       t.jurosproporcional_perc
+       t.jurosproporcional_perc,
+       t.price_total + t.jurosproporcional_valor price_total_juros
   from l10n_br_cnab_return_event cre
        join account_invoice ai on ai.id = cre.invoice_id
        join vw_property_land vpl on vpl.id = ai.land_id
@@ -35,8 +36,9 @@ select t.invoice_id,
        left join func_report_contab_baixados(cre.invoice_id) t on true
  where true
    and cre.invoice_id is not null
+   and cre.occurrences = '06-Liquidação Normal *'
    and ( true or
-        ('' = 'versão-2023-07-20')
+        ('' = 'versão-2023-09-04')
        )
  order by
        t.invoice_id,
