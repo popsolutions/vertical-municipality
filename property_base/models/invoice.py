@@ -5,6 +5,7 @@ import logging
 from odoo import api, fields, models
 import logging
 import datetime
+from odoo import tools
 _logger = logging.getLogger(__name__)
 
 class AccountInvoice(models.Model):
@@ -64,11 +65,13 @@ class AccountInvoice(models.Model):
                 continue
 
             if p_wc.land_id.land_id_invoice().id not in inv_land_ids:
+                # Se não existe uma fatura no status DRAFT, vou criar uma
                 self._create_property_customer_invoice(
                     p_wc, product_id, account_id, price_unitFieldName)
 
                 inv_land_ids.append(p_wc.land_id.land_id_invoice().id)
             else:
+                # Se já existe uma fatura no status DRAFT, vou adcionar o item atual a ela
                 inv_id = self.search([('land_id', '=', p_wc.land_id.land_id_invoice().id), ('state', 'in', ['draft'])], limit=1)
                 
                 inv_id.write({'invoice_line_ids': [(0, 0, {
@@ -116,3 +119,20 @@ class AccountInvoice(models.Model):
 
     def process_old_invoices_fees(self):
         self.env.cr.execute('select account_invoice_create_fees_traffic_curcorrection_defproc()')
+
+    def get_partner_id_email(self, invoice):
+        #Retorna qual email deverá ser enviado o boleto
+        #O email é enviado para o primeiro campo preenchido de acordo com a seguinte ordem:
+        #  property_land.invoicesend_email, res_partner.invoicesend_email, res_partner.email (res_partner considerando "faturar ao proprietário"(owner_invoice_id))
+        query = 'select func_land_emailboleto_byinvoice(' + str(self[0].id) + ')'
+        self.env.cr.execute(query)
+        cur = self.env.cr.fetchall()[0]
+        emails = tools.email_split(cur[0])
+        Partner = self.env['res.partner']
+        partner_ids = ''
+
+        for email in emails:
+            partner_id = Partner.find_or_create(email)
+            partner_ids += str(partner_id) + ','
+
+        return partner_ids

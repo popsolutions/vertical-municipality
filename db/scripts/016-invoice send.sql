@@ -1,3 +1,41 @@
+CREATE OR REPLACE FUNCTION func_land_emailboleto(_land_id integer)
+ RETURNS varchar(1000)
+ LANGUAGE plpgsql
+ IMMUTABLE STRICT
+AS $function$
+declare email varchar(1000);
+begin
+  --retorna o email que deve ser enviado boleto para uma propriedade
+  select COALESCE(pl.invoicesend_email, rp.invoicesend_email, rp.email)
+    from property_land pl join res_partner rp on rp.id = coalesce(pl.owner_invoice_id, pl.owner_id)
+   where pl.id = _land_id
+    into email;
+
+  return email;
+END
+$function$
+;
+
+
+CREATE OR REPLACE FUNCTION func_land_emailboleto_byinvoice(_invoice_id integer)
+ RETURNS varchar(1000)
+ LANGUAGE plpgsql
+ IMMUTABLE STRICT
+AS $function$
+declare email varchar(1000);
+begin
+  --retorna o email que deve ser enviado boleto para uma fatura
+  select func_land_emailboleto(ai.land_id)
+    from account_invoice ai
+   where id = _invoice_id
+    into email;
+
+  return email;
+END
+$function$
+;
+
+
 CREATE OR REPLACE VIEW public.vw_property_land
 AS SELECT pl.id,
     (((plm.code::text || '-'::text) || plb.code::text) || '-'::text) || pll.code::text AS module_code__block_code__lot_code,
