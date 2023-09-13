@@ -31,6 +31,10 @@ class AccountMoveLine(models.Model):
 
         for move_line in self:
 
+            sql = 'select multa_diaria from func_account_invoice_JurosDiario(' + str(move_line.invoice_id.id) + ')'
+            self.env.cr.execute(sql)
+            curr_move_line = self.env.cr.fetchall()[0]
+
             bank_account_id = move_line.payment_mode_id.fixed_journal_id.bank_account_id
 
             if not bank_account_id:
@@ -98,11 +102,15 @@ class AccountMoveLine(models.Model):
 
             # Instrução de Juros
             if move_line.payment_mode_id.boleto_interest_perc > 0.0:
-                valor_juros = round(
-                    move_line.debit
-                    * ((move_line.payment_mode_id.boleto_interest_perc / 100) / 30),
-                    precision_account,
-                )
+                # Cálculo Original
+                # valor_juros = round(
+                #     move_line.debit
+                #     * ((move_line.payment_mode_id.boleto_interest_perc / 100) / 30),
+                #     precision_account,
+                # )
+
+                valor_juros = curr_move_line[0]
+
                 instrucao_juros = (
                     "APÓS VENCIMENTO COBRAR R$ %s AO DIA "
                     % (
