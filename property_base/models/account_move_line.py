@@ -109,20 +109,21 @@ class AccountMoveLine(models.Model):
                 #     precision_account,
                 # )
 
-                valor_juros = curr_move_line[0]
+                valor_juros = curr_move_line[0] or 0
 
-                instrucao_juros = (
-                    "APÓS VENCIMENTO COBRAR R$ %s AO DIA "
-                    % (
-                        ("%.2f" % valor_juros).replace(".", ","),
+                if (valor_juros > 0):
+                    instrucao_juros = (
+                        "APÓS VENCIMENTO COBRAR R$ %s AO DIA "
+                        % (
+                            ("%.2f" % valor_juros).replace(".", ","),
+                        )
                     )
-                )
 
-                boleto_cnab_api_data.update(
-                    {
-                        "instrucao3": instrucao_juros,
-                    }
-                )
+                    boleto_cnab_api_data.update(
+                        {
+                            "instrucao3": instrucao_juros,
+                        }
+                    )
 
             # Instrução Multa
             if move_line.payment_mode_id.boleto_fee_perc > 0.0:
