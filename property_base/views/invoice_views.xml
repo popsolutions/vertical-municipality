@@ -25,7 +25,6 @@
 
                         <field name="name"/>
                         <field name="date"/>
-                        <field name="land_id"/>
                         <field name="amount_total"/>
                         <field name="tax_line_ids"/>
                         <field name="state"/>
