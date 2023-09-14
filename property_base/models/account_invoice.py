@@ -134,15 +134,11 @@ class AccountInvoice(models.Model):
         for invoice in self.web_progress_iter(self):
             date_due = invoice.date_due
 
-            if date_due > datetime.strptime('09/08/2023', '%d/%m/%Y').date():
+            if date_due > datetime.strptime('09/10/2023', '%d/%m/%Y').date():
                 raise UserError('Data de vencimento maior que o permitido')
 
             if invoice.state in ("draft", "open"):
-                invoice.write({'state': 'cancel'})
-                invoice.write({'state': 'draft'})
-                invoice.write({'payment_mode_id': False})
-                invoice.write({'state': 'open', 'date_due': date_due})
-                invoice.write({'state': 'paid'})
+                self.env.cr.execute("update account_invoice set state = 'paid' where id = " + str(invoice.id))
 
     @api.multi
     def write(self, values):
