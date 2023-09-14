@@ -39,7 +39,7 @@
             <div style="text-align:left">
               <table style= "width:100%">
                 <tr>
-                  <td><span t-field="o.partner_id.name"/></td>
+                  <td><span t-esc="boletoData['sacado']"/></td>
                   <td style="text-align: right;">
                     <span t-field="o.land_id.module_id.code"/>
                     <span>/</span>

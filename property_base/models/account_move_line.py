@@ -47,7 +47,7 @@ class AccountMoveLine(models.Model):
             precision_account = precision.precision_get("Account")
 
             if move_line.invoice_id.land_id.owner_invoice_id:
-                sacado = move_line.invoice_id.land_id.owner_id.name + ' A/C ' + move_line.invoice_id.land_id.owner_invoice_id.name
+                sacado = move_line.invoice_id.land_id.owner_id.legal_name + ' A/C ' + move_line.invoice_id.land_id.owner_invoice_id.legal_name
             else:
                 sacado = move_line.partner_id.legal_name
 

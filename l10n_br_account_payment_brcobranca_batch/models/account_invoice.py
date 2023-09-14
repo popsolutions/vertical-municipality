@@ -169,6 +169,12 @@ select anomes_text(anomes(pwc.owner_readDate), 3) mesReferencia,
 
             readNext = data[2].strftime('%d/%m/%Y')
 
+            if invoice.land_id.owner_invoice_id:
+                sacado = invoice.land_id.owner_id.legal_name + ' A/C ' + invoice.land_id.owner_invoice_id.legal_name
+            else:
+                sacado = invoice.partner_id.legal_name
+
+
             consumptionJson.update({
                 'mesReferencia': data[0],
                 'nextread_date': readDate,
@@ -198,7 +204,8 @@ select anomes_text(anomes(pwc.owner_readDate), 3) mesReferencia,
                 'date_due_max': data[24].strftime('%d/%m/%Y'),
                 'multa_diaria': data[25],
                 'juros_diario': data[26],
-                'existe_consumo_agua': existe_consumo_agua
+                'existe_consumo_agua': existe_consumo_agua,
+                'sacado': sacado
             })
         else:
             consumptionJson.update({
@@ -230,7 +237,8 @@ select anomes_text(anomes(pwc.owner_readDate), 3) mesReferencia,
                 'date_due_max': '',
                 'multa_diaria': '',
                 'juros_diario': '',
-                'existe_consumo_agua': False
+                'existe_consumo_agua': False,
+                'sacado': ''
             })
 
         query = '''
