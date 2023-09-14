@@ -155,18 +155,21 @@ class IrMailServer(models.Model):
         message_id = super(IrMailServer, self).send_email(message, mail_server_id, smtp_server,
                    smtp_port, smtp_user, smtp_password, smtp_encryption, smtp_debug, smtp_session)
 
-        def getKey(key: str):
-            key = key.upper()
+        try:
+            def getKey(key: str):
+                key = key.upper()
 
-            for val in message._headers:
-                if str(val[0]).upper() == key:
-                    return val[1]
+                for val in message._headers:
+                    if str(val[0]).upper() == key:
+                        return val[1]
 
-        email_to = getKey('to')
-        invoice_id = getKey('X-Odoo-Objects')
-        invoice_id = ''.join(filter(str.isdigit, invoice_id)) #Extrair apenas os dígitos
+            email_to = getKey('to')
+            invoice_id = getKey('X-Odoo-Objects')
+            invoice_id = ''.join(filter(str.isdigit, invoice_id or '')) #Extrair apenas os dígitos
 
-        _logger.info('### envio email/fatura:' + email_to + '/' + invoice_id)
+            _logger.info('### envio email/fatura:' + email_to + '/' + invoice_id)
+        except:
+            pass
 
         return message_id
 
