@@ -13,7 +13,7 @@
     'author': "PopSolutions",
     'website': "https://www.popsolutions.co",
     'category': 'Uncategorized',
-    'version': '12.0.0.1.8',
+    'version': '12.0.0.1.9',
     'depends': [
         'account', 'l10n_br_account_payment_order', 'mail'
     ],
@@ -33,6 +33,7 @@
         'views/res_partner_views.xml',
         'views/invoice_views.xml',
         'views/wizard_views.xml',
+        'views/report_invoice.xml',
         'security/ir.model.access.csv',
         'data/ir_cron.xml',
         'demo/demo.xml'
