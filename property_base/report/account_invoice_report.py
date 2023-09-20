@@ -88,7 +88,7 @@ class AccountInvoiceReport(models.Model):
             , vpl.zone_code
             , vpl.zone_name          
             , cre.occurrence_date
-            , coalesce(cre.real_payment_date, ap.payment_date) real_payment_date
+            , case when ai.state in ('paid', 'in_payment') then coalesce(cre.real_payment_date, payment_date) else null end real_payment_date
         """
         return select_str
 
