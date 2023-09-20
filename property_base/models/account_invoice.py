@@ -31,6 +31,7 @@ class AccountInvoice(models.Model):
     )
 
     date_due_initial = fields.Date(string='Due Date Initial')
+    date_payment = fields.Date(string='Data de pagamento(Sisa)')
 
     # Usado para deixar invisivel o botão
     # Imprimir Boleto, quando não for o caso
@@ -244,8 +245,12 @@ class AccountInvoice(models.Model):
 
             payment_date = payment.date
 
-            if self.state == 'in_payment':
-                payment_date = self.cnab_payment_occurrence_date()
+            # if self.state == 'in_payment':
+            if (self.payment_mode_id.id == 1): #cnab
+                payment_date_temp = self.cnab_payment_occurrence_date()
+                if payment_date_temp:
+                    payment_date = payment_date_temp
+
 
             payment_vals.append({
                 'name': payment.name,
@@ -276,5 +281,8 @@ class AccountInvoice(models.Model):
         self.env.cr.execute(sql)
         res = self.env.cr.fetchone()
 
-        return res[0]
+        if res == None:
+            return None
+        else:
+            return res[0]
 
