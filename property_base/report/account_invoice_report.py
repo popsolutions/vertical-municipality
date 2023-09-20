@@ -88,7 +88,7 @@ class AccountInvoiceReport(models.Model):
             , vpl.zone_code
             , vpl.zone_name          
             , cre.occurrence_date
-            , cre.real_payment_date
+            , coalesce(cre.real_payment_date, ap.payment_date) real_payment_date
         """
         return select_str
 
@@ -96,7 +96,9 @@ class AccountInvoiceReport(models.Model):
         from_str = super()._from()
         from_str += """
             left join l10n_br_cnab_return_event cre on cre.invoice_id = ai.id AND cre.occurrences::text = '06-Liquidação Normal *'::text 
-            left join vw_property_land vpl on vpl.id = ai.land_id 
+            left join vw_property_land vpl on vpl.id = ai.land_id
+            left join account_invoice_payment_rel aipr on aipr.invoice_id = ai.id
+            left join account_payment ap on ap.id = aipr.payment_id             
         """
         return from_str
 
@@ -124,5 +126,6 @@ class AccountInvoiceReport(models.Model):
             , vpl.zone_id
             , vpl.zone_code
             , vpl.zone_name
+            , ap.payment_date
         """
         return group_by_str
