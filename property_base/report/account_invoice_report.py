@@ -39,6 +39,7 @@ class AccountInvoiceReport(models.Model):
 
     transmit_method_id = fields.Integer(string='Método transmissão-Id')
     transmit_method_name = fields.Char(string='Método transmissão-Nome')
+    transmit_method_simnao = fields.Char(string='Método transmissão-Sim/Não')
     anomes_vencimento_real = fields.Char(string='Ano/Mês vencimento Real')
 
     def _select(self):
@@ -67,6 +68,7 @@ class AccountInvoiceReport(models.Model):
             , sub.real_payment_date
             , sub.transmit_method_id
             , sub.transmit_method_name
+            , case when sub.transmit_method_id = 4 then 'Não transmite' else 'Transmite' end transmit_method_simnao
             , sub.anomes_vencimento_real
         """
         return select_str
