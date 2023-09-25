@@ -39,6 +39,7 @@ class AccountInvoiceReport(models.Model):
 
     transmit_method_id = fields.Integer(string='Método transmissão-Id')
     transmit_method_name = fields.Char(string='Método transmissão-Nome')
+    anomes_vencimento_real = fields.Char(string='Ano/Mês vencimento Real')
 
     def _select(self):
         select_str = super()._select()
@@ -66,6 +67,7 @@ class AccountInvoiceReport(models.Model):
             , sub.real_payment_date
             , sub.transmit_method_id
             , sub.transmit_method_name
+            , sub.anomes_vencimento_real
         """
         return select_str
 
@@ -96,6 +98,7 @@ class AccountInvoiceReport(models.Model):
             , case when ai.state in ('paid', 'in_payment') then coalesce(cre.real_payment_date, payment_date, ai.date_payment) else null end real_payment_date
             , ai.transmit_method_id
             , coalesce(tm."name", 'indefinido') transmit_method_name
+            , ail.anomes_vencimento anomes_vencimento_real
         """
         return select_str
 
@@ -137,5 +140,6 @@ class AccountInvoiceReport(models.Model):
             , ap.payment_date
             , ai.transmit_method_id
             , tm."name"
+            , ail.anomes_vencimento
         """
         return group_by_str
