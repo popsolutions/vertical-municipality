@@ -37,6 +37,9 @@ class AccountInvoiceReport(models.Model):
         ('cancel', 'Cancelled')
     ], string='Invoice Status', readonly=True)
 
+    transmit_method_id = fields.Integer(string='Método transmissão-Id')
+    transmit_method_name = fields.Char(string='Método transmissão-Nome')
+
     def _select(self):
         select_str = super()._select()
         select_str += """
@@ -61,6 +64,8 @@ class AccountInvoiceReport(models.Model):
             , sub.zone_name            
             , sub.occurrence_date
             , sub.real_payment_date
+            , sub.transmit_method_id
+            , sub.transmit_method_name
         """
         return select_str
 
@@ -89,6 +94,8 @@ class AccountInvoiceReport(models.Model):
             , vpl.zone_name          
             , cre.occurrence_date
             , case when ai.state in ('paid', 'in_payment') then coalesce(cre.real_payment_date, payment_date, ai.date_payment) else null end real_payment_date
+            , ai.transmit_method_id
+            , coalesce(tm."name", 'indefinido') transmit_method_name
         """
         return select_str
 
@@ -98,7 +105,8 @@ class AccountInvoiceReport(models.Model):
             left join l10n_br_cnab_return_event cre on cre.invoice_id = ai.id AND cre.occurrences::text = '06-Liquidação Normal *'::text 
             left join vw_property_land vpl on vpl.id = ai.land_id
             left join account_invoice_payment_rel aipr on aipr.invoice_id = ai.id
-            left join account_payment ap on ap.id = aipr.payment_id             
+            left join account_payment ap on ap.id = aipr.payment_id
+            left join transmit_method tm on tm.id = ai.transmit_method_id             
         """
         return from_str
 
@@ -127,5 +135,7 @@ class AccountInvoiceReport(models.Model):
             , vpl.zone_code
             , vpl.zone_name
             , ap.payment_date
+            , ai.transmit_method_id
+            , tm."name"
         """
         return group_by_str
