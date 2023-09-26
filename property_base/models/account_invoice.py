@@ -36,14 +36,14 @@ class AccountInvoice(models.Model):
     # Usado para deixar invisivel o botão
     # Imprimir Boleto, quando não for o caso
     payment_method_code = fields.Char(related="payment_mode_id.payment_method_id.code")
-    transmit_method_simnao = fields.Char(string='Transmite Sim/Não', compute='_compute_transmit_method_simnao', store=True)
+    # transmit_method_simnao = fields.Char(string='Transmite Sim/Não', compute='_compute_transmit_method_simnao')
 
-    def _compute_transmit_method_simnao(self):
-        for rec in self:
-            if rec.transmit_method_id.id == 4:
-                rec.transmit_method_simnao = 'Não'
-            else:
-                rec.transmit_method_simnao = 'Sim'
+    # def _compute_transmit_method_simnao(self):
+    #     for rec in self:
+    #         if rec.transmit_method_id.id == 4:
+    #             rec.transmit_method_simnao = 'Não'
+    #         else:
+    #             rec.transmit_method_simnao = 'Sim'
 
     def gera_boleto_pdf(self):
         file_pdf = self.file_boleto_pdf_id
