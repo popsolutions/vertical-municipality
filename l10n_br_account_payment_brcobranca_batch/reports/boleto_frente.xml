@@ -46,7 +46,7 @@
               <th style="background-color: white;">Proprietário</th>
               <th style="background-color: white;">Vencimento</th>
               <th style="background-color: white;">Total a Pagar</th>
-              <th style="background-color: white;">Seu código</th>
+<!--              <th style="background-color: white;">Seu código</th>-->
             </tr>
             <tr>
               <td style="border: 1px solid white; border-radius:8pt; background-color: silver; border-spacing: 3px;">
@@ -63,9 +63,9 @@
                       t-field-options='{"widget": "monetary", "display_currency": "o.currency_id"}'/>
 
               </td>
-              <td style="border: 1px solid white; border-radius:8pt; background-color: silver; border-spacing: 3px;">
-                <t t-esc="o.partner_id.id"/>
-              </td>
+<!--              <td style="border: 1px solid white; border-radius:8pt; background-color: silver; border-spacing: 3px;">-->
+<!--                <t t-esc="o.partner_id.id"/>-->
+<!--              </td>-->
             </tr>
           </table>
 
