@@ -38,7 +38,7 @@ class PaymentOrder(models.Model):
                 #   floatToStrCnab('2.44', 12) => '000000000244'
                 #   floatToStrCnab('2.4' , 12) => '000000000240'
                 #   floatToStrCnab('2.4' ,  5) => '00240'
-                return "{:.2f}".format(val).replace('.', '').zfill(strSize)
+                return "{:.2f}".format(val or 0).replace('.', '').zfill(strSize)
 
             if index == 1:
                 fileStr = line + '\n'
