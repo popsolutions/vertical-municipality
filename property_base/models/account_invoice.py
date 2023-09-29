@@ -380,3 +380,15 @@ class AccountInvoice(models.Model):
                 })
         return action
 
+    @api.multi
+    @api.returns('self', lambda value: value.id)
+    def copy(self, default=None):
+        res = super(AccountInvoice, self).copy(default=default)
+
+        i = 0
+
+        while i < len(self.invoice_line_ids):
+          res.invoice_line_ids[i].anomes_vencimento = self.invoice_line_ids[i].anomes_vencimento
+          i += 1
+
+        return res
