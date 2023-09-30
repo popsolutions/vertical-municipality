@@ -385,6 +385,9 @@ class AccountInvoice(models.Model):
     def copy(self, default=None):
         res = super(AccountInvoice, self).copy(default=default)
 
+        res.date_invoice = self.date_invoice
+        res.date_due = self.date_due
+
         i = 0
 
         while i < len(self.invoice_line_ids):
