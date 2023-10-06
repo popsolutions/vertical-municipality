@@ -284,7 +284,8 @@ class AccountInvoice(models.Model):
     select cre.occurrence_date
       from l10n_br_cnab_return_event cre 
              join l10n_br_cnab_return_log crl on crl.id = cre.cnab_return_log_id
-     where cre.invoice_id = """ + str(self.id)
+     where cre.invoice_id = """ + str(self.id) + """
+       and cre.occurrences = '06-Liquidação Normal *'"""
 
         self.env.cr.execute(sql)
         res = self.env.cr.fetchone()
