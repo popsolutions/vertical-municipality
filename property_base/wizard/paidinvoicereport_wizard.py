@@ -122,7 +122,7 @@ select row_to_json(t)::varchar invoices_sum
             if tipocob__automatico_boleto_dinheiro_Label != '':
                 tipocob__automatico_boleto_dinheiro_Label += ', '
 
-            tipocob__automatico_boleto_dinheiro_Label = 'Boleto'
+            tipocob__automatico_boleto_dinheiro_Label += 'Boleto'
 
         if self.tipocobranca_debitoautomatico:
             if tipocob__automatico_boleto_dinheiro_in != '':
