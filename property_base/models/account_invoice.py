@@ -392,7 +392,17 @@ class AccountInvoice(models.Model):
         i = 0
 
         while i < len(self.invoice_line_ids):
-          res.invoice_line_ids[i].anomes_vencimento = self.invoice_line_ids[i].anomes_vencimento
-          i += 1
+            j = 0
+            while j < len(res.invoice_line_ids):
+                if ((res.invoice_line_ids[j].product_id.id == self.invoice_line_ids[i].product_id.id)
+                  and (res.invoice_line_ids[j].name == self.invoice_line_ids[i].name)
+                  and (res.invoice_line_ids[j].land_id.id == self.invoice_line_ids[i].land_id.id)
+                  and (res.invoice_line_ids[j].price_total == self.invoice_line_ids[i].price_total)
+                  and (res.invoice_line_ids[j].anomes_vencimento == 0)):
+                    res.invoice_line_ids[j].anomes_vencimento = self.invoice_line_ids[i].anomes_vencimento
+                    break
+                j += 1
+
+            i += 1
 
         return res
