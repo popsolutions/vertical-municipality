@@ -54,13 +54,16 @@
               <spam style="text-align: center">ASSOCIAÇÃO DOS AMIGOS DA RIVIERA DE SÃO LOURENÇO</spam>
             </div>
             <br/>
-            <div style="font-size: 14px;font-weight: bold;text-align: left">
-              <spam align="left">RELAÇÃO DE BAIXADOS - DATA DE MOVIMENTAÇÃO:
-                <t t-esc="form_data['date_from']" t-options='{"widget": "date","format": "dd-MM-yyyy"}'/>
-                <span>à</span>
-                <t t-esc="form_data['date_to']" t-options='{"widget": "date","format": "dd-MM-yyyy"}'/>
+            <div style="font-size: 14px;font-weight: bold;text-align: center">
+              <spam align="center">RELAÇÃO DE BAIXADOS
               </spam>
             </div>
+            <div style="font-size: 14px;font-weight: bold;text-align: center">
+              <spam align="left">
+                <t t-esc="label_relatorio"></t>
+              </spam>
+            </div>
+
             <br/>
           </div>
         </div>
@@ -245,13 +248,12 @@
 
         <div style="margin-top:32px">
           <div style="text-align: right">
-            <spam style="text-align: center">Tipo COB = B = Cobrança por Boleto = A = Cobrança por Débito Automáticco
+            <spam style="text-align: center">Tipo COB,  B = Cobrança por Boleto, A = Cobrança por Débito Automático, D = Cobrança por Dinheiro
             </spam>
           </div>
         </div>
 
       </div>
     </t>
-    <!--    </t>-->
   </template>
 </odoo>

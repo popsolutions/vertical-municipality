@@ -1,24 +1,27 @@
+from datetime import datetime
 
 from odoo.exceptions import ValidationError
-from datetime import datetime, timedelta
 
 from odoo import models, fields, api
 import json
-from odoo import sql_db
-from psycopg2.extras import RealDictCursor
 
 class AppointmentReportWizard(models.TransientModel):
     _name = "property_base.paidinvoicereport.wizard"
     _description = "Print Paid invoices"
 
-    date_from = fields.Date(string='Date from', required=False)
-    date_to = fields.Date(string='Date to', required=False)
+    datapagamento_real_inicio = fields.Date(string='Início', required=False)
+    datapagamento_real_fim = fields.Date(string='Fim', required=False)
+    datapagamento_ocorrencia_inicio = fields.Date(string='Início', required=False)
+    datapagamento_ocorrencia_fim = fields.Date(string='Fim', required=False)
+    datapagamento_vencimento_inicio = fields.Date(string='Início', required=False)
+    datapagamento_vencimento_fim = fields.Date(string='Fim', required=False)
+
+    tipocobranca_dinheiro = fields.Boolean(string='Dinheiro', default=True)
+    tipocobranca_boleto = fields.Boolean(string='Boleto', default=True)
+    tipocobranca_debitoautomatico = fields.Boolean(string='Débito Automático', default=True)
 
     def button_action_menu_rel_cont_invoices_paid(self):
         domain = []
-
-        date_from = self.date_from
-        date_to = self.date_to
 
         sql = """
 select row_to_json(t)::varchar invoices_sum
@@ -77,16 +80,72 @@ select row_to_json(t)::varchar invoices_sum
                       v.land,
                       v.product_name,
                       v.price_total,
-                      v.price_total_juros) t)) res_lines
+                      v.price_total_juros) t order by v.real_payment_date, v.land)) res_lines
                  from vw_report_contab_baixados v
-                where v.occurrence_date between'""" + date_from.strftime('%Y/%m/%d') + """' and '""" + date_to.strftime('%Y/%m/%d') + """'
+                where true"""
+
+        labelRelatorio = ''
+        def addSql(nomeCampo: str, data:datetime, label: str ):
+            nonlocal sql
+            nonlocal labelRelatorio
+
+            if data:
+                sql = sql + " and " + nomeCampo + "'" + data.strftime('%Y-%m-%d') + "'"
+
+                if labelRelatorio != '':
+                    labelRelatorio += ', '
+
+                labelRelatorio += label + data.strftime('%d/%m/%Y')
+
+        addSql('v.occurrence_date >= ', self.datapagamento_ocorrencia_inicio, ' Data de OCORRÊNCIA do PAGAMENTO Apartir de ')
+        addSql('v.occurrence_date <= ', self.datapagamento_ocorrencia_fim, ' Data OCORRÊNCIA do PAGAMENTO Até ')
+
+        addSql('v.real_payment_date >= ', self.datapagamento_real_inicio, ' Data REAL do PAGAMENTO Apartir de ')
+        addSql('v.real_payment_date <= ', self.datapagamento_real_fim, ' Data REAL do PAGAMENTO  Até ')
+
+        addSql('v.due_date >= ', self.datapagamento_vencimento_inicio, ' Data de VENCIMENTO Apartir de ')
+        addSql('v.due_date <= ', self.datapagamento_vencimento_fim, ' Data de VENCIMENTO Até ')
+
+        tipocob__automatico_boleto_dinheiro_in = ''
+        tipocob__automatico_boleto_dinheiro_Label = ''
+
+        if self.tipocobranca_dinheiro:
+            tipocob__automatico_boleto_dinheiro_in += "'D'"
+            tipocob__automatico_boleto_dinheiro_Label = 'Dinheiro'
+
+        if self.tipocobranca_boleto:
+            if tipocob__automatico_boleto_dinheiro_in != '':
+                tipocob__automatico_boleto_dinheiro_in += ", "
+
+            tipocob__automatico_boleto_dinheiro_in += "'B'"
+
+            if tipocob__automatico_boleto_dinheiro_Label != '':
+                tipocob__automatico_boleto_dinheiro_Label += ', '
+
+            tipocob__automatico_boleto_dinheiro_Label = 'Boleto'
+
+        if self.tipocobranca_debitoautomatico:
+            if tipocob__automatico_boleto_dinheiro_in != '':
+                tipocob__automatico_boleto_dinheiro_in += ", "
+
+            tipocob__automatico_boleto_dinheiro_in += "'A'"
+            if tipocob__automatico_boleto_dinheiro_Label != '':
+                tipocob__automatico_boleto_dinheiro_Label += ', '
+            tipocob__automatico_boleto_dinheiro_Label += 'Débito Automático'
+
+        labelRelatorio += ', Tipo de Cobrança: ' + tipocob__automatico_boleto_dinheiro_Label
+
+        sql = sql + " and v.tipocob__automatico_boleto_dinheiro in (" + tipocob__automatico_boleto_dinheiro_in + ")"
+
+        sql = sql + """
                 group by
                       v.res_id,
                       v.res_name
+                order by
+                      v.res_name                      
              ) t
         ) t
 """
-        # where v.real_payment_date between'""" + date_from.strftime('%Y/%m/%d') + """' and '""" + date_to.strftime('%Y/%m/%d') + """'
 
         self.env.cr.execute(sql)
         invoices_cr = self.env.cr.fetchall()
@@ -95,8 +154,9 @@ select row_to_json(t)::varchar invoices_sum
 
         data = {
             'doc_model': 'action_paidinvoice_report',
-            'date_from':date_from,
-            'date_to':date_to,
+            'date_from': self.datapagamento_real_inicio,
+            'date_to': self.datapagamento_real_fim,
+            'label_relatorio': labelRelatorio,
             'form_data': self.read()[0],
             'appointments': appointments
         }
