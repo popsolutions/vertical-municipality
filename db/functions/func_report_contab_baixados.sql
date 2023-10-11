@@ -48,7 +48,7 @@ select ail.invoice_id,
                ail.anomes_vencimento,
                ail.product_id,
                pt."name" product_name,
-               ail.price_total,
+               sum(ail.price_total) price_total,
                sum(case when ail.product_id = 7 then ail.price_total else 0 end) total_agua,
                sum(case when ail.product_id = 1 then ail.price_total else 0 end) total_contribuicaomensal,
                sum(case when ail.product_id in (13, 11) then ail.price_total else 0 end) total_taxas,
@@ -62,8 +62,7 @@ select ail.invoice_id,
                ail.partner_id,
                ail.anomes_vencimento,
                ail.product_id,
-               pt."name",
-               ail.price_total
+               pt."name"
        ) ail
        left join
        (select ail.invoice_id,
