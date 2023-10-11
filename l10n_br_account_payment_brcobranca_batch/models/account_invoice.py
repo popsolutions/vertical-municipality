@@ -146,8 +146,8 @@ select anomes_text(anomes(pwc.owner_readDate), 3) mesReferencia,
                  on pwc.unified_property_id_orid = aci.land_id 
                 and pwc.anomes = ''' + str(anomesRef) + '''
          inner join property_land pl
-                 on pl.id = aci.land_id,
-      vw_property_settings_monthly_last psm,
+                 on pl.id = aci.land_id
+      left join vw_property_settings_monthly psm on psm.year_month = anomes(aci.date_due),
       func_account_invoice_JurosDiario(aci.id) jurosdiario
 '''
 
