@@ -20,15 +20,15 @@ tipocobranca varchar(1)
  )
  LANGUAGE sql
 AS $function$
---versao=2023-07-20
+--versao=2023-10-13
 select ail.invoice_id,
        ail.anomes_vencimento,
        ail.product_id,
        ail.product_name,
        ail_total.price_total price_total_sum,
        ail_juros.price_total total_juros,
-       coalesce(round(ail.price_total / (ail_total.price_total - ail_juros.price_total), 2), 0) jurosproporcional_perc,
-       coalesce(round((ail.price_total / (ail_total.price_total - ail_juros.price_total)) * ail_juros.price_total, 2), 0) jurosproporcional_valor,
+       coalesce(round(ail.price_total / (ail_total.price_total - ail_juros.price_total), 3), 0) jurosproporcional_perc,
+       coalesce(round((ail.price_total / (ail_total.price_total - ail_juros.price_total)) * ail_juros.price_total, 3), 0) jurosproporcional_valor,
        0::numeric juros_areaverde,
        ail.price_total,
        ail.total_agua,
@@ -55,7 +55,7 @@ select ail.invoice_id,
                sum(case when ail.product_id = 10 then ail.price_total else 0 end) total_areaverde,
                sum(case when ail.product_id = 9 then ail.price_total else 0 end) total_taxacaptacao
           from account_invoice_line ail join product_template pt on pt.id = ail.product_id
-         where true
+         where ail.invoice_id = _invoice_id
            and ail.product_id <> 12
          group by
                ail.invoice_id,
@@ -65,19 +65,26 @@ select ail.invoice_id,
                pt."name"
        ) ail
        left join
-       (select ail.invoice_id,
-               ail.anomes_vencimento,
-               sum(ail.price_total) price_total
-          from account_invoice_line ail join product_template pt on pt.id = ail.product_id
-         group by ail.invoice_id, ail.anomes_vencimento
-       ) ail_total on ail_total.invoice_id = ail.invoice_id and ail_total.anomes_vencimento = ail.anomes_vencimento
+       (select aims.valorpago price_total
+          from vw_account_invoice_move_sum aims
+         where aims.invoice_id = _invoice_id
+       ) ail_total on true
        left join
-       (select ail.invoice_id,
-               ail.anomes_vencimento,
-               sum(ail.price_total) price_total
-          from account_invoice_line ail join product_template pt on pt.id = ail.product_id
-         where ail.product_id = 12
-         group by ail.invoice_id, ail.anomes_vencimento
-       ) ail_juros on ail_juros.invoice_id = ail.invoice_id and ail_juros.anomes_vencimento = ail.anomes_vencimento
+       (select sum(t.price_total) price_total
+          from (select ail.invoice_id,
+                       ail.anomes_vencimento,
+                       sum(ail.price_total) price_total
+                  from account_invoice_line ail join product_template pt on pt.id = ail.product_id
+                 where ail.product_id = 12
+                   and ail.invoice_id = _invoice_id
+                 group by ail.invoice_id, ail.anomes_vencimento
+                 union all
+                select aims.invoice_id,
+                       anomes(aims.invoice_date_due) anomes_vencimento,
+                       aims.valorjuros_cnab::numeric price_total
+                  from vw_account_invoice_move_sum aims
+                 where aims.invoice_id = _invoice_id
+               ) t
+       ) ail_juros on true
    where ail.invoice_id = _invoice_id;
-$function$
+$function$;
