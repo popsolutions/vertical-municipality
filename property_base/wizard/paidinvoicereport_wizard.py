@@ -129,6 +129,13 @@ select row_to_json(t)::varchar invoices_sum
         addAnoMesReferencia('v.anomes_vencimento >= ', self.anomesreferenciavenc_inicio, ' Ano/Mês REFERÊNCIA VENCTO Apartir dê ')
         addAnoMesReferencia('v.anomes_vencimento <= ', self.anomesreferenciavenc_fim, ' Ano/Mês REFERÊNCIA VENCTO Até ')
 
+        if self.fatura_id != 0:
+            sql = sql + " and v.invoice_id = " + str(self.fatura_id)
+            labelRelatorioAdd(' ID FATURA = ' + str(self.fatura_id))
+
+        if (labelRelatorio == ''):
+            raise UserError('É preciso preencher ao menos 1 parâmetro de data ou id Fatura')
+
         tipocob__automatico_boleto_dinheiro_in = ''
         tipocob__automatico_boleto_dinheiro_Label = ''
 
@@ -159,11 +166,6 @@ select row_to_json(t)::varchar invoices_sum
         labelRelatorioAdd(', Tipo de Cobrança: ' + tipocob__automatico_boleto_dinheiro_Label)
 
         sql = sql + " and v.tipocob__automatico_boleto_dinheiro in (" + tipocob__automatico_boleto_dinheiro_in + ")"
-
-        if self.fatura_id != 0:
-            sql = sql + " and v.invoice_id = " + str(self.fatura_id)
-            labelRelatorioAdd(' ID FATURA = ' + str(self.fatura_id))
-
 
         sql = sql + """
                 group by
