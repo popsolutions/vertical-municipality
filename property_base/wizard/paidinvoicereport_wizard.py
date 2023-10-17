@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from odoo.exceptions import ValidationError
+from odoo.exceptions import UserError
 
 from odoo import models, fields, api
 import json
@@ -15,6 +15,9 @@ class AppointmentReportWizard(models.TransientModel):
     datapagamento_ocorrencia_fim = fields.Date(string='Fim', required=False)
     datapagamento_vencimento_inicio = fields.Date(string='Início', required=False)
     datapagamento_vencimento_fim = fields.Date(string='Fim', required=False)
+    anomesreferenciavenc_inicio = fields.Char(string='Início', required=False)
+    anomesreferenciavenc_fim = fields.Char(string='Fim', required=False)
+    fatura_id = fields.Integer(string='Fatura_id', required=False)
 
     tipocobranca_dinheiro = fields.Boolean(string='Dinheiro', default=True)
     tipocobranca_boleto = fields.Boolean(string='Boleto', default=True)
@@ -85,17 +88,20 @@ select row_to_json(t)::varchar invoices_sum
                 where true"""
 
         labelRelatorio = ''
+
+        def labelRelatorioAdd(val: str):
+            nonlocal labelRelatorio
+            if labelRelatorio != '':
+                labelRelatorio += ', '
+
+            labelRelatorio += val
+
         def addSql(nomeCampo: str, data:datetime, label: str ):
             nonlocal sql
-            nonlocal labelRelatorio
 
             if data:
                 sql = sql + " and " + nomeCampo + "'" + data.strftime('%Y-%m-%d') + "'"
-
-                if labelRelatorio != '':
-                    labelRelatorio += ', '
-
-                labelRelatorio += label + data.strftime('%d/%m/%Y')
+                labelRelatorioAdd(label + data.strftime('%d/%m/%Y'))
 
         addSql('v.occurrence_date >= ', self.datapagamento_ocorrencia_inicio, ' Data de OCORRÊNCIA do PAGAMENTO Apartir de ')
         addSql('v.occurrence_date <= ', self.datapagamento_ocorrencia_fim, ' Data OCORRÊNCIA do PAGAMENTO Até ')
@@ -105,6 +111,23 @@ select row_to_json(t)::varchar invoices_sum
 
         addSql('v.due_date >= ', self.datapagamento_vencimento_inicio, ' Data de VENCIMENTO Apartir de ')
         addSql('v.due_date <= ', self.datapagamento_vencimento_fim, ' Data de VENCIMENTO Até ')
+
+        def addAnoMesReferencia(nomeCampo: str, anoMesReferencia: str, label: str):
+            if anoMesReferencia:
+                if ((len(anoMesReferencia) != 7) or
+                    (not anoMesReferencia.__contains__('/'))
+                   ):
+                    raise UserError('Ano/Mês de referência precisa estar no formato AAAA/MM, exemplo: 2023/10')
+
+                anoMesRefereenciaInt = anoMesReferencia.replace('/', '')
+
+                nonlocal sql
+
+                sql = sql + " and " + nomeCampo + anoMesRefereenciaInt
+                labelRelatorioAdd(label + anoMesReferencia)
+
+        addAnoMesReferencia('v.anomes_vencimento >= ', self.anomesreferenciavenc_inicio, ' Ano/Mês REFERÊNCIA VENCTO Apartir dê ')
+        addAnoMesReferencia('v.anomes_vencimento <= ', self.anomesreferenciavenc_fim, ' Ano/Mês REFERÊNCIA VENCTO Até ')
 
         tipocob__automatico_boleto_dinheiro_in = ''
         tipocob__automatico_boleto_dinheiro_Label = ''
@@ -133,9 +156,14 @@ select row_to_json(t)::varchar invoices_sum
                 tipocob__automatico_boleto_dinheiro_Label += ', '
             tipocob__automatico_boleto_dinheiro_Label += 'Débito Automático'
 
-        labelRelatorio += ', Tipo de Cobrança: ' + tipocob__automatico_boleto_dinheiro_Label
+        labelRelatorioAdd(', Tipo de Cobrança: ' + tipocob__automatico_boleto_dinheiro_Label)
 
         sql = sql + " and v.tipocob__automatico_boleto_dinheiro in (" + tipocob__automatico_boleto_dinheiro_in + ")"
+
+        if self.fatura_id != 0:
+            sql = sql + " and v.invoice_id = " + str(self.fatura_id)
+            labelRelatorioAdd(' ID FATURA = ' + str(self.fatura_id))
+
 
         sql = sql + """
                 group by

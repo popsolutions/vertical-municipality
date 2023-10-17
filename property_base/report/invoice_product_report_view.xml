@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+
+    <record id="view_invoice_product_report_tree_info" model="ir.ui.view">
+      <field name="name">invoice.product.report.tree.info</field>
+      <field name="model">invoice.product.report</field>
+      <field name="arch" type="xml">
+        <tree string="Faturas/Produtos">
+          <field name="invoice_id"/>
+          <field name="land"/>
+          <field name="res_id"/>
+          <field name="land_id"/>
+          <field name="res_name"/>
+          <field name="product_name"/>
+          <field name="module_code"/>
+          <field name="block_code"/>
+          <field name="lot_code"/>
+          <field name="referencia" invisible="1"/>
+          <field name="total_agua"/>
+          <field name="total_contribuicaomensal"/>
+          <field name="total_taxas"/>
+          <field name="jurosproporcional_valor"/>
+          <field name="total_areaverde"/>
+          <field name="juros_areaverde"/>
+          <field name="total_taxacaptacao"/>
+          <field name="descontos"/>
+          <field name="occurrence_date"/>
+          <field name="tipocobranca"/>
+          <field name="real_payment_date"/>
+          <field name="due_date"/>
+          <field name="anomes_vencimento"/>
+        </tree>
+      </field>
+    </record>
+
+    <record id="view_invoice_product_report_pivot" model="ir.ui.view">
+      <field name="name">invoice.product.report.pivot</field>
+      <field name="model">invoice.product.report</field>
+      <field name="arch" type="xml">
+        <pivot string="Faturas/Produtos" disable_linking="True">
+          <field name="product_id" type="row"/>
+          <field name="product_id" type="col"/>
+          <field name="product_name" type="measure"/>
+          <field name="due_date" type="col"/>
+          <field name="price_total" type="measure"/>
+        </pivot>
+      </field>
+    </record>
+
+    <record id="view_invoice_product_report_graph" model="ir.ui.view">
+      <field name="name">invoice.product.report.graph</field>
+      <field name="model">invoice.product.report</field>
+      <field name="arch" type="xml">
+        <graph string="Análise de Fatura">
+          <field name="product_id"/>
+          <field name="price_total" type="measure"/>
+        </graph>
+      </field>
+    </record>
+
+    <!--    &lt;!&ndash; Custom reports (aka filters) &ndash;&gt;-->
+    <!--    <record id="filter_invoice_report_salespersons" model="ir.filters">-->
+    <!--        <field name="name">By Salespersons</field>-->
+    <!--        <field name="model_id">invoice.product.report</field>-->
+    <!--        <field name="domain">[]</field>-->
+    <!--        <field name="user_id" eval="False"/>-->
+    <!--        <field name="context">{'group_by': ['date:month', 'user_id']}</field>-->
+    <!--    </record>-->
+    <!--    <record id="filter_invoice_product" model="ir.filters">-->
+    <!--        <field name="name">By Product</field>-->
+    <!--        <field name="model_id">invoice.product.report</field>-->
+    <!--        <field name="domain">[]</field>-->
+    <!--        <field name="user_id" eval="False"/>-->
+    <!--        <field name="context">{'group_by': ['date:month', 'product_id'], 'set_visible':True, 'residual_invisible':True}</field>-->
+    <!--    </record>-->
+    <!--    <record id="filter_invoice_product_category" model="ir.filters">-->
+    <!--        <field name="name">By Product Category</field>-->
+    <!--        <field name="model_id">invoice.product.report</field>-->
+    <!--        <field name="domain">[]</field>-->
+    <!--        <field name="user_id" eval="False"/>-->
+    <!--        <field name="context">{'group_by': ['date:month', 'product_id'], 'residual_invisible':True}</field>-->
+    <!--    </record>-->
+    <!--    <record id="filter_invoice_refund" model="ir.filters">-->
+    <!--        <field name="name">By Credit Note</field>-->
+    <!--        <field name="model_id">invoice.product.report</field>-->
+    <!--        <field name="domain">[('type', '=', 'out_refund')]</field>-->
+    <!--        <field name="user_id" eval="False"/>-->
+    <!--        <field name="context">{'group_by': ['date:month', 'user_id']}</field>-->
+    <!--    </record>-->
+    <!--    <record id="filter_invoice_country" model="ir.filters">-->
+    <!--        <field name="name">By Country</field>-->
+    <!--        <field name="model_id">invoice.product.report</field>-->
+    <!--        <field name="domain">[]</field>-->
+    <!--        <field name="user_id" eval="False"/>-->
+    <!--        <field name="context">{'group_by': ['date:month', 'country_id']}</field>-->
+    <!--    </record>-->
+
+    <record id="view_invoice_product_report_search" model="ir.ui.view">
+      <field name="name">invoice.product.report.search</field>
+      <field name="model">invoice.product.report</field>
+      <field name="arch" type="xml">
+        <search string="Análise de Fatura">
+          <field name="due_date"/>
+          <!--                <separator/>-->
+          <!--                <field name="res_id" operator="child_of"/>-->
+          <!--                <field name="product_id" />-->
+          <!--                <group expand="1" string="Group By">-->
+          <!--                    <filter string="Partner" name="res_id" context="{'group_by':'res_id','residual_visible':True}"/>-->
+          <!--                    <filter string="Product Category" name="category_product" context="{'group_by':'product_id','residual_invisible':True}"/>-->
+          <!--                    <filter string="Status" name="status" context="{'group_by':'state'}"/>-->
+          <!--                    <separator orientation="vertical" />-->
+          <!--                    <filter string="Date" name="due_date" context="{'group_by':'date'}"/>-->
+          <!--                    <filter string="Due Date" name="duemonth" context="{'group_by':'date_due:month'}"/>-->
+          <!--                </group>-->
+        </search>
+      </field>
+    </record>
+
+    <record id="action_invoice_product_report" model="ir.actions.act_window">
+      <field name="name">Análise de Fatura</field>
+      <field name="res_model">invoice.product.report</field>
+      <field name="view_type">form</field>
+      <field name="view_mode">tree,graph,pivot</field>
+      <!--        <field name="context">{'search_default_current':1, 'search_default_customer':1, 'group_by':[], 'group_by_no_leaf':1, 'search_default_year': 1}</field>-->
+      <field name="search_view_id" ref="view_invoice_product_report_search"/>
+      <field name="help">From this report, you can have an overview of the amount invoiced to your customers. The search
+        tool can also be used to personalise your Invoices reports and so, match this analysis to your needs.
+      </field>
+      <field name="arch" type="xml">
+        <tree string="Invoice Line">
+          <field name="invoice_id"/>
+          <field name="land"/>
+          <field name="res_id"/>
+          <field name="res_name"/>
+          <field name="product_name"/>
+          <field name="module_code"/>
+          <field name="block_code"/>
+          <field name="lot_code"/>
+          <field name="referencia" invisible="1"/>
+          <field name="total_agua"/>
+          <field name="total_contribuicaomensal"/>
+          <field name="total_taxas"/>
+          <field name="jurosproporcional_valor"/>
+          <field name="total_areaverde"/>
+          <field name="juros_areaverde"/>
+          <field name="total_taxacaptacao"/>
+          <field name="descontos"/>
+          <field name="occurrence_date"/>
+          <field name="tipocobranca"/>
+          <field name="real_payment_date"/>
+          <field name="due_date"/>
+          <field name="anomes_vencimento"/>
+        </tree>
+      </field>
+    </record>
+
+    <menuitem name="Faturas/Produtos" action="action_invoice_product_report" id="menu_action_invoice_product_report_all"
+              parent="account.account_reports_management_menu" sequence="16"/>
+
+  </data>
+</odoo>
