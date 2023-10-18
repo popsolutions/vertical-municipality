@@ -126,6 +126,7 @@
             <field name="arch" type="xml">
                 <search>
                     <field name="name"/>
+<!--                    <field name="id"/>-->
                     <field name="owner_id"/>
                     <field name="owner_invoice_id"/>
                     <field name="unified_property_id"/>

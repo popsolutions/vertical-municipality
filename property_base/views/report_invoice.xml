@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+<!--  Arquivo duplicade de ./odoo/addons/account/views/report_invoice.xml-->
+
     <data>
         <template id="report_invoice_document_property">
             <t t-call="web.external_layout">
