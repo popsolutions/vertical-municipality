@@ -45,6 +45,15 @@ class AccountInvoice(models.Model):
     #         else:
     #             rec.transmit_method_simnao = 'Sim'
 
+    @api.model
+    def create(self, vals):
+        if not vals['origin']:
+            land_id = self.env['property.land'].search([('id', '=', vals['land_id'])])[0]
+            vals['origin'] = "{}/{}".format(datetime.strptime(vals['date_due'], '%Y-%m-%d').strftime('%m-%Y'), land_id.name)
+
+        res = super().create(vals)
+        return res
+
     def gera_boleto_pdf(self):
         file_pdf = self.file_boleto_pdf_id
         self.file_boleto_pdf_id = False
