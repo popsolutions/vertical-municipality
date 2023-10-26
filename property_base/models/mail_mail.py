@@ -152,6 +152,23 @@ class IrMailServer(models.Model):
         #OVERRIDE-popsolutions - ./odoo/custom-addons/riviera/social/mail_tracking/models/ir_mail_server.py
         #OVERRIDE-popsolutions - Override apenas para acrescentar no log o email/fatura enviado.
 
+        def removeNameEmail():
+            #task:336 - Remover o nome que acompanha o e-mail. Por exemplo, se estiver:
+            #  To:'"Pedro"<pedro@gmail.com>'
+            # deverá ficar apenas: '<pedro@gmail.com>'
+            i = 0
+            while i < len(message._headers):
+                val = message._headers[i]
+
+                if str(val[0]).upper() == 'TO':
+                    print(message._headers[i])
+                    message._headers[i] = (val[0], val[1].split('<')[1].split('>')[0])
+                    print(message._headers[i])
+
+                i += 1
+
+        removeNameEmail();
+
         message_id = super(IrMailServer, self).send_email(message, mail_server_id, smtp_server,
                    smtp_port, smtp_user, smtp_password, smtp_encryption, smtp_debug, smtp_session)
 
