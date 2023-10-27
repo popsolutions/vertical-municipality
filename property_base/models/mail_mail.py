@@ -1,3 +1,4 @@
+from bin.miniterm import key_description
 from odoo import api, models, registry, SUPERUSER_ID
 from odoo import tools
 from odoo.tools.safe_eval import safe_eval
@@ -152,6 +153,20 @@ class IrMailServer(models.Model):
         #OVERRIDE-popsolutions - ./odoo/custom-addons/riviera/social/mail_tracking/models/ir_mail_server.py
         #OVERRIDE-popsolutions - Override apenas para acrescentar no log o email/fatura enviado.
 
+        def alterKey(key: str, newValue: str):
+            #Altera um valor em message._headers
+            i = 0
+            key = key.upper()
+
+            while i < len(message._headers):
+                val = message._headers[i]
+
+                if str(val[0]).upper() == key:
+                    message._headers[i] = (val[0], newValue)
+                    break
+
+                i += 1
+
         def removeNameEmail():
             #task:336 - Remover o nome que acompanha o e-mail. Por exemplo, se estiver:
             #  To:'"Pedro"<pedro@gmail.com>'
@@ -161,13 +176,13 @@ class IrMailServer(models.Model):
                 val = message._headers[i]
 
                 if str(val[0]).upper() == 'TO':
-                    print(message._headers[i])
                     message._headers[i] = (val[0], val[1].split('<')[1].split('>')[0])
-                    print(message._headers[i])
+                    break
 
                 i += 1
 
         removeNameEmail();
+        alterKey('Reply-To', 'dcr@rivierasl.com.br')
 
         message_id = super(IrMailServer, self).send_email(message, mail_server_id, smtp_server,
                    smtp_port, smtp_user, smtp_password, smtp_encryption, smtp_debug, smtp_session)
