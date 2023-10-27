@@ -28,7 +28,6 @@
         'views/property_land_zone.xml',
         'views/account_portal_templates.xml',
         'report/paidinvoice_report.xml',
-        'report/invoice_product_report_view.xml',
         'wizard/paidinvoicereport_wizard.xml',
         'views/menu.xml',
         'views/res_partner_views.xml',
