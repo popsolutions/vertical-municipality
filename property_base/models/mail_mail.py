@@ -1,10 +1,5 @@
-from bin.miniterm import key_description
-from odoo import api, models, registry, SUPERUSER_ID
-from odoo import tools
+from odoo import api, models
 from odoo.tools.safe_eval import safe_eval
-from odoo.tools.misc import split_every
-import threading
-from binascii import Error as binascii_error
 import re
 
 _image_dataurl = re.compile(r'(data:image/[a-z]+?);base64,([a-z0-9+/\n]{3,}=*)\n*([\'"])(?: data-filename="([^"]*)")?', re.I)
