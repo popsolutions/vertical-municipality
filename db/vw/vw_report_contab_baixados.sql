@@ -16,7 +16,7 @@ select ims.invoice_id,
     t.price_total,
     ims.datapagamento_ocorrencia_max occurrence_date,
     ims.datapagamento_real_max real_payment_date,
-    t.tipocobranca,
+    t.tipocobranca ims.tipocob__automatico_boleto_dinheiro::character varying,
     '' observacao,
     ims.invoice_date_due due_date,
     t.anomes_vencimento,
@@ -36,5 +36,5 @@ select ims.invoice_id,
      join res_partner rp on rp.id = ai.partner_id
      left join func_report_contab_baixados(ims.invoice_id) t on true
    where ( true or
-         ('' = 'versão-2023-10-09')
+         ('' = 'versão-2023-11-16-task-345')
          );
