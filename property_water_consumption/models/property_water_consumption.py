@@ -2,6 +2,10 @@ from odoo import api, fields, models
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from odoo.exceptions import Warning as UserError
+import logging
+
+logger = logging.getLogger(__name__)
+
 
 class PropertyWaterConsumption(models.Model):
 
@@ -130,6 +134,17 @@ select pwc.id
         for pwc_currentyearmonth_owner in self.web_progress_iter(pwc_currentyearmonth_owners):
             pwc = self.env['property.water.consumption'].search([('id', '=', pwc_currentyearmonth_owner)])
             pwc.unified_watter_consumption_process()
+
+    def watter_consumption_reprocess(self):
+        for water in self.web_progress_iter(self):
+            water.state = 'draft'
+            water._compute_consumption()
+            water._compute_total()
+            water.state = 'pending'
+            water.write({'total': water.total})
+            logger.info('Reprocessado "' + water.land_id.name + '" para total: "' + str(
+                    water.total) + '"')
+
     def unified_watter_consumption_process(self):
         for rec_self in self.web_progress_iter(self):
             date_yearmonth = rec_self.date.strftime("%Y%m")
