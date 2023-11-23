@@ -19,7 +19,7 @@ AS SELECT t.seq_land_anomes,
     t.write_date,
     t.photo,
     t.hydrometer_number
-   FROM ( SELECT row_number() OVER (PARTITION BY pwc.land_id, (anomes(pwc.date::timestamp without time zone))) AS seq_land_anomes,
+   FROM ( SELECT row_number() OVER (PARTITION BY pwc.land_id, (anomes(pwc.date::timestamp without time zone)) order by date desc) AS seq_land_anomes,
             anomes(pwc.date::timestamp without time zone) AS anomes,
             pwc.id,
             pwc.land_id,
