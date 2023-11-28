@@ -5,8 +5,9 @@ AS $function$
   declare _invoice_id int;
   declare _reseted_count int = 0;
 begin
-/*versao:2023.11.28
- task-353-17D 16 - Processar boletos atrasado não está respeitando limpo com mensagem
+/*versao:2023.11.28.1
+ task:353-17D 16 - Processar boletos atrasado não está respeitando limpo com mensagem
+ task:174-Ao acumular fatura, não está trazendo taxa de Juros
  Parâmetros:
    _anomes_destino => Ano/Mês onde serão acumuladas as faturas anteriores que estão em aberto.
    _fixed_invoice_id => usado para processar um invoice individualmente
@@ -69,7 +70,7 @@ begin
                                  ) invoice_destino,
                                  account_invoice invoice_origem,
                                  account_invoice_line invoice_line_origem
-                                   join product_product pdt on pdt.id = invoice_line_origem.product_id and pdt.default_code in ('PROPWC', 'PROPTAX', 'PROPGT')
+                                   join product_product pdt on pdt.id = invoice_line_origem.product_id and pdt.default_code not in ('PROPCM', 'PROPJU', 'PROPMJ', 'PROPMU', 'PROPTP')
                            where invoice_origem.land_id = invoice_destino.land_id
                              and invoice_origem.state = 'open'
                              and anomes(invoice_origem.date_due) in (anm.anomes_1, anm.anomes_2)
