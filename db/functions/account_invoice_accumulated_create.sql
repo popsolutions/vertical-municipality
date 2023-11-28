@@ -5,7 +5,8 @@ AS $function$
   declare _invoice_id int;
   declare _reseted_count int = 0;
 begin
-/*versao:2022.07.07
+/*versao:2023.11.28
+ task-353-17D 16 - Processar boletos atrasado não está respeitando limpo com mensagem
  Parâmetros:
    _anomes_destino => Ano/Mês onde serão acumuladas as faturas anteriores que estão em aberto.
    _fixed_invoice_id => usado para processar um invoice individualmente
@@ -76,7 +77,7 @@ begin
                                  (select 1
                                     from account_invoice aci_3
                                    where aci_3.land_id = invoice_destino.land_id
-                                     and anomes(aci_3.date_due) = anm.anomes_3
+                                     and anomes(aci_3.date_due) <= anm.anomes_3
                                      and aci_3.state = 'open'
                                    limit 1
                                  )/*Este filtro irá eliminar o account_invoice caso tenha mais que 3 meses de boletos vencido para o cliente("Limpo com mensagem")*/)
