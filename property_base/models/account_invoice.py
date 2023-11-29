@@ -329,10 +329,12 @@ class AccountInvoice(models.Model):
                 )
             )
             if not applicable_lines:
-                raise UserError(_(
-                    'No Payment Line created for invoice %s because '
-                    'it already exists or because this invoice is '
-                    'already paid.') % inv.number)
+                logger.info('### Falha ao gerar cnab para fatura id: ' + str(inv.id))
+                continue
+                # raise UserError(_(
+                #     'No Payment Line created for invoice %s because '
+                #     'it already exists or because this invoice is '
+                #     'already paid.') % inv.number)
             payment_modes = applicable_lines.mapped('payment_mode_id')
             if not payment_modes:
                 raise UserError(_(
