@@ -60,6 +60,7 @@ class PaymentOrder(models.Model):
                                        from account_payment_line apl
                                       where apl.own_number = '""" + str(int(nossoNumero)) + """'
                                         and apl.order_id = """ + str(self.id) + """)
+                   and b.active
                  order by id desc
                  limit 1"""
 
