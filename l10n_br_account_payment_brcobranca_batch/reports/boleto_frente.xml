@@ -501,6 +501,23 @@
                     </tr>
                   </t>
                 </table>
+                <table t-if="boletoData['consumoMaiorOuIgual50PercMesAnterior']"  style="font-size: 18px; text-align:center; width:100%; margin-top:16px; padding:1px;">
+                    <tr>
+                      <td>
+                        ALERTA. CONSUMO ATUAL 50% MAIOR OU IGUAL
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        NO VERIFICADO NO MÊS ANTERIOR. AJUDE-NOS
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        A PRESERVAR OS RECUSROS NATURAIS
+                      </td>
+                    </tr>
+                </table>
                 <div  t-if="boletoData['exibir_mensagem_debito_automatico']" style="font-size: 16px; text-align:center; width:100%; margin-top:16px; padding:1px;" name="description">
                     <strong>DÉBITO AUTOMÁTICO</strong>
                 </div>
