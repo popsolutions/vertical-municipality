@@ -262,10 +262,13 @@ select anomes_text(pwc.anomes, 2) anomes,
         qtdeItens = 0
 
         consumoMaiorOuIgual50PercMesAnterior = False
-
-        if (len(consumptions) > 0):
-            if (consumptions[0][1] > 0):
-                consumoMaiorOuIgual50PercMesAnterior = (((consumptionJson['consumption'] / consumptions[0][1]) - 1) * 100) >= 50
+        try:
+            if (len(consumptions) > 0):
+                if (consumptions[0][1] > 0):
+                    consumoMaiorOuIgual50PercMesAnterior = (((consumptionJson['consumption'] / consumptions[0][1]) - 1) * 100) >= 50
+        except:
+            consumoMaiorOuIgual50PercMesAnterior = False
+            pass
 
         consumptionJson.update({'consumoMaiorOuIgual50PercMesAnterior':consumoMaiorOuIgual50PercMesAnterior})
 
