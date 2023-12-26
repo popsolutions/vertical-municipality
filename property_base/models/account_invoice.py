@@ -37,6 +37,11 @@ class AccountInvoice(models.Model):
     # Imprimir Boleto, quando não for o caso
     payment_method_code = fields.Char(related="payment_mode_id.payment_method_id.code")
     # transmit_method_simnao = fields.Char(string='Transmite Sim/Não', compute='_compute_transmit_method_simnao')
+    payment_mode_id = fields.Many2one(
+        comodel_name='account.payment.mode', string="Payment Mode",
+        ondelete='restrict',
+        required=True,
+        readonly=True, states={'draft': [('readonly', False)]})
 
     # def _compute_transmit_method_simnao(self):
     #     for rec in self:
