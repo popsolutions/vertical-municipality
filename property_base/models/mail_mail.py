@@ -171,7 +171,11 @@ class IrMailServer(models.Model):
                 val = message._headers[i]
 
                 if str(val[0]).upper() == 'TO':
-                    message._headers[i] = (val[0], val[1].split('<')[1].split('>')[0])
+                    try:
+                        new_value = (val[0], val[1].split('<')[1].split('>')[0])
+                        message._headers[i] = new_value
+                    except:
+                        pass
                     break
 
                 i += 1
