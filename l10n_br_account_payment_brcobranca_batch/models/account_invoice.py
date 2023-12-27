@@ -205,7 +205,8 @@ select anomes_text(anomes(pwc.owner_readDate), 3) mesReferencia,
                 'multa_diaria': data[25],
                 'juros_diario': data[26],
                 'existe_consumo_agua': existe_consumo_agua,
-                'sacado': sacado
+                'sacado': sacado,
+                'module_code': invoice.land_id.module_id.code
             })
         else:
             consumptionJson.update({
@@ -238,7 +239,8 @@ select anomes_text(anomes(pwc.owner_readDate), 3) mesReferencia,
                 'multa_diaria': '',
                 'juros_diario': '',
                 'existe_consumo_agua': False,
-                'sacado': ''
+                'sacado': '',
+                'module_code': ''
             })
 
         query = '''

@@ -521,6 +521,10 @@
                 <div  t-if="boletoData['exibir_mensagem_debito_automatico']" style="font-size: 16px; text-align:center; width:100%; margin-top:16px; padding:1px;" name="description">
                     <strong>DÉBITO AUTOMÁTICO</strong>
                 </div>
+
+                <div t-if="boletoData['module_code']=='1'" style="font-size: 16px; text-align:center; width:100%; margin-top:16px; padding:1px;" name="description">
+                    <strong>Módulo 1: Reconhecida a urbanização conforme Decreto Municipal 4.301 de 07/11/23.</strong>
+                </div>
               </td>
             </tr>
 
