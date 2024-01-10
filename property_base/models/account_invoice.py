@@ -170,7 +170,7 @@ class AccountInvoice(models.Model):
             invoice_state = values.get('state') or invoice.state
 
             if invoice_state == 'draft':
-                if 'date_due_initial' in values:
+                if 'date_due_initial' in values and values['date_due_initial']:
                     invoice_date_due_initial = datetime.strptime(values['date_due_initial'], '%Y-%m-%d').date()
                 else:
                     invoice_date_due_initial = invoice.date_due_initial
