@@ -6,7 +6,11 @@ CREATE OR REPLACE FUNCTION public.account_invoice_accumulated_reset(_anomes inte
 AS $function$
   declare _invoice_id int;
   declare _reseted_count int = 0;
-BEGIN
+begin
+  /*
+  versao:2024.01.08
+    Task:371-Juros para fatura acumulada paga no mês seguinte - 28A 8
+  */
   FOR _invoice_id in
     select aci.id invoice_id
       from account_invoice aci
@@ -16,7 +20,7 @@ BEGIN
              where acl.invoice_id = aci.id
                and acl.account_invoice_line_id_accumulated_ref is not null
            ))
-       and anomes(aci.date_due) = _anomes
+       and anomes(coalesce(aci.date_due_initial, aci.date_due)) = _anomes
        and aci.state in ('draft', 'open')
        and ((_fixed_invoice_id = 0) or (aci.id = _fixed_invoice_id))  /****Usar apenas para fixar invoice_id****/
   loop
