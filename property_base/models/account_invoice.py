@@ -216,9 +216,11 @@ class AccountInvoice(models.Model):
                         jsonTxPermanencia.append({'invoice_line_tax_ids': [(6, 0, product_product.taxes_id.ids)]})
 
                     if invoice_line_TxPermanencia.id:
-                        if (valTxPermanencia != invoice_line_TxPermanencia.price_unit):
+                        if valTxPermanencia == 0:
+                            invoice_line_TxPermanencia.unlink() # Já existe uma taxa de permanência porém o valor calculado foi 0. Então vou deletar o que já existe
+                        elif (valTxPermanencia != invoice_line_TxPermanencia.price_unit):
                             invoice_line_TxPermanencia.write(jsonTxPermanencia)
-                    else:
+                    elif valTxPermanencia > 0:
                         invoice_line_TxPermanencia.create(jsonTxPermanencia)
 
             return super(AccountInvoice, self).write(values)
