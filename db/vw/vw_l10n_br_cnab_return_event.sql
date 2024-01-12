@@ -1,6 +1,7 @@
 create or replace view vw_l10n_br_cnab_return_event as
 select cre.id,
        cre.cnab_return_log_id,
+       cre.create_date dt_importacao,
        cre.real_payment_date,
        cre.occurrence_date,
        cre.due_date,
@@ -31,8 +32,7 @@ select cre.id,
        ai.state,
        rp.name partner_name,
        rp.street_name,
-       rp.city_id,
-       cre.create_date dt_importacao
+       rp.city_id
   from l10n_br_cnab_return_event cre
        LEFT JOIN account_invoice ai ON ai.id = cre.invoice_id
        LEFT JOIN res_partner rp ON rp.id = ai.partner_id
