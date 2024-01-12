@@ -31,7 +31,8 @@ select cre.id,
        ai.state,
        rp.name partner_name,
        rp.street_name,
-       rp.city_id
+       rp.city_id,
+       cre.create_date dt_importacao
   from l10n_br_cnab_return_event cre
        LEFT JOIN account_invoice ai ON ai.id = cre.invoice_id
        LEFT JOIN res_partner rp ON rp.id = ai.partner_id
