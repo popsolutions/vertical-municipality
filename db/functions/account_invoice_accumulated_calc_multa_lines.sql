@@ -1,3 +1,5 @@
+-- DROP FUNCTION public.account_invoice_accumulated_calc_multa_lines(int4, int4);
+
 CREATE OR REPLACE FUNCTION public.account_invoice_accumulated_calc_multa_lines(_invoice_id integer, _anomesdestino integer DEFAULT NULL::integer)
  RETURNS TABLE(anomes_vencimento integer, anomes_destino integer, pric_total numeric, index_coin_account_invoice_line numeric, index_coin_account_invoice numeric, valoratualizado numeric, correcaomonetaria numeric, anomesdif integer, multapercentual numeric, multa numeric, juros numeric, multa_juros_correcao numeric, multa_juros_correcao_round2 numeric, pric_total_final numeric)
  LANGUAGE plpgsql
@@ -7,6 +9,8 @@ AS $function$
   declare isFaturaNova bool;
 begin
 /*
+  versao:2024.01.15
+    task:374 - Juros de fatura antiga (Mais que 3 meses de vencimento) precisa considerar o índice para account_invoice_line e não para o vencimento da fatura
   versao:2023.04.17
   Esta função retorna o valor a ser cobrado de juros de um boleto
 
@@ -14,7 +18,6 @@ begin
   Quando o parâmetro <_anomesDestino> NÃO é informado(Faturas novas, 2 últimos mesea), estou querendo saber o juros dos itens da fatura (account_invoice_line) que foram acumulados de meses anteriores
 */
   isFaturaAntiga = _anomesDestino is not null;
-  isFaturaNova = not isFaturaAntiga; --_anomesDestino is null
 
   for anomes_vencimento,
       anomes_destino,
@@ -28,13 +31,12 @@ begin
               t.index_coin_account_invoice_line,
               t.index_coin_account_invoice,
               t.pric_total / t.index_coin_account_invoice_line * t.index_coin_account_invoice valoratualizado
-         from (select case when isFaturaNova then ail.anomes_vencimento else anomes(ai.date_due) end anomes_vencimento,
+         from (select ail.anomes_vencimento,
                       anomes(ai.date_due) anomes_destino,
                       sum(ail.price_total) pric_total,
                       (select psm.index_coin
                          from vw_property_settings_monthly psm
-                        where year_month = case when isFaturaNova then ail.anomes_vencimento else anomes(ai.date_due) end
---                        where year_month = ail.anomes_vencimento
+                        where year_month = ail.anomes_vencimento
                       ) index_coin_account_invoice_line,
                       psm2.index_coin index_coin_account_invoice
                  from account_invoice_line ail
