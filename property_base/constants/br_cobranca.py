@@ -54,10 +54,10 @@ def get_brcobranca_bank(bank_account_id, payment_method_code):
     return bank_name_brcobranca
 
 
-def get_brcobranca_api_url():
-    # brcobranca_api_url = self.env['ir.config_parameter'].get_param('BRCOBRANCA_API_URL')
+def get_brcobranca_api_url(self):
+    brcobranca_api_url = self.env['ir.config_parameter'].get_param('BRCOBRANCA_API_URL')
     # brcobranca_api_url = os.environ.get("BRCOBRANCA_API_URL")
-    brcobranca_api_url = 'http://boleto.popsolutions.co'
+    # brcobranca_api_url = 'http://boleto.popsolutions.co'
 
     if not brcobranca_api_url:
         raise UserError(
