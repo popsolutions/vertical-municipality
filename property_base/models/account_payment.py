@@ -2,8 +2,6 @@
 from odoo import _, fields, models, api
 from odoo.exceptions import Warning as UserError
 
-logger = logging.getLogger(__name__)
-
 class AccountPayment(models.Model):
     #/odoo/addons/account/models/account_payment.py
     _inherit = "account.payment"
