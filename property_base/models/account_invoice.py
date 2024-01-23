@@ -43,6 +43,8 @@ class AccountInvoice(models.Model):
         required=True,
         readonly=True, states={'draft': [('readonly', False)]})
 
+    accumulated = fields.Boolean(string="Fatura acumulada")
+
     # def _compute_transmit_method_simnao(self):
     #     for rec in self:
     #         if rec.transmit_method_id.id == 4:
@@ -140,10 +142,159 @@ class AccountInvoice(models.Model):
 
     @api.model
     def action_account_invoice_accumulated(self):
+        self.invoice_accumulated()
+
+    def invoices_get_monthly_last_draft(self):
+        #Retorna lista contendo as faturas DRAFT que estão no mês de processamento (vw_property_settings_monthly_last)
+        sql = """
+        select anomes_primeirodia(anomes(invoice_date_due))::date primeirodia,
+               anomes_ultimodia(anomes(invoice_date_due))::date ultimodia
+          from vw_property_settings_monthly_last            
+                """
+        self.env.cr.execute(sql)
+        dts = self.env.cr.fetchall()[0]
+        primeirodia = dts[0]
+        ultimodia = dts[1]
+
+        invoices = self.search([('land_id', '!=', False),
+                                ('state', 'in', ['draft']),
+                                ('date_due', '>=', primeirodia),
+                                ('date_due', '<=', ultimodia),
+                                ])
+        return invoices
+
+    def invoice_accumulated__all_monthly_last(self):
+        #Processa todas as faturas DRAFT referente ao mês de processamento (vw_property_settings_monthly_last)
+        invoices = self.invoices_get_monthly_last_draft()
+        for invoice in self.web_progress_iter(invoices, msg="Processando faturas acumuladas"):
+            invoice.invoice_accumulated()
+
+    def invoice_accumulated(self):
+        #Esta rotina:
+        #  1. Processa a rotina que acumula faturas anteriores na fatura atual (self)
+        #  2. Chama a rotina de processamento de baixas nas faturas de origem (action_account_invoice_acumular_emoutra_fatura)
+
+        for invoice in self.web_progress_iter(self):
+            if (invoice.state !=  'draft'):
+                raise UserError(
+                    _(
+                        "O Boleto id: " + str(invoice.id) + ", " + invoice.origin + ", não pode ser processado pois não está no estado RASCUNHO"
+                    )
+                )
+
+        for invoice in self.web_progress_iter(self):
+            if invoice.state == "draft":
+                logger.info("##ACUMULAR Efetuado processo de acúmulo das 2 últimas faturas para a fatura Fatura %s", str(invoice.id))
+                invoice.cancelaracumulados()  # Cancela qualquer pagamento que esteja apontando para a fatura atual (fatura de destino) de acumulo
+                self.env.cr.execute('select account_invoice_accumulated_create_invoice_id(' + str(invoice.id) + ')')
+                invoice.invoice_baixa_nas_origens()
+                logger.info("Efetuado processo de acúmulo das 2 últimas faturas para a fatura Fatura %s", str(invoice.id))
+
+    @api.model
+    def action_account_invoice_remover_boletos_acumulados(self):
+        #Esta rotina:
+        #  1. Remove da fatura atual itens (invoice_account_lines) que sejam acumulados
+        #  2. Remove a baixa AOF na fatura de origem (Fatura que foi acumulada em Self)
+        for invoice in self.web_progress_iter(self):
+            if (invoice.state !=  'draft'):
+                raise UserError(
+                    _(
+                        "O Boleto id: " + str(invoice.id) + ", " + invoice.origin + ", não pode ser processado pois não está no estado RASCUNHO"
+                    )
+                )
+
         for invoice in self.web_progress_iter(self):
             if invoice.state in ("draft", "open"):
-                self.env.cr.execute('select account_invoice_accumulated_create_invoice_id(' + str(invoice.id) + ')')
-                logger.info("Efetuado processo de acúmulo das 2 últimas faturas para a fatura Fatura %s", str(invoice.id))
+                invoice.cancelaracumulados()  # Cancela qualquer pagamento que esteja apontando para a fatura atual (fatura de destino) de acumulo
+                self.env.cr.execute('select account_invoice_accumulated_reset(null, ' + str(invoice.id) + ')')
+                logger.info("Removido boletos acumulados para a fatura Fatura %s", str(invoice.id))
+
+
+    def invoice_baixa_nas_origens(self):
+        #Verifica se em self(DESTINO) existem faturas acumuladas(ORIGEM) e aplicar as baixas(AOF- Acumulado outra fatura) nelas (Baixa nas origens)
+
+        for invoice in self:
+            #O Sql abaixo retorna a fatura de origem de acúmulo e seu respectivo valor de acúmulo + juros
+            sql= """
+    select ail_ref.invoice_id invoice_id_ref, 
+           sum(ail_ref.price_total) +
+           coalesce(
+           (select sum(ail.price_total) multa_juros_correcao
+             from account_invoice_line ail
+            where ail.invoice_id = ail_ref.invoice_id
+              and ail.product_id = 12 /*Multas, Juros, Correção Monetária*/
+           ), 0) value_ref           
+      from account_invoice ai 
+           join account_invoice_line ail on ail.invoice_id = ai.id
+           join account_invoice_line ail_ref on ail_ref.id = ail.account_invoice_line_id_accumulated_ref
+     where true 
+       and ai.id = """ + str(invoice.id) + """
+       and ail.account_invoice_line_id_accumulated_ref is not null
+     group by ail_ref.invoice_id
+            """
+            self.env.cr.execute(sql)
+            cur_invoices = self.env.cr.fetchall()
+
+            for cur_invoice in cur_invoices:
+                invoice_id_ref = cur_invoice[0]
+                value_ref = cur_invoice[1]
+
+                invoice_origem = self.env['account.invoice'].search([('id', '=', invoice_id_ref)], limit=1)[0]
+                invoice_origem.acumularemoutrafatura(invoice.id, value_ref)
+
+
+    def acumularemoutrafatura(self, faturadestino_id, pay_amount):
+        #Nomenclaturas:
+        #  Fatura de ORIGEM => Fatura de vencimento anterior que teve seus itens transferidos(acumulados)em outra fatura(nata fatura de destino)
+        #  Fatura de DESTINO => Fatura que recebeu os itens acumulados da fatura de ORIGEM
+        #  * O Self é a Fatura de ORIGEM
+        #Esta rotina:
+        #   1. Recebe a fatura de ORIGEM (Self) e efetua nela o pagamento "Acumulado em outra fatura"
+        #   2. Muda o campo account_invoice.accumulated para TRUE
+        #
+        #Parâmetros:
+        #  faturadestino_id => Id da fatura de destino que recebeu a fatura acumulada
+        #  pay_amount => Valor a ser dado baixa na fatura de ORIGEM
+
+        for invoice in self.web_progress_iter(self):
+            if invoice.state == 'open':
+                journal = self.env['account.journal'].search([('code', '=', 'AOF')], limit=1)
+                new_invoice_state = ''
+
+                if not journal:
+                    raise UserError(
+                        _(
+                            "Diário AOF(Acumulado em outra Fatura) não encontrado"
+                        )
+                    )
+
+                payment_vals = self._prepare_payment_vals(journal, pay_amount=pay_amount)
+                payment_vals.update({'accumulated_invoice_id': faturadestino_id})
+
+                if (self._context.get('active_ids')):
+                    self._context.update({'active_id': invoice.id})
+                    self._context.update({'active_ids': [invoice.id]})
+
+                try:
+                    # A mudança das variaveis de contexto active_id e active_ids é para que não dê problema
+                    #   em /odoo/addons/account/models/account_payment.py.default_get
+                    #   pois apesar de eu estar trabalhando com invoice, a rotina internamente entende que estou trabalhando com faturadestino_id(que é de fato a fatura que está ativa em tela)
+                    payment = self.env['account.payment'].create(payment_vals)
+                    payment.post()
+                finally:
+                    if (self._context.get('active_ids')):
+                        self._context.update({'active_id': faturadestino_id})
+                        self._context.update({'active_ids': [faturadestino_id]})
+
+                invoice.write({'accumulated': True})
+
+    def cancelaracumulados(self):
+        #  Cancela todos os pagamentos com code=AOF(Acumulado em outra fatura) que tem como referência a fatura self
+        for invoice in self.web_progress_iter(self):
+            account_payments = self.env['account.payment'].search(['&', ('accumulated_invoice_id', '=', invoice.id), ('state', '=', 'posted')])
+
+            for account_payment in account_payments:
+                account_payment.cancel()
 
     def account_invoice_create_fees_traffic_curcorrection(self):
         for invoice in self.web_progress_iter(self):

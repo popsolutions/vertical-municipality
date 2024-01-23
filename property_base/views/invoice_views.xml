@@ -8,6 +8,9 @@
         <field name="arch" type="xml">
             <xpath expr="//field[@name='date_due']" position="after">
                 <field name="date_due_initial"/>
+                <field name="accumulated">
+                    <attribute name="colors">red</attribute>
+                </field>
             </xpath>
             <xpath expr="//notebook[@colspan='4']//field[@name='invoice_line_ids']//field[@name='product_id']" position="before">
                 <field name="land_id"/>
@@ -32,6 +35,72 @@
                     </group>
                 </page>
             </xpath>
+        </field>
+    </record>
+
+    <record id="account.invoice_tree" model="ir.ui.view">
+    <!--override from ./odoo/addons/account/views/account_invoice_view.xml-->
+        <field name="name">account.invoice.tree</field>
+        <field name="model">account.invoice</field>
+        <field name="arch" type="xml">
+            <tree decoration-info="state == 'draft'" decoration-muted="state == 'cancel'" decoration-danger="accumulated" string="Invoice">
+                <field name="partner_id" groups="base.group_user" string="Cliente"/>
+                <field name="date_invoice" string="Dt. Fatura"/>
+                <field name="number" string="Número"/>
+                <field name="user_id" string="Usuário"/>
+                <field name="date_due" string="Vencimento"/>
+                <field name="origin" string="Documento"/>
+                <field name="amount_total_signed" string="Total" sum="Total"/>
+                <field name="residual_signed" string="Valor Devido" sum="Valor Devido"/>
+                <field name="currency_id" invisible="1"/>
+                <field name="company_currency_id" invisible="1"/>
+                <field name="state"/>
+                <field name="accumulated" string="Acm"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="account.view_account_invoice_filter" model="ir.ui.view">
+    <!--override from ./odoo/addons/account/views/account_invoice_view.xml-->
+        <field name="name">account.invoice.select</field>
+        <field name="model">account.invoice</field>
+        <field name="arch" type="xml">
+            <search string="Search Invoice">
+                <field name="number" string="Invoice" context="{'active_test': False}" filter_domain="['|','|','|', ('number','ilike',self), ('origin','ilike',self), ('reference', 'ilike', self), ('partner_id', 'child_of', self)]"/>
+                <field name="land_id"/>
+                <filter domain="[('user_id','=',uid)]" name="myinvoices" help="Minhas Faturas"/>
+                <separator/>
+                <filter name="draft" string="Rascunho" domain="[('state','=','draft')]"/>
+                <filter name="unpaid" string="Aberto" domain="[('state', 'in', ('open', 'accumulated_open'))]"/>
+                <filter name="in_payment" string="Em Pagamento" domain="[('state', '=', 'in_payment')]"/>
+                <filter name="paid" string="Pago" domain="[('state', '=', 'paid')]"/>
+                <filter name="late" string="Vencidas" domain="['&amp;', ('date_due', '&lt;', time.strftime('%%Y-%%m-%%d')), ('state', '=', 'open')]" help="Overdue invoices, maturity date passed"/>
+                <separator/>
+                <field name="partner_id" operator="child_of"/>
+                <field name="user_id" string="Salesperson" domain="[('share','=', False)]"/>
+                <field name="date" string="Period"/>
+                <separator/>
+                <filter string="Minhas Atividades" name="activities_my"
+                    domain="[('activity_ids.user_id', '=', uid)]"/>
+                <separator/>
+                <filter string="Últimas Atividades" name="activities_overdue"
+                    domain="[('activity_ids.date_deadline', '&lt;', context_today().strftime('%Y-%m-%d'))]"
+                    help="Show all records which has next action date is before today"/>
+                <filter string="Atividades de hoje" name="activities_today"
+                    domain="[('activity_ids.date_deadline', '=', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter string="Atividades Futuras" name="activities_upcoming_all"
+                    domain="[('activity_ids.date_deadline', '&gt;', context_today().strftime('%Y-%m-%d'))
+                    ]"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_by_partner_id" string="Parceiro" context="{'group_by':'commercial_partner_id'}"/>
+                    <filter string="Vendedor" name="Salesperson" context="{'group_by':'user_id'}"/>
+                    <filter name="status" string="Situação" context="{'group_by':'state'}"/>
+                    <filter name="accumulated" string="Acumulado" context="{'group_by':'accumulated'}"/>
+                    <separator/>
+                    <filter string="Data Fatura" name="Data Fatura" context="{'group_by':'date_invoice'}"/>
+                    <filter string="Data Vencimento" name="Data Vencimento" context="{'group_by':'date_due'}"/>
+                </group>
+           </search>
         </field>
     </record>
 

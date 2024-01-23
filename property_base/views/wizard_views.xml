@@ -10,6 +10,7 @@
                     <div>Click on <strong>Create Invoices</strong> to process this month's Invoices</div>
                 </group>
                 <footer>
+<!--                    Criar faturas em lote-->
                     <button name="process_batch_invoices" type="object"
                             string="Create Invoices" class="oe_highlight"/>
                     or
@@ -19,6 +20,24 @@
         </field>
     </record>
 
+    <record model="ir.ui.view" id="property_invoice_wizard_form_view_processar_faturas_acumuladas">
+        <field name="name">property.invoice.wizard.form</field>
+        <field name="model">property.invoice.wizard.processar_faturas_acumuladas</field>
+        <field name="arch" type="xml">
+            <form string="Create Property Invoices">
+                <group>
+                    <div>Clique em <strong>Processar Faturas acumuladas</strong> para processar</div>
+                </group>
+                <footer>
+<!--                    Processar faturas acumuladas-->
+                    <button name="button_processar_faturas_acumuladas" type="object"
+                            string="Processar Faturas Acumuladas" class="oe_highlight"/>
+                    ou
+                    <button special="cancel" string="Cancelar"/>
+                </footer>
+            </form>
+        </field>
+    </record>
 
     <record model="ir.ui.view" id="property_water_consumption_wizard_old_invoices_fees_form_view">
         <field name="name">property.water.consumption.wizard.old.invoices.fees.form</field>
@@ -45,6 +64,13 @@
         <field name="target">new</field>
     </record>
 
+    <record id="property_processar_faturas_acumuladas_action" model="ir.actions.act_window">
+        <field name="name">Processar Faturas Acumuladas</field>
+        <field name="res_model">property.invoice.wizard.processar_faturas_acumuladas</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
     <record id="act_property_old_invoices_fees" model="ir.actions.act_window">
         <field name="name">Process fees on Old Invoices</field>
         <field name="res_model">property.water.consumption.wizard.old.invoices.fees</field>
@@ -52,12 +78,21 @@
         <field name="target">new</field>
     </record>
 
+<!--                    Criar faturas em lote-->
     <menuitem
             id="property_invoices_wizard_menu"
             name="Create Batch Invoices"
             action="property_invoices_wizard"
             parent="property_base.property_wizards_menu"
             sequence="90"/>
+
+<!--                    Processar faturas acumuladas-->
+    <menuitem
+            id="property_processar_faturas_acumuladas_menu"
+            name="Processar Faturas Acumuladas"
+            action="property_processar_faturas_acumuladas_action"
+            parent="property_base.property_wizards_menu"
+            sequence="95"/>
 
     <menuitem
             id="property_old_invoices_fees"
