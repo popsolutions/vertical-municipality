@@ -3,7 +3,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
 import logging
-from odoo import models, api
+from odoo import models, api, _
 
 from ..constants.br_cobranca import DICT_BRCOBRANCA_CURRENCY, get_brcobranca_bank
 from odoo.exceptions import Warning as UserError
@@ -191,4 +191,23 @@ class AccountMoveLine(models.Model):
             wrapped_boleto_list.append(boleto_cnab_api_data)
 
         return wrapped_boleto_list
+
+    def _check_reconcile_validity(self):
+        #Override de /home/mateus/OdooDev/odoo/addons/account/models/account_move.py
+        #Perform all checks on lines
+        company_ids = set()
+        all_accounts = []
+        for line in self:
+            company_ids.add(line.company_id.id)
+            all_accounts.append(line.account_id)
+            if (line.matched_debit_ids or line.matched_credit_ids) and line.reconciled:
+                raise UserError(_('fatura id/seu número: ' + str(line.invoice_id.id) + '-' + line.invoice_id.move_name + ', Propriedade: "' + line.invoice_id.land_id.name + '", nosso número: "' + line.own_number + '"' + ' - Movimentação já reconciliada'))
+        if len(company_ids) > 1:
+            raise UserError(_('To reconcile the entries company should be the same for all entries.'))
+        if len(set(all_accounts)) > 1:
+            raise UserError(_('Entries are not from the same account.'))
+        if not (all_accounts[0].reconcile or all_accounts[0].internal_type == 'liquidity'):
+            raise UserError(_('Account %s (%s) does not allow reconciliation. First change the configuration of this account to allow it.') % (all_accounts[0].name, all_accounts[0].code))
+
+
 
