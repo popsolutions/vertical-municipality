@@ -175,20 +175,28 @@ class AccountInvoice(models.Model):
         #  2. Chama a rotina de processamento de baixas nas faturas de origem (action_account_invoice_acumular_emoutra_fatura)
 
         for invoice in self.web_progress_iter(self):
-            if (invoice.state !=  'draft'):
-                raise UserError(
-                    _(
-                        "O Boleto id: " + str(invoice.id) + ", " + invoice.origin + ", não pode ser processado pois não está no estado RASCUNHO"
-                    )
-                )
+            if invoice.state not in ('draft', 'open'):
+                self.raiseUserError("Não pode ser processado pois não está no estado RASCUNHO ou ABERTO")
 
         for invoice in self.web_progress_iter(self):
-            if invoice.state == "draft":
-                logger.info("##ACUMULAR Efetuado processo de acúmulo das 2 últimas faturas para a fatura Fatura %s", str(invoice.id))
-                invoice.cancelaracumulados()  # Cancela qualquer pagamento que esteja apontando para a fatura atual (fatura de destino) de acumulo
-                self.env.cr.execute('select account_invoice_accumulated_create_invoice_id(' + str(invoice.id) + ')')
-                invoice.invoice_baixa_nas_origens()
-                logger.info("Efetuado processo de acúmulo das 2 últimas faturas para a fatura Fatura %s", str(invoice.id))
+            invoice.invoice_message_post_valorfatura('** Processado rotina "Processaar Boleto atrasado (Acumular)"[INÍCIO]')
+            old_state = invoice.state
+
+            if invoice.state == 'open':
+                invoice.cancel_and_draft()
+
+            logger.info("##ACUMULAR Efetuado processo de acúmulo das 2 últimas faturas para a fatura Fatura %s", str(invoice.id))
+            invoice.cancelaracumulados()  # Cancela qualquer pagamento que esteja apontando para a fatura atual (fatura de destino) de acumulo
+            self.env.cr.execute('select account_invoice_accumulated_create_invoice_id(' + str(invoice.id) + ')')
+            invoice.invoice_baixa_nas_origens()
+
+            if old_state == 'open':
+                #Se a fatura estava open inicialmente, volto o status dela
+                invoice.action_invoice_open()
+
+            invoice.invoice_message_post_valorfaturaFromDatabase('** Processado rotina "Processaar Boleto atrasado (Acumular)"[FIM]')
+
+            logger.info("Efetuado processo de acúmulo das 2 últimas faturas para a fatura Fatura %s", str(invoice.id))
 
     @api.model
     def action_account_invoice_remover_boletos_acumulados(self):
@@ -196,17 +204,26 @@ class AccountInvoice(models.Model):
         #  1. Remove da fatura atual itens (invoice_account_lines) que sejam acumulados
         #  2. Remove a baixa AOF na fatura de origem (Fatura que foi acumulada em Self)
         for invoice in self.web_progress_iter(self):
-            if (invoice.state !=  'draft'):
-                raise UserError(
-                    _(
-                        "O Boleto id: " + str(invoice.id) + ", " + invoice.origin + ", não pode ser processado pois não está no estado RASCUNHO"
-                    )
-                )
+            if invoice.state not in ('draft', 'open'):
+                self.raiseUserError("Não pode ser processado pois não está no estado RASCUNHO ou ABERTO")
 
         for invoice in self.web_progress_iter(self):
             if invoice.state in ("draft", "open"):
+                invoice.invoice_message_post_valorfatura('** Processado rotina "Remover boletos acumulados"[INÍCIO]')
+
+                old_state = invoice.state
+
+                if invoice.state == 'open':
+                    invoice.cancel_and_draft()
+
                 invoice.cancelaracumulados()  # Cancela qualquer pagamento que esteja apontando para a fatura atual (fatura de destino) de acumulo
                 self.env.cr.execute('select account_invoice_accumulated_reset(null, ' + str(invoice.id) + ')')
+
+                if old_state == 'open':
+                    # Se a fatura estava open inicialmente, volto o status dela
+                    invoice.action_invoice_open()
+
+                invoice.invoice_message_post_valorfaturaFromDatabase('** Processado rotina "Remover boletos acumulados" [FIM]')
                 logger.info("Removido boletos acumulados para a fatura Fatura %s", str(invoice.id))
 
 
@@ -596,8 +613,7 @@ class AccountInvoice(models.Model):
             current_state = rec['state']
 
             if rec['state'] == 'open':
-                rec.action_invoice_cancel()
-                rec.write({'state': 'draft'})
+                rec.cancel_and_draft()
 
             if rec['state'] != 'draft':
                 showError('Não foi possível retornar fatura ao Status PROVISORIO')
@@ -612,4 +628,30 @@ class AccountInvoice(models.Model):
 
             if current_state == 'open':
                 rec.action_invoice_open()
-                rec.message_post(body=_('Nosso Número alterado de "' + str(old_move_name or '') + '" para "' + str(rec.move_name or '') + '"'))
+                rec.invoice_message_post_valorfatura('Nosso Número alterado de "' + str(old_move_name or '') + '" para "' + str(rec.move_name or '') + '"')
+
+    def cancel_and_draft(self):
+        for rec in self:
+            rec.action_invoice_cancel()
+            rec.write({'state': 'draft'}) # O Ideal seria rec.action_invoice_draft porém por algum motivo desconhecido em alguns testes a fatura não ficava no status DRAFT
+
+    def invoice_message_post_valorfatura(self, msg):
+        self.invoice_message_post(msg + ' - Valor da Fatura: ' + str(self.amount_total))
+
+    def invoice_message_post_valorfaturaFromDatabase(self, msg):
+        self.invoice_message_post(msg + ' - Valor da Fatura: ' + str(self.invoiceGetAmountValueFromDatabase()))
+
+    def invoice_message_post(self, msg):
+        self.message_post(body=_(msg))
+
+    def raiseUserError(self, msg):
+        raise UserError(
+            _(
+                "Boleto id: " + str(self.id) + ", " + self.origin + ": \n\n" + msg
+            )
+        )
+
+    def invoiceGetAmountValueFromDatabase(self):
+        self.env.cr.execute('select ai.amount_total from account_invoice ai where id = ' + str(self.id))
+        cur_invoices = self.env.cr.fetchone()
+        return cur_invoices[0]
