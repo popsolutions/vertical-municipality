@@ -575,3 +575,41 @@ class AccountInvoice(models.Model):
             i += 1
 
         return res
+
+    def action_account_invoice_limpar_nosso_numerro(self):
+        def showError(msg: str):
+            raise UserError(
+                _(
+                    'Erro na Fatura ' + rec['origin'] + ' ao efetuar Operação Limpar Nosso Número:\n\n' + msg + '\n\nRotina: account_invoice.action_account_invoice_limpar_nosso_numerro'
+                )
+            )
+
+        for rec in self.web_progress_iter(self):
+            if rec['state'] not in ('draft', 'open'):
+                showError('Fatura precisa estar no Status PROVISÓRIO ou ABERTO')
+
+            for payment in rec.payment_ids:
+                if payment.state != 'cancelled':
+                    showError('Fatura não pode ter movimentações de Baixa')
+
+        for rec in self.web_progress_iter(self):
+            current_state = rec['state']
+
+            if rec['state'] == 'open':
+                rec.action_invoice_cancel()
+                rec.write({'state': 'draft'})
+
+            if rec['state'] != 'draft':
+                showError('Não foi possível retornar fatura ao Status PROVISORIO')
+
+            old_move_name = rec.move_name
+
+            rec.write({'number': None,
+                       'move_name': None,
+                       'reference': None})
+
+            rec.message_post(body=_('Nosso Número "' + str(old_move_name or '') + '" excluído'))
+
+            if current_state == 'open':
+                rec.action_invoice_open()
+                rec.message_post(body=_('Nosso Número alterado de "' + str(old_move_name or '') + '" para "' + str(rec.move_name or '') + '"'))
