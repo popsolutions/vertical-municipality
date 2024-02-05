@@ -4,7 +4,9 @@ CREATE OR REPLACE FUNCTION public.account_invoice_create_fees_traffic_curcorrect
 AS $function$
   declare _reseted_count int = 0;
 begin
-/**versao:2023.04.13
+/**versao:2024.02.05
+ * task:414-Rotina account_invoice_create_fees_traffic_curcorrection está dando erro quando fatura não possui juros - Fatura 1161229
+ **versao:2023.04.13
  * Esta função delete/insere os valores de  Mutlas(fees), juros(Traffic) e correção monetária(currencycorrection) para uma fatura
  * O valor final de data para considerar os cálculos é vw_property_settings_monthly_last.year_month
  Parâmetros:
@@ -49,7 +51,8 @@ begin
          join account_invoice_accumulated_calc_multa(aci.id, ym.year_month) mlt on 0 = 0,
          (select id, name, default_code from product_template where default_code in ('PROPJU', 'PROPMU', 'PROPCM')) pdt
    where aci.state in ('draft', 'open')
-     and aci.id = _invoice_id;
+     and aci.id = _invoice_id
+     and mlt.pric_total is not null;
 
   perform account_invoice_update_amounts(_invoice_id);
 
