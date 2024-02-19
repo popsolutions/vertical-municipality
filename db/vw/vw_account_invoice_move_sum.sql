@@ -42,7 +42,7 @@ select t.invoice_id,
        t.count_cnab_id,
        t.land_id,
        t.land,
-       case when cnab_semcnab = 'cnab' then
+       case when cnab_semcnab in ('cnab', 'cnab-manual') then
          case when exists
            (select 1
               from res_partner_bank rpb
@@ -101,7 +101,7 @@ select t.invoice_id,
                        max(aiml.datapagamento_ocorrencia) datapagamento_ocorrencia_max,
                        sum(valorpago) valorpago,
                        sum(valorpago_juros) valorpago_juros,
-                       string_agg(distinct case when aiml.move_is_cnab then 'cnab' else 'sem cnab' end, ',') cnab_semcnab,
+                       string_agg(distinct case when aiml.move_is_cnab then 'cnab' WHEN aiml_1.move_line_journal_id = 7 THEN 'cnab-manual' else 'sem cnab' end, ',') cnab_semcnab,
                        sum(aiml.move_line_debit) move_line_debit,
                        sum(aiml.move_line_credit) move_line_credit,
                        string_agg(distinct aiml.move_line_account_id::varchar, ',') move_line_account_ids,
