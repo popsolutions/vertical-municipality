@@ -30,7 +30,7 @@ class AccountInvoice(models.Model):
         copy=False,
     )
 
-    date_due_initial = fields.Date(string='Due Date Initial')
+    date_due_initial = fields.Date(string='Data inicial Vencimento')
     date_payment = fields.Date(string='Data de pagamento(Sisa)')
 
     # Usado para deixar invisivel o botão
@@ -54,9 +54,33 @@ class AccountInvoice(models.Model):
 
     @api.model
     def create(self, vals):
+        if not vals['date_due']:
+            raise UserError(
+                _(
+                    'Informe a data de vencimento da fatura.'
+                )
+            )
+
         if not vals['origin']:
             land_id = self.env['property.land'].search([('id', '=', vals['land_id'])])[0]
             vals['origin'] = "{}/{}".format(datetime.strptime(vals['date_due'], '%Y-%m-%d').strftime('%m-%Y'), land_id.name)
+
+        if not vals['date_due_initial']:
+            vals.update({'date_due_initial':vals['date_due']})
+
+        sql = """
+select vpl.owner_invoice_id
+  from vw_property_land vpl
+ where vpl.id = """ + str(vals['land_id'])
+        self.env.cr.execute(sql)
+        owner_invoice_id = self.env.cr.fetchall()[0][0]
+
+        if vals['partner_id'] != owner_invoice_id:
+            raise UserError(
+                _(
+                    'Propriedade/Proprietário incompatível.'
+                )
+            )
 
         res = super().create(vals)
         return res
@@ -179,7 +203,7 @@ class AccountInvoice(models.Model):
                 self.raiseUserError("Não pode ser processado pois não está no estado RASCUNHO ou ABERTO")
 
         for invoice in self.web_progress_iter(self):
-            invoice.invoice_message_post_valorfatura('** Processado rotina "Processaar Boleto atrasado (Acumular)"[INÍCIO]')
+            invoice.invoice_message_post_valorfatura('** Processado rotina "Processar Boleto atrasado (Acumular)"[INÍCIO]')
             old_state = invoice.state
 
             if invoice.state == 'open':
@@ -194,7 +218,7 @@ class AccountInvoice(models.Model):
                 #Se a fatura estava open inicialmente, volto o status dela
                 invoice.action_invoice_open()
 
-            invoice.invoice_message_post_valorfaturaFromDatabase('** Processado rotina "Processaar Boleto atrasado (Acumular)"[FIM]')
+            invoice.invoice_message_post_valorfaturaFromDatabase('** Processado rotina "Processar Boleto atrasado (Acumular)"[FIM]')
 
             logger.info("Efetuado processo de acúmulo das 2 últimas faturas para a fatura Fatura %s", str(invoice.id))
 
@@ -348,10 +372,12 @@ class AccountInvoice(models.Model):
                         invoice_date_due = datetime.strptime(values['date_due'], '%Y-%m-%d').date()
                     else:
                         invoice_date_due = values['date_due']
-                else:
+                elif invoice.date_due:
                     invoice_date_due = invoice.date_due
+                else:
+                    invoice_date_due = False
 
-                if invoice_date_due_initial and invoice_date_due_initial < invoice_date_due:
+                if invoice_date_due and invoice_date_due_initial and invoice_date_due_initial < invoice_date_due:
                     invoice_date_due_yearmonth = int(str(invoice_date_due.year) + str(invoice_date_due.month).zfill(2))
                     invoice_id = values.get('id') or int(invoice.id)
 
