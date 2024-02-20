@@ -21,6 +21,7 @@ logger = logging.getLogger(__name__)
 
 
 class AccountInvoice(models.Model):
+    #override de ./addons/account/models/account_invoice.py
     _inherit = "account.invoice"
 
     file_boleto_pdf_id = fields.Many2one(
@@ -30,7 +31,7 @@ class AccountInvoice(models.Model):
         copy=False,
     )
 
-    date_due_initial = fields.Date(string='Data inicial Vencimento')
+    date_due_initial = fields.Date(string='Data inicial Vencimento', readonly=True)
     date_payment = fields.Date(string='Data de pagamento(Sisa)')
 
     # Usado para deixar invisivel o botão
@@ -45,6 +46,19 @@ class AccountInvoice(models.Model):
 
     accumulated = fields.Boolean(string="Fatura acumulada")
 
+    date_invoice = fields.Date(string='Invoice Date', required=True,
+        readonly=True, states={'draft': [('readonly', False)]}, index=True,
+        help="Keep empty to use the current date", copy=False) #override para add required=True
+
+    date_due = fields.Date(string='Due Date',
+                           required= True,
+                           readonly=True, states={'draft': [('readonly', False)]}, index=True, copy=False,
+                           help="If you use payment terms, the due date will be computed automatically at the generation "
+                                "of accounting entries. The Payment terms may compute several due dates, for example 50% "
+                                "now and 50% in one month, but if you want to force a due date, make sure that the payment "
+                                "term is not set on the invoice. If you keep the Payment terms and the due date empty, it "
+                                "means direct payment.") #override para add required=True
+
     # def _compute_transmit_method_simnao(self):
     #     for rec in self:
     #         if rec.transmit_method_id.id == 4:
@@ -54,19 +68,13 @@ class AccountInvoice(models.Model):
 
     @api.model
     def create(self, vals):
-        if not vals['date_due']:
-            raise UserError(
-                _(
-                    'Informe a data de vencimento da fatura.'
-                )
-            )
+        if 'date_due' in vals and vals['date_due']:
+            if not vals['origin']:
+                land_id = self.env['property.land'].search([('id', '=', vals['land_id'])])[0]
+                vals['origin'] = "{}/{}".format(datetime.strptime(vals['date_due'], '%Y-%m-%d').strftime('%m-%Y'), land_id.name)
 
-        if not vals['origin']:
-            land_id = self.env['property.land'].search([('id', '=', vals['land_id'])])[0]
-            vals['origin'] = "{}/{}".format(datetime.strptime(vals['date_due'], '%Y-%m-%d').strftime('%m-%Y'), land_id.name)
-
-        if not vals['date_due_initial']:
-            vals.update({'date_due_initial':vals['date_due']})
+            if (not 'date_due_initial' in vals) or (not vals['date_due_initial']):
+                vals.update({'date_due_initial':vals['date_due']})
 
         sql = """
 select vpl.owner_invoice_id
@@ -363,7 +371,10 @@ select vpl.owner_invoice_id
 
             if invoice_state == 'draft':
                 if 'date_due_initial' in values and values['date_due_initial']:
-                    invoice_date_due_initial = datetime.strptime(values['date_due_initial'], '%Y-%m-%d').date()
+                    if 'date' in str(type(values['date_due_initial'])):
+                        invoice_date_due_initial = values['date_due_initial']
+                    else:
+                        invoice_date_due_initial = datetime.strptime(values['date_due_initial'], '%Y-%m-%d').date()
                 else:
                     invoice_date_due_initial = invoice.date_due_initial
 
@@ -600,6 +611,7 @@ select vpl.owner_invoice_id
 
         res.date_invoice = self.date_invoice
         res.date_due = self.date_due
+        res.date_due_initial = res.date_due
 
         i = 0
 
