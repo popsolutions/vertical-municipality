@@ -16,6 +16,7 @@ class AccountInvoice(models.Model):
     block_id = fields.Many2one('property.land.block', 'Block', related='land_id.block_id')
     module_id = fields.Many2one('property.land.module', 'Module', related='land_id.module_id')
     zone_id = fields.Many2one('property.land.zone', 'Zone', related='land_id.module_id.zone_id')
+    cnab_days_due_limit = fields.Integer(default=10, string='Dias de limite para cnab')
 
     @api.multi
     def _get_process_methods_list(self):

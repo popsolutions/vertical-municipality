@@ -8,6 +8,7 @@
         <field name="arch" type="xml">
             <xpath expr="//field[@name='date_due']" position="after">
                 <field name="date_due_initial"/>
+                <field name="cnab_days_due_limit"/>
                 <field name="accumulated">
                     <attribute name="colors">red</attribute>
                 </field>

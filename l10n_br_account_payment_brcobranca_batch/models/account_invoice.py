@@ -121,7 +121,7 @@ select anomes_text(anomes(pwc.owner_readDate), 3) mesReferencia,
        psm.ar_ecoli_limit,
        pwc.water_consumption_economy_qty,
        aci.date_due,--index 23
-       aci.date_due + 10 date_due_max,
+       aci.date_due + coalesce(aci.cnab_days_due_limit, 0) date_due_max,
        jurosdiario.multa_diaria,
        jurosdiario.juros_diario,
        anomes_inc(anomes_due, -2) anomes_due_2, --index 27
@@ -132,13 +132,15 @@ select anomes_text(anomes(pwc.owner_readDate), 3) mesReferencia,
          where ail.invoice_id = aci.id 
            and ail.product_id = 7 /*Água e esgoto*/
          limit 1
-       ) existe_consumo_agua  --index 29
+       ) existe_consumo_agua, --index 29,
+       aci.cnab_days_due_limit --index 30
   from (select aci.id,
                aci.land_id,
                aci.date_due,
                anomes(aci.date_due) anomes_due,
                anomes_primeirodia(anomes_inc(anomes(aci.date_due), -1)) pwc_primeirodia,
-               anomes_ultimodia(anomes_inc(anomes(aci.date_due), -1)) pwc_ultimodia
+               anomes_ultimodia(anomes_inc(anomes(aci.date_due), -1)) pwc_ultimodia,
+               aci.cnab_days_due_limit
           from account_invoice aci
          where aci.id = ''' + str(invoice.id) + '''  
        ) aci
@@ -174,6 +176,9 @@ select anomes_text(anomes(pwc.owner_readDate), 3) mesReferencia,
             else:
                 sacado = invoice.partner_id.legal_name
 
+            date_due_max = ''
+            if data[30]: #cnab_days_due_limit
+                date_due_max = data[24].strftime('%d/%m/%Y')
 
             consumptionJson.update({
                 'mesReferencia': data[0],
@@ -201,7 +206,7 @@ select anomes_text(anomes(pwc.owner_readDate), 3) mesReferencia,
                 'ar_ecoli': data[20],
                 'ar_ecoli_limit': data[21],
                 'date_due': data[23].strftime('%d/%m/%Y'),
-                'date_due_max': data[24].strftime('%d/%m/%Y'),
+                'date_due_max': date_due_max,
                 'multa_diaria': data[25],
                 'juros_diario': data[26],
                 'existe_consumo_agua': existe_consumo_agua,

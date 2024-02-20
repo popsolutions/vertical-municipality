@@ -7,6 +7,8 @@
 import logging
 
 from odoo import _, fields, models
+from odoo.exceptions import Warning as UserError
+
 
 logger = logging.getLogger(__name__)
 
@@ -98,15 +100,35 @@ class PaymentOrder(models.Model):
 
                 # Resolvendo Taxa de permanência conforme task id:232 - INICIO
                 query = """
-select (select multa_diaria from func_account_invoice_jurosdiario(apl.invoice_id)) multa_diaria
-  from account_payment_line apl
+select (select multa_diaria from func_account_invoice_jurosdiario(apl.invoice_id)) multa_diaria,
+       ai.id invoice_id,
+       ai.cnab_days_due_limit
+  from account_payment_line apl join account_invoice ai on ai.id = apl.invoice_id
  where apl.own_number = '""" + str(int(nossoNumero)) + """'
    and apl.order_id = """ + str(self.id) + """"""
                 self.env.cr.execute(query)
                 taxaPermanenciaCur = self.env.cr.fetchall()[0]
                 taxaPermanencia = taxaPermanenciaCur[0]
+                invoice_id = taxaPermanenciaCur[1]
+                cnab_days_due_limit = taxaPermanenciaCur[2]
+
                 lineSubst(floatToStrCnab(taxaPermanencia, 13), 161, 173) # 161 a 173 Valor a ser Cobrado por Dia de Atraso (Taxa de permanência)
                 # Resolvendo Taxa de permanência conforme task id:232 - FIM
+
+                #[INICIO] Resolvendo task 302-Data de limite para pagamento do título no arquivo de remessa-cnab
+
+                if cnab_days_due_limit:
+                    if cnab_days_due_limit > 99:
+                        raise UserError(
+                            _(
+                                 'Fatura id:' + str(invoice_id) + ' possui data de limite de dias após vencimento maior que 99.'
+                            )
+                        )
+
+                    strLimit = '18' + str(cnab_days_due_limit).zfill(2)
+                    lineSubst(strLimit, 157,160) # Limite de dias para pagamento do cnab após vencimento
+
+                #[FIM] Resolvendo task 302-Data de limite para pagamento do título no arquivo de remessa-cnab
 
                 fileStr += line + '\n'
 

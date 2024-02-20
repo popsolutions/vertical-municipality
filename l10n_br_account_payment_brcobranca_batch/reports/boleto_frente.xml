@@ -388,7 +388,7 @@
                         <span t-esc="boletoData['date_due']"/>
                       </td>
                     </tr>
-                    <tr>
+                    <tr t-if="boletoData['date_due_max'] != ''">
                       <td style="font-size: 14px;">
                         BANCO NÃO RECEBER APÓS
                         <t t-esc="boletoData['date_due_max']"/>
