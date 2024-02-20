@@ -48,16 +48,16 @@ class AccountInvoice(models.Model):
 
     date_invoice = fields.Date(string='Invoice Date', required=True,
         readonly=True, states={'draft': [('readonly', False)]}, index=True,
-        help="Keep empty to use the current date", copy=False) #override para add required=True
+        help="Keep empty to use the current date", copy=True) #override para add required=True e copy=True
 
     date_due = fields.Date(string='Due Date',
                            required= True,
-                           readonly=True, states={'draft': [('readonly', False)]}, index=True, copy=False,
+                           readonly=True, states={'draft': [('readonly', False)]}, index=True, copy=True,
                            help="If you use payment terms, the due date will be computed automatically at the generation "
                                 "of accounting entries. The Payment terms may compute several due dates, for example 50% "
                                 "now and 50% in one month, but if you want to force a due date, make sure that the payment "
                                 "term is not set on the invoice. If you keep the Payment terms and the due date empty, it "
-                                "means direct payment.") #override para add required=True
+                                "means direct payment.") #override para add required=True e copy=True
 
     # def _compute_transmit_method_simnao(self):
     #     for rec in self:
