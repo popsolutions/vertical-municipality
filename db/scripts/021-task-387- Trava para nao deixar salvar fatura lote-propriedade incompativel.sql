@@ -48,7 +48,7 @@ AS SELECT pl.id,
     pl.water_consumption_economy_qty,
     pl.sisa_id,
     pl.invoicesend_email,
-    func_land_emailboleto(pl.id) email_boleto_calc
+    func_land_emailboleto(pl.id) AS email_boleto_calc
    FROM property_land pl
      LEFT JOIN property_land_block plb ON plb.id = pl.block_id
      LEFT JOIN property_land_lot pll ON pll.id = pl.lot_id
