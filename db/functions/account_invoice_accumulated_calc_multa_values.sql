@@ -7,9 +7,10 @@ AS $function$
   declare isFaturaNova bool;
 begin
 /*
- * Retorna multa, juros e correção monetária a ser aplicado
+ *Versão: 2024-02-21
+ *  task:428-Função account_invoice_accumulated_calc_multa_values está retornando valor negativo quando anomesinicial é menor que anomesfinal
+ *  Retorna multa, juros e correção monetária a ser aplicado
 */
-
   select psm.index_coin
     from vw_property_settings_monthly psm
    where year_month = anomes_VencimentoInicial
@@ -20,6 +21,20 @@ begin
    where year_month = anomes_VencimentoFinal
     into index_coin_Final;
 
+  anomesdif = public.anomes_dif(anomes_VencimentoInicial, anomes_VencimentoFinal);
+
+  if (anomes_vencimentoinicial > anomes_vencimentofinal) then
+    valoratualizado = valorbase;
+    correcaomonetaria = 0;
+    multapercentual = 0;
+    multa = 0;
+    juros = 0;
+    multa_juros_correcao = 0;
+    multa_juros_correcao_round2 = 0;
+    valorbasefinal = valorbase;
+    return next;
+    return;
+  end if;
 
   if (index_coin_Inicial is null) then
     raise exception 'index_coin_account_invoice - "property_settings_monthly.index_coin" não informado para o Ano/Mês %"', index_coin_Inicial;
@@ -33,9 +48,6 @@ begin
   valoratualizado = valorBase / index_coin_Inicial * index_coin_Final;
 
   correcaomonetaria = valoratualizado - valorBase;
-
-  anomesdif = public.anomes_dif(anomes_VencimentoInicial, anomes_VencimentoFinal);
-
 
   if (anomesdif <= 0) then
     multaPercentual = 0;
