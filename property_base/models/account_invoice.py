@@ -24,6 +24,9 @@ class AccountInvoice(models.Model):
     #override de ./addons/account/models/account_invoice.py
     _inherit = "account.invoice"
 
+    mesesfaturaqtde = fields.Integer(string="Qtde Mes fatura")
+    mesesfatura = fields.Char(string="Meses Fatura")
+
     file_boleto_pdf_id = fields.Many2one(
         comodel_name="ir.attachment",
         string="Boleto PDF",

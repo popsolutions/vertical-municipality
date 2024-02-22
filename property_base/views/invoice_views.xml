@@ -57,6 +57,8 @@
                 <field name="company_currency_id" invisible="1"/>
                 <field name="state"/>
                 <field name="accumulated" string="Acm"/>
+                <field name="mesesfaturaqtde"/>
+                <field name="mesesfatura"/>
             </tree>
         </field>
     </record>
