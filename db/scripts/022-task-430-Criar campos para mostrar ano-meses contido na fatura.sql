@@ -41,23 +41,24 @@ $function$
 ;
 
 
-CREATE OR REPLACE FUNCTION public.account_invoice_update_mesesfatura(_anomesinicial integer = 202401)
+CREATE OR REPLACE FUNCTION public.account_invoice_update_mesesfatura(_anomesinicial integer = 202401, _invoice_id integer = null)
  RETURNS void
  LANGUAGE plpgsql
 AS $function$
-declare sum_price_total numeric;
-declare _residual numeric;
-declare _state varchar(30);
 begin
- /*
+/*
+ 2024-02-23
  task-430-Criar campos para mostrar ano/meses contido na fatura
- */
+
+ ** obs: manter sincronização entre as rotinas duplicasdas: public.func_trg_account_invoice_update_mesesfatura e public.account_invoice_update_mesesfatura
+*/
   with x as (
   SELECT ai.id,
          string_agg(DISTINCT anomes_text(ail.anomes_vencimento, 5), ', '::text) mesesfatura,
          count(DISTINCT ail.anomes_vencimento) mesesfaturaqtde
     FROM account_invoice ai join account_invoice_line ail on ail.invoice_id = ai.id
-   where anomes(ai.date_due) >= _anomesinicial
+   where ((_invoice_id IS not NULL) or (anomes(ai.date_due) >= _anomesinicial))
+     AND ((_invoice_id IS NULL) OR (ai.id = _invoice_id))
   group by 1
   order by 3 desc
   )
@@ -70,8 +71,35 @@ END;
 $function$
 ;
 
-commit;
-
-select public.account_invoice_update_mesesfatura(0);
 
 commit;
+
+select public.account_invoice_update_mesesfatura(0, null);
+
+commit;
+
+
+CREATE OR REPLACE FUNCTION func_trg_account_invoice_update_mesesfatura()
+RETURNS trigger AS $$
+declare mesesfatura integer;
+declare mesesfaturaqtde integer;
+begin
+  --task-430-Criar campos para mostrar ano/meses contido na fatura
+  --** obs: manter sincronização entre as rotinas duplicasdas: public.func_trg_account_invoice_update_mesesfatura e public.account_invoice_update_mesesfatura
+
+  SELECT string_agg(DISTINCT anomes_text(ail.anomes_vencimento, 5), ', '::text) mesesfatura,
+         count(DISTINCT ail.anomes_vencimento) mesesfaturaqtde
+    FROM account_invoice ai join account_invoice_line ail on ail.invoice_id = ai.id
+   where ai.id = new.id
+    into new.mesesfatura,
+         new.mesesfaturaqtde;
+RETURN NEW;
+END;
+$$
+LANGUAGE plpgsql;
+
+
+CREATE TRIGGER trg_account_invoice_update_mesesfatura
+before insert or update ON account_invoice
+    FOR EACH ROW EXECUTE PROCEDURE func_trg_account_invoice_update_mesesfatura();
+
