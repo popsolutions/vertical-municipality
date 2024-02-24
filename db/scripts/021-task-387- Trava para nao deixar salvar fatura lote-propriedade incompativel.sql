@@ -1,4 +1,3 @@
--- public.vw_property_land source
 
 CREATE OR REPLACE VIEW public.vw_property_land
 AS SELECT pl.id,
@@ -60,3 +59,4 @@ AS SELECT pl.id,
      LEFT JOIN res_partner res_owner ON res_owner.id = pl.owner_id
      LEFT JOIN res_partner owner_invoice ON owner_invoice.id = coalesce(pl.owner_invoice_id, pl.owner_id)
   WHERE pl.active;
+

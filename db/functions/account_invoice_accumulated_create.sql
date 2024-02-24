@@ -6,6 +6,8 @@ AS $function$
   declare _reseted_count int = 0;
 begin
 /*
+ Versão:2024.02.21
+   task:429-Ao acumular considerar o limpo com mensagem pelas linhas da fatura e não pela data de vencimento da fatura
  versao:2024.01.18
    task:331-Ao acumular fatura, dar baixa nas faturas de origem
 
@@ -82,9 +84,9 @@ begin
                              and anomes(invoice_origem.date_due) in (anm.anomes_1, anm.anomes_2)
                              and (not exists
                                  (select 1
-                                    from account_invoice aci_3
+                                    from account_invoice aci_3 join account_invoice_line ail on ail.invoice_id = aci_3.id
                                    where aci_3.land_id = invoice_destino.land_id
-                                     and anomes(aci_3.date_due) <= anm.anomes_3
+                                     and ail.anomes_vencimento <= anm.anomes_3
                                      and aci_3.state = 'open'
                                    limit 1
                                  )/*Este filtro irá eliminar o account_invoice caso tenha mais que 3 meses de boletos vencido para o cliente("Limpo com mensagem")*/)
