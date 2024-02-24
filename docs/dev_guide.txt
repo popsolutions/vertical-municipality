@@ -8,6 +8,10 @@ api do boleto(para arquivo de remessa) chumbada em : odoo/custom-addons/riviera/
 Rotina inicial: /vertical-municipality/property_base/models/account_invoice.py.account_invoice._get_brcobranca_boleto
 Rotina que monta o json do boleto: /vertical-municipality/property_base/models/account_move_line.py.send_payment
 
+::Servidor de API do boleto:
+1 - mudar a variável BRCOBRANCA_API_URL no odoo
+2 - Mudar diretamente no fonte(infelizmente está xumbado) em /home/mateus/OdooDev/odoo/custom-addons/riviera/l10n-brazil/l10n_br_account_payment_brcobranca/constants/br_cobranca.py.get_brcobranca_api_url
+
 ::Gerar arquivo de remessa para o banco:
 Add Invoice para nova ordem de pagamento: custom-addons/riviera/bank-payment/account_payment_order/models/account_invoice.py._prepare_payment_line_vals
 gerar arquivo para banco: odoo/custom-addons/riviera/l10n-brazil/l10n_br_account_payment_brcobranca/models/account_payment_order.py/home/mateus/OdooDev/odoo/custom-addons/riviera/l10n-brazil/l10n_br_account_payment_brcobranca/models/account_payment_order.py.generate_payment_file() =>   _get_brcobranca_remessa
@@ -32,4 +36,6 @@ Cada linha de fatura é gerada no arquivo "odoo/custom-addons/riviera/l10n-brazi
 
 - gerar arquivo para banco(line): odoo/custom-addons/riviera/l10n-brazil/l10n_br_account_payment_order/models/bank_payment_line.py._prepare_boleto_bank_line_vals
 
-
+::Importar arquivo de remessa do Banco:
+  A rotina inicial está em ...............: /odoo/custom-addons/riviera/l10n-brazil/l10n_br_account_payment_brcobranca/wizard/import_statement.import_statement
+  O Arquivo é varrido(Linha por lina) em .: /custom-addons/riviera/l10n-brazil/l10n_br_account_payment_brcobranca/parser/cnab_file_parser.py.process_return_file
