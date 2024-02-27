@@ -1,3 +1,12 @@
+ALTER TABLE public.product_template ADD juros boolean NULL;
+
+commit;
+
+update product_template pt
+  set juros = pt.id in (13, 12, 18, 19, 20);
+
+commit;
+
 CREATE OR REPLACE FUNCTION public.func_trg_account_invoice_update_mesesfatura()
  RETURNS trigger
  LANGUAGE plpgsql
@@ -20,3 +29,6 @@ RETURN NEW;
 END;
 $function$
 ;
+
+DROP FUNCTION public.account_invoice_update_mesesfatura(int4, int4);
+
