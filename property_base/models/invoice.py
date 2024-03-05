@@ -52,8 +52,7 @@ class AccountInvoice(models.Model):
 
         property_wc_ids = self.env[modelName].search(property_wc_ids_domain)
 
-        inv_ids = self.search([('land_id', '!=', False),
-                               ('state', 'in', ['draft'])])
+        inv_ids = self.invoices_get_monthly_last_draft()
 
         inv_land_ids = inv_ids.mapped('land_id').ids
 
