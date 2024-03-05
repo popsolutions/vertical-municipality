@@ -20,7 +20,7 @@ class PropertyWaterConsumption(models.Model):
     last_read = fields.Integer()
     current_read = fields.Integer()
     consumption = fields.Integer(compute='_compute_consumption', store=True)
-    issue_id = fields.Many2one('property.water.consumption.issue', default=1) #1-Leitura
+    issue_id = fields.Many2one('property.water.consumption.issue', default=1, string = 'Situação') #1-Leitura
     reader_id = fields.Many2one('res.partner')
     total = fields.Float(compute='_compute_total', store=True)
     state = fields.Selection([
@@ -32,6 +32,11 @@ class PropertyWaterConsumption(models.Model):
     hydrometer_number = fields.Char(
         'hydrometer Number'
     )
+    current_read = fields.Integer()
+    route_custom_id = fields.Many2one('property.water.consumption.route.custom', string = 'Rota')
+    route_sequence = fields.Integer(string='Sequencia da Rota')
+    route_realreadsequence = fields.Integer(string = 'Sequência real utilizada')
+    read_datetime = fields.Datetime(string = "Data/Hora de leitura")
 
     @api.model
     def create(self, vals):

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2024 - TODAY, Marcel Savegnago <mateus.2006@gmail.com>
+     License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="property_water_consumption_route_custom_form_view">
+            <field name="name">property.water.consumption.route.custom.form</field>
+            <field name="model">property.water.consumption.route.custom</field>
+            <field name="priority" eval="16"/>
+            <field name="arch" type="xml">
+                <form string="Rotas Personalizadas">
+                    <sheet>
+                        <group col="4">
+                          <field name="name"/>
+                          <field name="route_id"/>
+                          <field name="active"/>
+                        </group>
+                    <notebook>
+                        <page name="route_custom_lines" string="Sequência Leitura">
+                            <field name="land_ids" nolabel="1">
+                                <tree editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="land_id"/>
+                                    <field name="land_id_module_id_code"/>
+                                    <field name="land_id_block_id_code"/>
+                                    <field name="land_id_lot_id_code"/>
+                                    <field name="land_id_type_id_name"/>
+                                    <field name="land_id_usage_id_name"/>
+                                    <field name="land_id_stage_id_name"/>
+                                    <field name="land_id_address"/>
+                                    <field name="land_id_property_name"/>
+                                    <field name="write_date" string="Data" widget="date"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="property_water_consumption_route_custom_tree_view">
+            <field name="name">property.water.consumption.route.custom.tree</field>
+            <field name="model">property.water.consumption.route.custom</field>
+            <field name="priority" eval="16"/>
+            <field name="arch" type="xml">
+                <tree string="Rotas Personalizadas">
+                    <field name="name"/>
+                    <field name="route_id"/>
+                </tree>
+            </field>
+        </record>
+    </data>
+</odoo>

@@ -23,6 +23,16 @@
                         <field name="land_id"/>
                     </group>
                     <group col="4">
+                    </group>
+                    <group col="4">
+                        <field name="route_sequence"  readonly = "True"/>
+                        <field name="route_custom_id" readonly = "True"/>
+                        <field name="route_realreadsequence"  readonly = "True"/>
+                        <field name="read_datetime"  readonly = "True"/>
+                    </group>
+                    <group col="4">
+                    </group>
+                    <group col="4">
                         <field name="photo" widget="image" class="oe_avatar"/>
                         <field name="hydrometer_number"/>
                     </group>

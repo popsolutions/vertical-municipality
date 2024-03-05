@@ -8,4 +8,4 @@ from . import property_water_consumption_issue
 from . import property_water_consumption_route
 from . import invoice
 from . import wizard
-from . import res_partner
+from . import res_partner, property_water_consumption_route_custom, property_water_consumption_route_lands

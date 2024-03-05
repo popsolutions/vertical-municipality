@@ -12,7 +12,7 @@
     'author': "PopSolutions",
     'website': "https://www.popsolutions.co",
     'category': 'Uncategorized',
-    'version': '12.0.0.1.6',
+    'version': '12.0.0.1.7',
     'depends': ['property_base'],
     'data': [
         'data/products.xml',
@@ -27,5 +27,7 @@
         'views/menu.xml',
         'security/ir.model.access.csv',
         'security/property_land_type_water_consumption_rule.xml',
+        'views/property_water_consumption_route_custom.xml',
+        'views/property_water_consumption_route_lands.xml',
     ],
 }

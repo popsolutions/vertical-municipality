@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2024 - TODAY, Marcel Savegnago <mateus.2006@gmail.com>
+     License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="property_water_consumption_route_lands_form_view">
+            <field name="name">property.water.consumption.route.lands.form</field>
+            <field name="model">property.water.consumption.route.lands</field>
+            <field name="priority" eval="30"/>
+            <field name="arch" type="xml">
+                <form string="Rotas/Propriedades">
+                    <sheet>
+                        <group col="4">
+                            <field name="routecustom_id"/>
+                            <field name="land_id"/>
+                            <field name="land_id_module_id_code"/>
+                            <field name="land_id_block_id_code"/>
+                            <field name="land_id_lot_id_code"/>
+                            <field name="land_id_type_id_name"/>
+                            <field name="land_id_usage_id_name"/>
+                            <field name="land_id_stage_id_name"/>
+                            <field name="land_id_address"/>
+                            <field name="land_id_property_name"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="property_water_consumption_route_lands_tree_view">
+            <field name="name">property.water.consumption.route.lands.tree</field>
+            <field name="model">property.water.consumption.route.lands</field>
+            <field name="priority" eval="16"/>
+            <field name="arch" type="xml">
+                <tree string="Rotas/Propriedades">
+                    <field name="routecustom_id"/>
+                    <field name="land_id"/>
+                    <field name="land_id_module_id_code"/>
+                    <field name="land_id_block_id_code"/>
+                    <field name="land_id_lot_id_code"/>
+                    <field name="land_id_type_id_name"/>
+                    <field name="land_id_usage_id_name"/>
+                    <field name="land_id_stage_id_name"/>
+                    <field name="land_id_address"/>
+                    <field name="land_id_property_name"/>
+                    <field name="write_date" string="Data" widget="date"/>
+                </tree>
+            </field>
+        </record>
+    </data>
+</odoo>

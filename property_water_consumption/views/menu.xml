@@ -3,6 +3,17 @@
      License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
 
 <odoo>
+    <record model="ir.actions.act_window" id="property_water_consumption_route_custom_action">
+        <field name="name">Rotas Personalizadas</field>
+        <field name="res_model">property.water.consumption.route.custom</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record model="ir.actions.act_window" id="property_water_consumption_route_lands_action">
+        <field name="name">Rotas/Propriedades</field>
+        <field name="res_model">property.water.consumption.route.lands</field>
+        <field name="view_mode">tree,form</field>
+    </record>
 
     <menuitem name="Water Consumption" id="property_water_consumption_menu" parent="property_base.root_menu" sequence="20"
               action="water_consumption_action"/>
@@ -12,6 +23,15 @@
               action="property_water_consumption_computation_parameter_action" sequence="10"/>
     <menuitem name="Issues" id="property_water_consumption_issues_menu" parent="property_water_consumption_settings_menu"
               action="property_water_consumption_issue_action" sequence="20"/>
+
+    <menuitem name="Rotas" id="property_water_consumption_routs_menu" parent="property_base.root_menu" sequence="70"/>
+
+    <menuitem name="Rotas Customizadas" id="property_water_consumption_route_custom_menu" parent="property_water_consumption_routs_menu"
+              action="property_water_consumption_route_custom_action" sequence="30"/>
+
+    <menuitem name="Rotas/Propriedades" id="property_water_consumption_route_lands_menu" parent="property_water_consumption_routs_menu"
+              action="property_water_consumption_route_lands_action" sequence="50"/>
+
     <record id="action_unified_watter_consumption_process" model="ir.actions.server">
         <field name="name">Process Unifiedy Water Consumption</field>
         <field name="model_id" ref="property_water_consumption.model_property_water_consumption"/>
