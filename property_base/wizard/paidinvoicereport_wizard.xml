@@ -28,6 +28,7 @@
               <field name="tipocobranca_dinheiro"/>
               <field name="tipocobranca_boleto"/>
               <field name="tipocobranca_debitoautomatico"/>
+              <field name="tipocobranca_acumulado"/>
             </group>
             <group col="4" colspan="2" string="Outros">
               <field name="fatura_id" string="Id fatura"/>

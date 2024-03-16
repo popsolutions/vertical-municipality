@@ -22,6 +22,7 @@ class AppointmentReportWizard(models.TransientModel):
     tipocobranca_dinheiro = fields.Boolean(string='Dinheiro', default=True)
     tipocobranca_boleto = fields.Boolean(string='Boleto', default=True)
     tipocobranca_debitoautomatico = fields.Boolean(string='Débito Automático', default=True)
+    tipocobranca_acumulado = fields.Boolean(string='Acumulados', default=False)
 
     def button_action_menu_rel_cont_invoices_paid(self):
         domain = []
@@ -162,6 +163,16 @@ select row_to_json(t)::varchar invoices_sum
             if tipocob__automatico_boleto_dinheiro_Label != '':
                 tipocob__automatico_boleto_dinheiro_Label += ', '
             tipocob__automatico_boleto_dinheiro_Label += 'Débito Automático'
+
+        if self.tipocobranca_acumulado:
+            if tipocob__automatico_boleto_dinheiro_in != '':
+                tipocob__automatico_boleto_dinheiro_in += ", "
+
+            tipocob__automatico_boleto_dinheiro_in += "'C'"
+            if tipocob__automatico_boleto_dinheiro_Label != '':
+                tipocob__automatico_boleto_dinheiro_Label += ', '
+            tipocob__automatico_boleto_dinheiro_Label += 'Acumulados'
+
 
         labelRelatorioAdd(', Tipo de Cobrança: ' + tipocob__automatico_boleto_dinheiro_Label)
 

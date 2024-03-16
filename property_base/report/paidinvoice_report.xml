@@ -248,7 +248,7 @@
 
         <div style="margin-top:32px">
           <div style="text-align: right">
-            <spam style="text-align: center">Tipo COB,  B = Cobrança por Boleto, A = Cobrança por Débito Automático, D = Cobrança por Dinheiro
+            <spam style="text-align: center">Tipo COB,  B = cobrança por Boleto, A = cobrança por débito Automático, D = cobrança por Dinheiro, C = aCumulado em fatura Futura
             </spam>
           </div>
         </div>

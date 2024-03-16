@@ -35,7 +35,8 @@ select ai.id invoice_id,
        cre.your_number cnab_your_number,
        cre.title_value cnab_title_value,
        cre.payment_value cnab_payment_value,
-       ai.partner_id
+       ai.partner_id,
+       ai.accumulated
   from account_invoice ai
   left join account_invoice_account_move_line_rel aiam on aiam.account_invoice_id = ai.id
   left join account_move_line aml_rel on aml_rel.id = aiam.account_move_line_id
