@@ -16,8 +16,11 @@ select ims.invoice_id,
     t.price_total,
     ims.datapagamento_ocorrencia_max occurrence_date,
     ims.datapagamento_real_max real_payment_date,
-    t.tipocobranca ims.tipocob__automatico_boleto_dinheiro::character varying,
-    case when ims.cnab_semcnab = 'cnab-manual' then 'cnab-manual' else '' end AS observacao,
+    ims.tipocob__automatico_boleto_dinheiro::character varying AS tipocobranca,
+    case
+        when ims.cnab_semcnab = 'cnab-manual'::text then 'cnab-manual'::text
+        else ''::text
+    end AS observacao,
     ims.invoice_date_due due_date,
     t.anomes_vencimento,
     rp.id res_id,
