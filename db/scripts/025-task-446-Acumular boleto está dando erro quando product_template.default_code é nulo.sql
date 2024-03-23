@@ -1,3 +1,5 @@
+-- DROP FUNCTION public.account_invoice_accumulated_create(int4, int4);
+
 CREATE OR REPLACE FUNCTION public.account_invoice_accumulated_create(_anomes_destino integer, _fixed_invoice_id integer DEFAULT 0)
  RETURNS integer
  LANGUAGE plpgsql
