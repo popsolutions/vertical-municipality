@@ -1,90 +1,187 @@
 CREATE OR REPLACE FUNCTION public.func_report_contab_baixados(_invoice_id integer)
- RETURNS TABLE(
-invoice_id int4,
-anomes_vencimento int4,
-product_id int4,
-product_name varchar,
-price_total_sum numeric,
-total_juros numeric,
-jurosproporcional_perc numeric,
-jurosproporcional_valor numeric,
-juros_areaverde numeric,
-price_total numeric,
-total_agua numeric,
-total_contribuicaomensal numeric,
-total_taxas numeric,
-total_areaverde numeric,
-total_taxacaptacao numeric,
-descontos numeric,
-tipocobranca varchar(1)
- )
- LANGUAGE sql
+ RETURNS TABLE(invoice_id integer,
+               func_sequence integer,
+               anomes_vencimento integer,
+               product_id integer,
+               product_name character varying,
+               price_total_sum numeric, --Valor total pago
+               juros numeric, -- Juros total da fatura
+               taxaPermanencia numeric, -- Taxa de permanencia total da fatura
+               total_juros numeric,  -- Juros total + taxa de permanência da fatura
+               juros_anomes numeric,
+               txpermanencia_anomes numeric,
+               jurostotal_anomes numeric,
+               jurosproporcional_perc numeric,
+               jurosproporcional_valor numeric,
+               juros_areaverde numeric,
+               jurosproporcional_total numeric,
+               price_total numeric,
+               price_total_anomes numeric,
+               total_agua numeric,
+               total_contribuicaomensal numeric,
+               total_taxas numeric,
+               total_areaverde numeric,
+               total_taxacaptacao numeric,
+               descontos numeric)
+ LANGUAGE plpgsql
 AS $function$
---versao=2023-10-13
-select ail.invoice_id,
-       ail.anomes_vencimento,
-       ail.product_id,
-       ail.product_name,
-       ail_total.price_total price_total_sum,
-       ail_juros.price_total total_juros,
-       coalesce(round(ail.price_total / (ail_total.price_total - ail_juros.price_total), 3), 0) jurosproporcional_perc,
-       coalesce(round((ail.price_total / (ail_total.price_total - ail_juros.price_total)) * ail_juros.price_total, 3), 0) jurosproporcional_valor,
-       0::numeric juros_areaverde,
-       ail.price_total,
-       ail.total_agua,
-       ail.total_contribuicaomensal,
-       ail.total_taxas,
-       ail.total_areaverde,
-       ail.total_taxacaptacao,
-       0::numeric descontos,
-       case when exists
-       (select 1
-          from res_partner_bank rpb
-         where rpb.partner_id = ail.partner_id
-           and rpb.acc_number is not null
-       ) then 'A' else 'B' end tipocobranca --A-> Débito automático, B -> boleto
-  from (select ail.invoice_id,
-               ail.partner_id,
-               ail.anomes_vencimento,
-               ail.product_id,
-               pt."name" product_name,
-               sum(ail.price_total) price_total,
-               sum(case when ail.product_id = 7 then ail.price_total else 0 end) total_agua,
-               sum(case when ail.product_id = 1 then ail.price_total else 0 end) total_contribuicaomensal,
-               sum(case when ail.product_id in (13, 11) then ail.price_total else 0 end) total_taxas,
-               sum(case when ail.product_id = 10 then ail.price_total else 0 end) total_areaverde,
-               sum(case when ail.product_id = 9 then ail.price_total else 0 end) total_taxacaptacao
-          from account_invoice_line ail join product_template pt on pt.id = ail.product_id
-         where ail.invoice_id = _invoice_id
-           and ail.product_id <> 12
-         group by
-               ail.invoice_id,
-               ail.partner_id,
-               ail.anomes_vencimento,
-               ail.product_id,
-               pt."name"
-       ) ail
-       left join
-       (select aims.valorpago price_total
-          from vw_account_invoice_move_sum aims
-         where aims.invoice_id = _invoice_id
-       ) ail_total on true
-       left join
-       (select sum(t.price_total) price_total
-          from (select ail.invoice_id,
-                       ail.anomes_vencimento,
-                       sum(ail.price_total) price_total
-                  from account_invoice_line ail join product_template pt on pt.id = ail.product_id
-                 where ail.product_id = 12
-                   and ail.invoice_id = _invoice_id
-                 group by ail.invoice_id, ail.anomes_vencimento
-                 union all
-                select aims.invoice_id,
-                       anomes(aims.invoice_date_due) anomes_vencimento,
-                       aims.valorjuros_cnab::numeric price_total
-                  from vw_account_invoice_move_sum aims
-                 where aims.invoice_id = _invoice_id
-               ) t
-       ) ail_juros on true
-   where ail.invoice_id = _invoice_id;
-$function$;
+  declare _ai_anomesVencimentoInicial integer;
+  declare _pt_juros bool;
+  declare _anomes_vencimento_count integer;
+  declare _anomes_vencimento_current integer;
+  declare _anomes_vencimento_index integer;
+  declare _jurosProporcionalJaDiluido_Anomes numeric = 0; --esta variável vai acumular o total de juros que já foi diluído para ano/mês
+begin
+/*
+  versão=2024-03-23
+    task-445-paid_invoice - reconstrução de func_report_contab_baixados
+  versao=2023-10-13
+*/
+  invoice_id = _invoice_id;
+  txpermanencia_anomes = 0;
+
+  select sum(aims.valorjuros_cnab::numeric) taxa_permanencia,
+         sum(aims.valorpago) price_total_sum
+    from vw_account_invoice_move_sum aims
+   where aims.invoice_id = _invoice_id
+    into taxaPermanencia,
+         price_total_sum;
+
+  select anomes(ai.date_due_initial) ai_anomesVencimentoInicial
+    from account_invoice ai
+   where ai.id = _invoice_id
+    into _ai_anomesVencimentoInicial;
+
+--  raise notice 'taxaPermanencia %, _ai_anomesVencimentoInicial %', taxaPermanencia, _ai_anomesVencimentoInicial;
+
+  func_sequence = 1;
+
+  for anomes_vencimento,
+      product_id,
+      product_name,
+      _pt_juros,
+      price_total,
+      price_total_anomes,
+      juros,
+      _anomes_vencimento_count,
+      total_agua,
+      total_contribuicaomensal,
+      total_areaverde,
+      total_taxacaptacao,
+      total_taxas
+   in select t.anomes_vencimento,
+             t.product_id,
+             t.product_name,
+             t.pt_juros,
+             t.price_total,
+             sum(t.price_total) filter(where not t.pt_juros) over(partition by t.anomes_vencimento) price_total_anomes,
+             sum(t.price_total) filter(where     t.pt_juros) over() juros,
+             t.anomes_vencimento_count,
+             t.total_agua,
+             t.total_contribuicaomensal,
+             t.total_areaverde,
+             t.total_taxacaptacao,
+             t.total_taxas
+        from (select ail.anomes_vencimento,
+                     ail.product_id_tranformado product_id,
+                     pt."name" product_name,
+                     coalesce(pt.juros, false) pt_juros,
+                     sum(ail.price_total) price_total,
+                     sum(case when ail.product_id = 7 then ail.price_total else 0 end) total_agua,
+                     sum(case when ail.product_id = 1 then ail.price_total else 0 end) total_contribuicaomensal,
+                     sum(case when ail.product_id = 10 then ail.price_total else 0 end) total_areaverde,
+                     sum(case when ail.product_id = 9 then ail.price_total else 0 end) total_taxacaptacao,
+                     sum(case when ail.product_id_tranformado = 33 then ail.price_total else 0 end) total_taxas,
+                     count(0) over(partition by ail.anomes_vencimento) anomes_vencimento_count
+                from (select ail2.anomes_vencimento,
+                             case when ail2.product_id = 9/*Taxa Captação*/ then 7/*água*/
+                                  when coalesce(pt.juros, false) then 12 /*Multa, Juros e correção monetária*/
+                                  when ((ail2.product_id not in (1, 7, 10, 9)) and (not coalesce(pt.juros, false))) then 33 /*Taxas*/
+                                  else ail2.product_id
+                             end product_id_tranformado,
+                             ail2.product_id,
+                             ail2.price_total
+                        from account_invoice_line ail2 join product_template pt on pt.id = ail2.product_id
+                       where ail2.invoice_id = _invoice_id
+                     ) ail join product_template pt on pt.id = ail.product_id_tranformado
+               group by
+                     ail.anomes_vencimento,
+                     ail.product_id_tranformado,
+                     pt."name",
+                     coalesce(pt.juros, false)
+               order by
+                     ail.anomes_vencimento,
+                     case when coalesce(pt.juros, false) then 0 else 1 end,
+                     price_total
+              ) t
+  loop
+     if (func_sequence = 1) then
+       total_juros = juros + taxaPermanencia;
+     end if;
+
+     if (_anomes_vencimento_current is distinct from anomes_vencimento) then
+       --Mudou ano/mês
+--       raise notice 'Novo ano/mês de % para % ', _anomes_vencimento_current, anomes_vencimento;
+       _anomes_vencimento_current = anomes_vencimento;
+       juros_anomes = 0;
+       txpermanencia_anomes = 0;
+
+--       raise notice 'anomes_vencimento %, _ai_anomesVencimentoInicial %', anomes_vencimento, _ai_anomesVencimentoInicial;
+
+       if (anomes_vencimento = _ai_anomesVencimentoInicial) then
+         txpermanencia_anomes = coalesce(taxaPermanencia, 0);
+--         raise notice 'txpermanencia_anomes %, taxaPermanencia %', txpermanencia_anomes, taxaPermanencia;
+       end if;
+
+       if (_pt_juros) then
+         juros_anomes = price_total;
+       end if;
+
+       jurostotal_anomes = juros_anomes + txpermanencia_anomes;
+       _anomes_vencimento_index = 0;
+      _jurosProporcionalJaDiluido_Anomes = 0;
+
+       if (_pt_juros) then
+         _anomes_vencimento_index = _anomes_vencimento_index + 1;
+         continue;
+       end if;
+     end if;
+
+--     raise notice 'func_sequence %, product_name %, anomes_vencimento %, juros_anomes % ', func_sequence, product_name, anomes_vencimento, juros_anomes;
+
+     descontos = 0;
+
+     if (total_taxas < 0) then
+       descontos = total_taxas;
+       total_taxas = 0;
+     end if;
+
+     _anomes_vencimento_index = _anomes_vencimento_index + 1;
+
+     jurosproporcional_perc = price_total / price_total_anomes;
+
+     if (_anomes_vencimento_index = _anomes_vencimento_count) then
+       --É o último registro do ano/mês. Vou jogar diretamente a diferença de juros que falta
+       jurosproporcional_total = jurostotal_anomes - _jurosProporcionalJaDiluido_Anomes;
+     else
+       jurosproporcional_total = round(jurosproporcional_perc * jurostotal_anomes, 2);
+     end if;
+
+     _jurosProporcionalJaDiluido_Anomes = _jurosProporcionalJaDiluido_Anomes + jurosproporcional_total;
+
+     if (product_id = 10) then
+       juros_areaverde = jurosproporcional_total;
+       jurosproporcional_valor = 0;
+     else
+       juros_areaverde = 0;
+       jurosproporcional_valor = jurosproporcional_total;
+     end if;
+
+
+     return next;
+--     raise notice '-------------------';
+     func_sequence = func_sequence + 1;
+  end loop;
+end
+$function$
+;
