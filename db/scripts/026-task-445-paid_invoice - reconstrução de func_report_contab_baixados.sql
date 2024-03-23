@@ -257,7 +257,7 @@ select ims.invoice_id,
     t.price_total_sum,
     t.total_juros,
     t.jurosproporcional_perc,
-    t.price_total + t.jurosproporcional_valor AS price_total_juros,
+    t.price_total + t.jurosproporcional_total AS price_total_juros,
     ims.tipocob__automatico_boleto_dinheiro,
     ims.cnab_semcnab
    FROM vw_account_invoice_move_sum ims
