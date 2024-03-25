@@ -45,6 +45,9 @@ select row_to_json(t)::varchar invoices_sum
          from (
                select v.res_id,
                       v.res_name,
+                      v.module_code,
+                      v.block_code,
+                      v.lot_code,
                       count(0) qtde,
                       sum(v.price_total_juros) total_proprietario,
                       sum(v.total_agua) total_agua,
@@ -84,7 +87,7 @@ select row_to_json(t)::varchar invoices_sum
                       v.land,
                       v.product_name,
                       v.price_total,
-                      v.price_total_juros) t order by v.real_payment_date, v.land)) res_lines
+                      v.price_total_juros) t order by t.module_code::integer, t.block_code, t.lot_code)) res_lines
                  from vw_report_contab_baixados v
                 where true"""
 
@@ -181,9 +184,14 @@ select row_to_json(t)::varchar invoices_sum
         sql = sql + """
                 group by
                       v.res_id,
-                      v.res_name
+                      v.res_name,
+                      v.module_code,
+                      v.block_code,
+                      v.lot_code
                 order by
-                      v.res_name                      
+                      v.module_code::integer,                      
+                      v.block_code,
+                      v.lot_code
              ) t
         ) t
 """
