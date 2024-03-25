@@ -1,5 +1,6 @@
 CREATE OR REPLACE FUNCTION public.func_report_contab_baixados(_invoice_id integer)
  RETURNS TABLE(invoice_id integer,
+               contab_land_id integer,
                func_sequence integer,
                anomes_vencimento integer,
                product_id integer,
@@ -33,6 +34,8 @@ AS $function$
   declare _jurosProporcionalJaDiluido_Anomes numeric = 0; --esta variável vai acumular o total de juros que já foi diluído para ano/mês
 begin
 /*
+  versão 2024-03-25
+    task-453-paid_invoice - Exibir manutenção de área verde unificadas separadamente
   versão 2024-03-24
     task=450-paid_invoice - Exibir Taxas e descontos, ambos se existirem
   versão=2024-03-23
@@ -59,6 +62,7 @@ begin
   func_sequence = 1;
 
   for anomes_vencimento,
+      contab_land_id,
       product_id,
       product_name,
       _pt_juros,
@@ -73,6 +77,7 @@ begin
       total_taxas,
       descontos
    in select t.anomes_vencimento,
+             t.contab_land_id,
              t.product_id,
              t.product_name,
              t.pt_juros,
@@ -87,6 +92,7 @@ begin
              t.total_taxas,
              t.descontos
         from (select ail.anomes_vencimento,
+                     ail.contab_land_id,
                      ail.product_id_tranformado product_id,
                      pt."name" product_name,
                      coalesce(pt.juros, false) pt_juros,
@@ -99,6 +105,7 @@ begin
                      sum(ail.descontos) descontos,
                      count(0) over(partition by ail.anomes_vencimento) anomes_vencimento_count
                 from (select ail2.anomes_vencimento,
+                             case when ail2.product_id = 10 /*Área verde*/ then  ail2.land_id else ai.land_id end contab_land_id,
                              case when ail2.product_id = 9/*Taxa Captação*/ then 7/*água*/
                                   when coalesce(pt.juros, false) then 12 /*Multa, Juros e correção monetária*/
                                   when ((ail2.product_id not in (1, 7, 10, 9)) and (not coalesce(pt.juros, false))) then 33 /*Taxas*/
@@ -108,11 +115,14 @@ begin
                              case when ((ail2.product_id not in (1, 7, 10, 9)) and (not coalesce(pt.juros, false)) and ail2.price_total < 0) then ail2.price_total else 0 end descontos,
                              ail2.product_id,
                              ail2.price_total
-                        from account_invoice_line ail2 join product_template pt on pt.id = ail2.product_id
+                        from account_invoice_line ail2
+                             join product_template pt on pt.id = ail2.product_id
+                             join account_invoice ai on ai.id = ail2.invoice_id
                        where ail2.invoice_id = _invoice_id
                      ) ail join product_template pt on pt.id = ail.product_id_tranformado
                group by
                      ail.anomes_vencimento,
+                     ail.contab_land_id,
                      ail.product_id_tranformado,
                      pt."name",
                      coalesce(pt.juros, false)

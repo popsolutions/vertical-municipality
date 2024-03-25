@@ -36,9 +36,7 @@ select ims.invoice_id,
     ims.cnab_semcnab
    FROM vw_account_invoice_move_sum ims
      join account_invoice ai on ai.id = ims.invoice_id
-     join vw_property_land vpl on vpl.id = ai.land_id
      join res_partner rp on rp.id = ai.partner_id
      left join func_report_contab_baixados(ims.invoice_id) t on true
-   where ( true or
-         ('' = 'versão-2024-02-19-task-422')
-         );
+     JOIN vw_property_land vpl ON vpl.id = t.contab_land_id
+  WHERE true OR ''::text = 'versão-2024-03-17-task-453'::text;
