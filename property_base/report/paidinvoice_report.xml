@@ -197,17 +197,41 @@
                     </td>
                   </tr>
                 </t>
-                <tr style="width:100%">
+                <tr style="width:100%; text-align: right; font-weight: bold;">
                   <td colspan="2">
                     <span>TOTAL DO PROPRIETÁRIO</span>
                   </td>
-                  <td colspan="12">
-                    <hr style="width:96%;border: 1px solid "/>
+                  <td colspan="5">
+                    <t t-esc="a['total_agua']" t-options='{"widget": "float", "precision": 2}'/>
                   </td>
-
-                  <td style="text-align: right; font-weight: bold;">
-                    <t t-esc="a['total_proprietario']"
-                       t-options='{"widget": "float", "precision": 2}'/>
+                  <td>
+                    <t t-esc="a['total_contribuicaomensal']" t-options='{"widget": "float", "precision": 2}'/>
+                  </td>
+                  <td>
+                    <t t-esc="a['total_taxas']" t-options='{"widget": "float", "precision": 2}'/>
+                  </td>
+                  <td>
+                    <t t-esc="a['jurosproporcional_valor']" t-options='{"widget": "float", "precision": 2}'/>
+                  </td>
+                  <td>
+                    <t t-esc="a['total_areaverde']" t-options='{"widget": "float", "precision": 2}'/>
+                  </td>
+                  <td>
+                    <t t-esc="a['juros_areaverde']" t-options='{"widget": "float", "precision": 2}'/>
+                  </td>
+                  <td>
+                    <t t-esc="a['total_taxacaptacao']" t-options='{"widget": "float", "precision": 2}'/>
+                  </td>
+                  <td>
+                    <t t-esc="a['descontos']" t-options='{"widget": "float", "precision": 2}'/>
+                  </td>
+                  <td>
+                    <t t-esc="a['total_proprietario']" t-options='{"widget": "float", "precision": 2}'/>
+                  </td>
+                </tr>
+                <tr>
+                  <td colspan="16">
+                    <hr style="width:96%;border: 1px solid "/>
                   </td>
                 </tr>
               </t>
