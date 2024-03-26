@@ -1,0 +1,316 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+  <record id="paidinvoice_report_paper" model="report.paperformat">
+    <field name="name">paidinvoice_report_paper</field>
+    <field name="orientation">Landscape</field>
+  </record>
+
+  <report
+    id="action_paidinvoice_report_blockmodule"
+    model="account.invoice"
+    string="Paid invoices"
+    report_type="qweb-pdf"
+    name="property_base.report_paidinvoice_report_blockmodule"
+    file="property_base.report_paidinvoice_report_blockmodule"
+    print_report_name="paid_invoices"
+    groups="account.group_account_invoice"
+    paperformat="property_base.paidinvoice_report_paper"/>
+  />
+
+  <template id="report_paidinvoice_report_blockmodule">
+    <!--    <t t-call="web.html_container">-->
+    <t t-call="web.basic_layout">
+      <!--              <t t-call="web.address_layout">-->
+      <!--      <t t-call="web.external_layout">-->
+      <xpath expr="//div[@class='header']" position="replace">
+        <div class="header">
+          <div>
+            <!--          <div style="margin: 16px 20px 16px 20px; border: 2px solid black">-->
+            <div style="font-size: 16px;font-weight: bold;text-align: center">
+              <spam style="text-align: center">ASSOCIAÇÃO DOS AMIGOS DA RIVIERA DE SÃO LOURENÇO</spam>
+            </div>
+            <br/>
+            <div style="font-size: 14px;font-weight: bold;text-align: center">
+              <spam align="center">RELAÇÃO DE BAIXADOS
+              </spam>
+            </div>
+            <div style="font-size: 14px;font-weight: bold;text-align: center">
+              <spam align="left">
+                <t t-esc="label_relatorio"></t>
+              </spam>
+            </div>
+
+            <br/>
+          </div>
+        </div>
+      </xpath>
+
+      <div class="page">
+        <table style="font-size: 11px; width:100%">
+          <thead>
+            <tr>
+              <th name="th_checkupdate" style="text-align: left">
+                <span>CD Boleto</span>
+              </th>
+              <th name="th_checkupdate" style="text-align: left">
+                <span>CÓD</span>
+              </th>
+              <th name="th_checkupdate" style="text-align: left">
+                <span>M</span>
+              </th>
+              <th name="th_checkupdate" style="text-align: left">
+                <span>Q</span>
+              </th>
+              <th name="th_checkupdate" style="text-align: left">
+                <span>L</span>
+              </th>
+              <th name="th_checkupdate" style="text-align: left">
+                <span>REFER.</span>
+              </th>
+              <th name="th_checkupdate" style="text-align: right">
+                <span>ÁGUA</span>
+              </th>
+              <th name="th_checkupdate" style="text-align: right">
+                <span>CONTRIB</span>
+              </th>
+              <th name="th_checkupdate" style="text-align: right">
+                <span>TAXAS</span>
+              </th>
+              <th name="th_checkupdate" style="text-align: right">
+                <span>MULTA/JUROS</span>
+              </th>
+              <th name="th_checkupdate" style="text-align: right">
+                <span>MAN. A. VERDE</span>
+              </th>
+              <th name="th_checkupdate" style="text-align: right">
+                <span>MUL./JUR. MAV</span>
+              </th>
+              <th name="th_checkupdate" style="text-align: right">
+                <span>TAX.CAP</span>
+              </th>
+              <th name="th_checkupdate" style="text-align: right">
+                <span>DESCONTO</span>
+              </th>
+              <th name="th_checkupdate" style="text-align: right">
+                <span>TOTAL</span>
+              </th>
+              <th name="th_checkupdate" style="text-align: right; width:80px;">
+                <span>PAGTO</span>
+              </th>
+              <th name="th_checkupdate" style="text-align: right">
+                <span>TIPO COB</span>
+              </th>
+              <th name="th_checkupdate" style="text-align: left; width:120px;">
+                <span>OBS</span>
+              </th>
+            </tr>
+          </thead>
+          <tbody style="width:100%;">
+            <div style="width:100%;">
+              <t t-foreach="appointments['modules']" t-as="modules">
+              <t t-foreach="modules['blocks']" t-as="blocks">
+                <t t-set="counter" t-value="0"/>
+                <t t-foreach="blocks['res_lines']" t-as="appo">
+                  <t t-set="counter" t-value="counter + 1"/>
+                  <tr>
+                    <td>
+                      <t t-esc="appo['invoice_id']"/>
+                    </td>
+                    <td>
+                      <t t-esc="appo['land_id']"/>
+                    </td>
+                    <td>
+                      <t t-esc="appo['module_code']"/>
+                    </td>
+                    <td>
+                      <t t-esc="appo['block_code']"/>
+                    </td>
+                    <td>
+                      <t t-esc="appo['lot_code']"/>
+                    </td>
+                    <td>
+                      <t t-esc="appo['referencia']"/>
+                    </td>
+                    <td style="text-align: right">
+                      <t t-esc="appo['total_agua']" t-options='{"widget": "float", "precision": 2}'/>
+                    </td>
+                    <td style="text-align: right">
+                      <t t-esc="appo['total_contribuicaomensal']" t-options='{"widget": "float", "precision": 2}'/>
+                    </td>
+                    <td style="text-align: right">
+                      <t t-esc="appo['total_taxas']" t-options='{"widget": "float", "precision": 2}'/>
+                    </td>
+                    <td style="text-align: right">
+                      <t t-esc="appo['jurosproporcional_valor']" t-options='{"widget": "float", "precision": 2}'/>
+                    </td>
+                    <td style="text-align: right">
+                      <t t-esc="appo['total_areaverde']" t-options='{"widget": "float", "precision": 2}'/>
+                    </td>
+                    <td style="text-align: right">
+                      <t t-esc="appo['juros_areaverde']" t-options='{"widget": "float", "precision": 2}'/>
+                    </td>
+                    <td style="text-align: right">
+                      <t t-esc="appo['total_taxacaptacao']" t-options='{"widget": "float", "precision": 2}'/>
+                    </td>
+                    <td style="text-align: right">
+                      <t t-esc="appo['descontos']" t-options='{"widget": "float", "precision": 2}'/>
+                    </td>
+                    <td style="text-align: right">
+                      <t t-esc="appo['price_total_juros']" t-options='{"widget": "float", "precision": 2}'/>
+
+                      <!--                    <t t-if="counter == a['qtdeitens']">-->
+                      <!--                        <br/>-->
+                      <!--                        <span>TOTAL</span>-->
+                      <!--                    </t>-->
+                    </td>
+                    <td style="text-align: right">
+                      <t t-esc="appo['occurrence_date']"/>
+                    </td>
+                    <td style="text-align: right">
+                      <t t-esc="appo['tipocobranca']"/>
+                    </td>
+                    <td>
+                      <t t-esc="appo['observacao']"/>
+                    </td>
+                  </tr>
+                </t>
+<!--************************************-->
+<!--Totalização do Bloco                -->
+<!--************************************-->
+                <tr style="width:100%; text-align: right; font-weight: bold;">
+                  <td colspan="2">
+                    <span style="font-weight: Normal;">TOTAL DO BLOCO <u><b><t t-esc="blocks['block_code']"/></b></u></span>
+                  </td>
+                  <td colspan="5">
+                    <t t-esc="blocks['total_agua_blocksum']" t-options='{"widget": "float", "precision": 2}'/>
+                  </td>
+                  <td>
+                    <t t-esc="blocks['total_contribuicaomensal_blocksum']" t-options='{"widget": "float", "precision": 2}'/>
+                  </td>
+                  <td>
+                    <t t-esc="blocks['total_taxas_blocksum']" t-options='{"widget": "float", "precision": 2}'/>
+                  </td>
+                  <td>
+                    <t t-esc="blocks['jurosproporcional_valor_blocksum']" t-options='{"widget": "float", "precision": 2}'/>
+                  </td>
+                  <td>
+                    <t t-esc="blocks['total_areaverde_blocksum']" t-options='{"widget": "float", "precision": 2}'/>
+                  </td>
+                  <td>
+                    <t t-esc="blocks['juros_areaverde_blocksum']" t-options='{"widget": "float", "precision": 2}'/>
+                  </td>
+                  <td>
+                    <t t-esc="blocks['total_taxacaptacao_blocksum']" t-options='{"widget": "float", "precision": 2}'/>
+                  </td>
+                  <td>
+                    <t t-esc="blocks['descontos_blocksum']" t-options='{"widget": "float", "precision": 2}'/>
+                  </td>
+                  <td>
+                    <t t-esc="blocks['total_proprietario_blocksum']" t-options='{"widget": "float", "precision": 2}'/>
+                  </td>
+                </tr>
+                <tr>
+                  <td colspan="16">
+                    <hr style="width:96%;border: 1px dashed "/>
+                  </td>
+                </tr>
+
+                </t>
+<!--************************************-->
+<!--Totalização do Módulo               -->
+<!--************************************-->
+
+                <tr style="width:100%; text-align: right; font-weight: bold;">
+                  <td colspan="2">
+                    <span style="font-weight: Normal;">TOTAL DO MÓDULO <u><b><t t-esc="modules['module_code']"/></b></u></span>
+                  </td>
+                  <td colspan="5">
+                    <t t-esc="modules['total_agua_modulesum']" t-options='{"widget": "float", "precision": 2}'/>
+                  </td>
+                  <td>
+                    <t t-esc="modules['total_contribuicaomensal_modulesum']" t-options='{"widget": "float", "precision": 2}'/>
+                  </td>
+                  <td>
+                    <t t-esc="modules['total_taxas_modulesum']" t-options='{"widget": "float", "precision": 2}'/>
+                  </td>
+                  <td>
+                    <t t-esc="modules['jurosproporcional_valor_modulesum']" t-options='{"widget": "float", "precision": 2}'/>
+                  </td>
+                  <td>
+                    <t t-esc="modules['total_areaverde_modulesum']" t-options='{"widget": "float", "precision": 2}'/>
+                  </td>
+                  <td>
+                    <t t-esc="modules['juros_areaverde_modulesum']" t-options='{"widget": "float", "precision": 2}'/>
+                  </td>
+                  <td>
+                    <t t-esc="modules['total_taxacaptacao_modulesum']" t-options='{"widget": "float", "precision": 2}'/>
+                  </td>
+                  <td>
+                    <t t-esc="modules['descontos_modulesum']" t-options='{"widget": "float", "precision": 2}'/>
+                  </td>
+                  <td>
+                    <t t-esc="modules['total_proprietario_modulesum']" t-options='{"widget": "float", "precision": 2}'/>
+                  </td>
+                </tr>
+                <tr>
+                  <td colspan="16">
+                    <hr style="width:96%;border: 1px SOLID "/>
+                  </td>
+                </tr>
+
+              </t>
+<!--************************************-->
+<!--Totalização final do relatório      -->
+<!--************************************-->
+
+              <div style="font-weight: bold;">
+                  <td style="text-align: right; font-weight: bold;" colspan="2">
+                    <span style="font-weight: Normal;">TOTAIS</span>
+                  </td>
+
+                <td style="text-align: right; font-weight: bold;" colspan="5">
+                  <t t-esc="appointments['total_agua_sum']" t-options='{"widget": "float", "precision": 2}'/>
+                </td>
+                <td style="text-align: right; font-weight: bold;">
+                  <t t-esc="appointments['total_contribuicaomensal_sum']"
+                     t-options='{"widget": "float", "precision": 2}'/>
+                </td>
+                <td style="text-align: right; font-weight: bold;">
+                  <t t-esc="appointments['total_taxas_sum']" t-options='{"widget": "float", "precision": 2}'/>
+                </td>
+                <td style="text-align: right; font-weight: bold;">
+                  <t t-esc="appointments['jurosproporcional_valor_sum']"
+                     t-options='{"widget": "float", "precision": 2}'/>
+                </td>
+                <td style="text-align: right; font-weight: bold;">
+                  <t t-esc="appointments['total_areaverde_sum']" t-options='{"widget": "float", "precision": 2}'/>
+                </td>
+                <td style="text-align: right; font-weight: bold;">
+                  <t t-esc="appointments['juros_areaverde_sum']" t-options='{"widget": "float", "precision": 2}'/>
+                </td>
+                <td style="text-align: right; font-weight: bold;">
+                  <t t-esc="appointments['total_taxacaptacao_sum']" t-options='{"widget": "float", "precision": 2}'/>
+                </td>
+                <td style="text-align: right; font-weight: bold;">
+                  <t t-esc="appointments['descontos_sum']" t-options='{"widget": "float", "precision": 2}'/>
+                </td>
+                <td style="text-align: right; font-weight: bold;">
+                  <t t-esc="appointments['price_total_juros_sum']" t-options='{"widget": "float", "precision": 2}'/>
+                </td>
+              </div>
+            </div>
+          </tbody>
+        </table>
+
+        <div style="margin-top:32px">
+          <div style="text-align: right">
+            <spam style="text-align: center">Tipo COB,  B = cobrança por Boleto, A = cobrança por débito Automático, D = cobrança por Dinheiro, C = aCumulado em fatura Futura
+            </spam>
+          </div>
+        </div>
+
+      </div>
+    </t>
+  </template>
+</odoo>

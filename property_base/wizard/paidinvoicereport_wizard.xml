@@ -23,16 +23,15 @@
             <field name="anomesreferenciavenc_inicio"/>
             <field name="anomesreferenciavenc_fim"/>
           </group>
-          <group>
-            <group col="6" colspan="6" string="Tipo de Cobrança">
-              <field name="tipocobranca_dinheiro"/>
-              <field name="tipocobranca_boleto"/>
-              <field name="tipocobranca_debitoautomatico"/>
-              <field name="tipocobranca_acumulado"/>
-            </group>
-            <group col="4" colspan="2" string="Outros">
-              <field name="fatura_id" string="Id fatura"/>
-            </group>
+          <group col="6" colspan="6" string="Tipo de Cobrança/Agrupamento">
+            <field name="tipocobranca_dinheiro"/>
+            <field name="tipocobranca_boleto"/>
+            <field name="tipocobranca_debitoautomatico"/>
+            <field name="tipocobranca_acumulado"/>
+          </group>
+          <group col="4" colspan="4" string="Outros">
+            <field name="fatura_id" string="Id fatura"/>
+            <field name="tipoagrupamento" string = "Tipo Agrupamento" />
           </group>
         </group>
         <footer>
