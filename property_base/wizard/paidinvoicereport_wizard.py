@@ -93,7 +93,8 @@ select row_to_json(t)::varchar invoices_sum
                       v.land,
                       v.product_name,
                       v.price_total,
-                      v.price_total_juros) t order by v.real_payment_date, v.land)) res_lines
+                      v.price_total_juros) t ) order by v.module_code::integer, v.block_code, NULLIF(regexp_replace(v.lot_code, '\D', '', 'g'), '')::int, regexp_replace(v.lot_code, '[^a-zA-Z]', '', 'g'), v.referencia
+                      ) res_lines
                  from vw_report_contab_baixados v
                 where true"""
 
@@ -167,7 +168,8 @@ select row_to_json(t)::varchar invoices_sum
                               v.land,
                               v.product_name,
                               v.price_total,
-                              v.price_total_juros) t order by v.module_code::integer, v.block_code, v.lot_code)) res_lines
+                              v.price_total_juros) t) order by v.module_code::integer, v.block_code, NULLIF(regexp_replace(v.lot_code, '\D', '', 'g'), '')::int, regexp_replace(v.lot_code, '[^a-zA-Z]', '', 'g'), v.referencia
+                              ) res_lines
                          from vw_report_contab_baixados v
                         where true             
             """
