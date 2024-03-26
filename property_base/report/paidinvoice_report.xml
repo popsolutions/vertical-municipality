@@ -198,10 +198,10 @@
                   </tr>
                 </t>
                 <tr style="width:100%; text-align: right; font-weight: bold;">
-                  <td colspan="2">
-                    <span>TOTAL DO PROPRIETÁRIO</span>
+                  <td col="6" colspan="6" style="font-weight:normal; text-align: left;">
+                    <span>TOTAL DO PROPRIETÁRIO <u><b><t t-esc="a['res_id']"/>-<t t-esc="a['res_name']"/></b></u></span>
                   </td>
-                  <td colspan="5">
+                  <td colspan="1">
                     <t t-esc="a['total_agua']" t-options='{"widget": "float", "precision": 2}'/>
                   </td>
                   <td>
