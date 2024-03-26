@@ -34,6 +34,8 @@ AS $function$
   declare _jurosProporcionalJaDiluido_Anomes numeric = 0; --esta variável vai acumular o total de juros que já foi diluído para ano/mês
 begin
 /*
+  versão 2024-03-26
+    task:332-Paid invoice - Juros/Correções/Taxas de permanência
   versão 2024-03-25
     task-453-paid_invoice - Exibir manutenção de área verde unificadas separadamente
   versão 2024-03-24
@@ -45,7 +47,7 @@ begin
   invoice_id = _invoice_id;
   txpermanencia_anomes = 0;
 
-  select sum(aims.valorjuros_cnab::numeric) taxa_permanencia,
+  select sum(aims.valorpago_juros::numeric) taxa_permanencia,
          sum(aims.valorpago) price_total_sum
     from vw_account_invoice_move_sum aims
    where aims.invoice_id = _invoice_id
