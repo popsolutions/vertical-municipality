@@ -34,6 +34,8 @@ AS $function$
   declare _jurosProporcionalJaDiluido_Anomes numeric = 0; --esta variável vai acumular o total de juros que já foi diluído para ano/mês
 begin
 /*
+  versão 2024-03-27
+    task-456-paid_invoice - Não agrupar taxas das faturas
   versão 2024-03-26
     task:332-Paid invoice - Juros/Correções/Taxas de permanência
   versão 2024-03-25
@@ -116,7 +118,8 @@ begin
                              case when ((ail2.product_id not in (1, 7, 10, 9)) and (not coalesce(pt.juros, false)) and ail2.price_total > 0) then ail2.price_total else 0 end total_taxas,
                              case when ((ail2.product_id not in (1, 7, 10, 9)) and (not coalesce(pt.juros, false)) and ail2.price_total < 0) then ail2.price_total else 0 end descontos,
                              ail2.product_id,
-                             ail2.price_total
+                             ail2.price_total,
+                             sum(ail2.price_total) over(partition by case when ((ail2.product_id not in (1, 7, 10, 9)) and (not coalesce(pt.juros, false))) then ail2.price_total else 0 end) controle_separar_taxas --task-456-paid_invoice - Não agrupar taxas das faturas
                         from account_invoice_line ail2
                              join product_template pt on pt.id = ail2.product_id
                              join account_invoice ai on ai.id = ail2.invoice_id
@@ -127,11 +130,12 @@ begin
                      ail.contab_land_id,
                      ail.product_id_tranformado,
                      pt."name",
-                     coalesce(pt.juros, false)
+                     coalesce(pt.juros, false),
+                     controle_separar_taxas
                order by
                      ail.anomes_vencimento,
                      case when coalesce(pt.juros, false) then 0 else 1 end,
-                     price_total
+                     product_id
               ) t
   loop
      if (func_sequence = 1) then
